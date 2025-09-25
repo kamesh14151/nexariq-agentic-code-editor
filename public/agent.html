@@ -822,6 +822,137 @@
         .toast-message {
             font-weight: 500;
         }
+
+        /* Code block styles */
+        .code-block-wrapper {
+            margin: 1rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--darker-gray);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="light"] .code-block-header {
+            background-color: #F0F0F0;
+        }
+
+        .code-block-language {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .code-block-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .copy-code-btn, .preview-code-btn, .run-code-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .copy-code-btn:hover, .preview-code-btn:hover, .run-code-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            border-color: var(--primary-blue);
+        }
+
+        .code-block-content {
+            background-color: var(--darker-gray);
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        [data-theme="light"] .code-block-content {
+            background-color: #F5F5F5;
+        }
+
+        .code-preview {
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .code-preview.active {
+            display: block;
+        }
+
+        .code-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--darker-gray);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="light"] .code-preview-header {
+            background-color: #F0F0F0;
+        }
+
+        .code-preview-title {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .code-preview-close {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .code-preview-close:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            border-color: var(--primary-blue);
+        }
+
+        .code-preview-content {
+            padding: 1rem;
+            background-color: white;
+            min-height: 100px;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: var(--text-primary);
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -950,28 +1081,51 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
     <script>
         // Initialize Highlight.js
         hljs.highlightAll();
+
+        // DOM Elements
+        const elements = {
+            chatInput: document.getElementById('agent-input'),
+            sendBtn: document.getElementById('send-button'),
+            chatContainer: document.getElementById('chat-container'),
+            agentContainer: document.getElementById('agent-container'),
+            previewIframe: document.getElementById('preview-iframe'),
+            codeEditor: document.getElementById('code-editor'),
+            toast: document.getElementById('toast')
+        };
+
+        // State management
+        const state = {
+            isGenerating: false,
+            aiStatus: 'online',
+            messages: [],
+            conversations: [],
+            currentConversation: null,
+            usageStats: {
+                totalConversations: 0,
+                totalMessages: 0
+            },
+            settings: {
+                apiUsage: 0,
+                apiLimit: 100,
+                creativity: 70,
+                length: 1024,
+                focus: 'balanced',
+                streaming: false,
+                model: 'claude-sonnet-4-20250514',
+                contextMemory: true
+            }
+        };
 
         // Function to go to dashboard
         function goToDashboard(event) {
             event.preventDefault();
             window.location.href = 'index.html';
         }
-
-        // DOM Elements
-        const agentContainer = document.getElementById('agent-container');
-        const chatContainer = document.getElementById('chat-container');
-        const agentInput = document.getElementById('agent-input');
-        const sendButton = document.getElementById('send-button');
-        const previewIframe = document.getElementById('preview-iframe');
-        const codeEditor = document.getElementById('code-editor');
-        const toast = document.getElementById('toast');
-
-        // Track state
-        let firstMessageSent = false;
-        let currentCode = '';
 
         // Theme toggle
         function toggleTheme() {
@@ -1000,11 +1154,11 @@
 
         // Function to show toast notification
         function showToast(message, type = 'success') {
-            const toastMessage = toast.querySelector('.toast-message');
-            const toastIcon = toast.querySelector('.toast-icon i');
+            const toastMessage = elements.toast.querySelector('.toast-message');
+            const toastIcon = elements.toast.querySelector('.toast-icon i');
             
             toastMessage.textContent = message;
-            toast.className = `toast ${type}`;
+            elements.toast.className = `toast ${type}`;
             
             if (type === 'success') {
                 toastIcon.className = 'fas fa-check';
@@ -1012,10 +1166,10 @@
                 toastIcon.className = 'fas fa-exclamation-triangle';
             }
             
-            toast.classList.add('show');
+            elements.toast.classList.add('show');
             
             setTimeout(() => {
-                toast.classList.remove('show');
+                elements.toast.classList.remove('show');
             }, 3000);
         }
 
@@ -1032,143 +1186,490 @@
         }
 
         // Function to add a message to the chat
-        function addMessage(content, isUser = false, code = null) {
+        function addMessage(role, content) {
+            const message = {
+                id: Date.now().toString(),
+                role: role,
+                content: content,
+                timestamp: new Date()
+            };
+            
+            state.messages.push(message);
+            
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
-            if (isUser) {
+            if (role === 'user') {
                 messageDiv.classList.add('user');
             }
             
             const avatarDiv = document.createElement('div');
             avatarDiv.classList.add('message-avatar');
-            avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+            avatarDiv.innerHTML = role === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
             
             const contentDiv = document.createElement('div');
             contentDiv.classList.add('message-content');
-            
-            if (code) {
-                contentDiv.innerHTML = `<p>${content}</p><pre><code class="language-javascript">${escapeHtml(code)}</code><button class="copy-button" onclick="copyCode(\`${escapeHtml(code).replace(/`/g, '\\`')}\`)"><i class="fas fa-copy"></i> Copy</button></pre>`;
-                setTimeout(() => hljs.highlightElement(contentDiv.querySelector('code')), 0);
-            } else {
-                contentDiv.innerHTML = `<p>${content}</p>`;
-            }
+            contentDiv.innerHTML = formatMessage(content);
             
             messageDiv.appendChild(avatarDiv);
             messageDiv.appendChild(contentDiv);
             
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            elements.chatContainer.appendChild(messageDiv);
+            elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+            
+            return message;
         }
 
         // Function to add typing indicator
         function addTypingIndicator() {
             const typingDiv = document.createElement('div');
-            typingDiv.classList.add('typing-indicator');
-            typingDiv.id = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.classList.add('message');
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
             
-            for (let i = 0; i < 3; i++) {
-                const span = document.createElement('span');
-                typingDiv.appendChild(span);
-            }
-            
-            chatContainer.appendChild(typingDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            elements.chatContainer.appendChild(typingDiv);
+            elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
         }
 
         // Function to remove typing indicator
         function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typing-indicator');
+            const typingIndicator = document.getElementById('typingIndicator');
             if (typingIndicator) {
                 typingIndicator.remove();
             }
         }
 
-        // Helper function to escape HTML
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
+        // Format message content with enhanced code block rendering
+        function formatMessage(content) {
+            // Ensure content is a string
+            if (typeof content !== 'string') {
+                console.warn('formatMessage received non-string content:', typeof content, content);
+                content = String(content || '');
+            }
+            
+            // If content is empty, return a placeholder
+            if (!content.trim()) {
+                return '<em class="text-gray-500">No content</em>';
+            }
+            
+            try {
+                // Use marked to parse markdown
+                const html = marked.parse(content);
+                
+                // Process code blocks for syntax highlighting with enhanced styling
+                const processedHtml = html.replace(/<pre><code class="language-([^"]+)">([\s\S]*?)<\/code><\/pre>/g, (match, language, code) => {
+                    const escapedCode = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+                    
+                    return `
+                        <div class="code-block-wrapper">
+                            <div class="code-block-header">
+                                <div class="code-block-language">${language}</div>
+                                <div class="code-block-actions">
+                                    <button class="copy-code-btn" onclick="copyCodeBlock('${codeId}')" title="Copy code">
+                                        <i data-lucide="copy" class="w-4 h-4"></i>
+                                    </button>
+                                    ${shouldShowPreview(language) ? `
+                                        <button class="preview-code-btn" onclick="previewCode('${codeId}', '${language}')" title="Preview">
+                                            <i data-lucide="eye" class="w-4 h-4"></i>
+                                        </button>
+                                    ` : ''}
+                                    ${shouldShowRun(language) ? `
+                                        <button class="run-code-btn" onclick="runCode('${codeId}')" title="Run">
+                                            <i data-lucide="play" class="w-4 h-4"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="code-block-content">
+                                <pre id="${codeId}"><code class="language-${language}">${escapedCode}</code></pre>
+                            </div>
+                            <div id="preview-${codeId}" class="code-preview">
+                                <div class="code-preview-header">
+                                    <div class="code-preview-title">Preview</div>
+                                    <button class="code-preview-close" onclick="closePreview('${codeId}')">Close</button>
+                                </div>
+                                <div class="code-preview-content"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Sanitize HTML to prevent XSS
+                const sanitizedHtml = DOMPurify.sanitize(processedHtml);
+                
+                return sanitizedHtml;
+            } catch (error) {
+                console.error('Error formatting message:', error);
+                // Fallback: just return the content with basic HTML escaping
+                return content
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\n/g, '<br>');
+            }
         }
 
-        // Function to call Claude API
-        async function callClaudeAPI(message) {
+        // Check if preview should be shown for a language
+        function shouldShowPreview(language) {
+            const previewLanguages = ['html', 'jsx', 'tsx', 'vue', 'css', 'scss', 'sass'];
+            return previewLanguages.includes(language.toLowerCase());
+        }
+
+        // Check if run button should be shown for a language
+        function shouldShowRun(language) {
+            const runLanguages = ['javascript', 'js', 'typescript', 'ts', 'python', 'py'];
+            return runLanguages.includes(language.toLowerCase());
+        }
+
+        // Copy code block
+        function copyCodeBlock(codeId) {
+            const codeBlock = document.getElementById(codeId);
+            if (!codeBlock) return;
+            
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    const button = document.querySelector(`button[onclick="copyCodeBlock('${codeId}')"]`);
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+                    button.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.classList.remove('copied');
+                    }, 2000);
+                    
+                    showToast('Code copied to clipboard', 'success');
+                })
+                .catch(err => {
+                    console.error('Failed to copy code:', err);
+                    showToast('Failed to copy code', 'error');
+                });
+        }
+
+        // Preview code
+        function previewCode(codeId, language) {
+            const codeBlock = document.getElementById(codeId);
+            const previewContainer = document.getElementById(`preview-${codeId}`);
+            
+            if (!codeBlock || !previewContainer) return;
+            
+            const code = codeBlock.textContent;
+            const previewContent = previewContainer.querySelector('.code-preview-content');
+            
+            if (!previewContent) return;
+            
+            // Toggle preview
+            if (previewContainer.classList.contains('active')) {
+                previewContainer.classList.remove('active');
+                return;
+            }
+            
+            // Set preview content based on language
+            if (language === 'html' || language === 'jsx' || language === 'tsx' || language === 'vue') {
+                previewContent.innerHTML = code;
+            } else if (language === 'css' || language === 'scss' || language === 'sass') {
+                previewContent.innerHTML = `<style>${code}</style><div>Preview of CSS styles</div>`;
+            } else {
+                previewContent.innerHTML = `<pre>${code}</pre>`;
+            }
+            
+            previewContainer.classList.add('active');
+        }
+
+        // Close preview
+        function closePreview(codeId) {
+            const previewContainer = document.getElementById(`preview-${codeId}`);
+            if (previewContainer) {
+                previewContainer.classList.remove('active');
+            }
+        }
+
+        // Run code (placeholder function)
+        function runCode(codeId) {
+            showToast('Code execution feature coming soon!', 'info');
+        }
+
+        // Send a message to the AI
+        async function sendMessage() {
+            const content = elements.chatInput.value.trim();
+            if (!content || state.isGenerating) return;
+            
+            // Check AI status before sending
+            if (state.aiStatus !== 'online') {
+                showToast('Claude AI service is currently unavailable. Please try again later.', 'error');
+                return;
+            }
+            
+            // Check API usage limit
+            if (state.settings.apiUsage >= state.settings.apiLimit) {
+                showToast('API usage limit reached. Please try again later.', 'error');
+                return;
+            }
+            
+            // Clear input
+            elements.chatInput.value = '';
+            elements.chatInput.style.height = 'auto';
+            
+            // Show conversation if not already visible
+            if (elements.agentContainer.classList.contains('single-column')) {
+                elements.agentContainer.classList.remove('single-column');
+                elements.agentContainer.classList.add('two-column');
+            }
+            
+            // Add user message
+            addMessage('user', content);
+            
+            // Disable send button
+            state.isGenerating = true;
+            elements.sendBtn.disabled = true;
+            elements.sendBtn.classList.add('loading');
+            
             try {
-                const response = await fetch('/api/chat.js', {// Replace with your Vercel API URL
+                // Show typing indicator
+                addTypingIndicator();
+                
+                // Prepare request
+                const request = {
+                    messages: [
+                        ...state.messages.filter(m => m.role === 'user' || m.role === 'assistant').map(m => ({
+                            role: m.role,
+                            content: m.content
+                        }))
+                    ],
+                    options: {
+                        creativity: state.settings.creativity,
+                        length: state.settings.length,
+                        focus: state.settings.focus,
+                        streaming: false,
+                        model: state.settings.model,
+                        contextMemory: state.settings.contextMemory
+                    }
+                };
+                
+                console.log('Sending request:', request);
+                
+                // Send to Vercel API
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        message: message
-                    })
+                    body: JSON.stringify(request)
                 });
-
+                
+                console.log('API Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('API request failed');
-                }
-
-                const data = await response.json();
-                return data.response;
-            } catch (error) {
-                console.error('Error calling Claude API:', error);
-                return "I'm sorry, I encountered an error while processing your request. Please try again later.";
-            }
-        }
-
-        // Function to handle sending a message
-        async function sendMessage() {
-            const message = agentInput.value.trim();
-            if (message) {
-                addMessage(message, true);
-                agentInput.value = '';
-                
-                if (!firstMessageSent) {
-                    agentContainer.classList.remove('single-column');
-                    agentContainer.classList.add('two-column');
-                    firstMessageSent = true;
-                }
-                
-                addTypingIndicator();
-                sendButton.classList.add('loading');
-                
-                try {
-                    const response = await callClaudeAPI(message);
-                    removeTypingIndicator();
+                    const errorText = await response.text();
+                    console.error('API Error Response:', errorText);
                     
-                    let code = null;
-                    let codeMatch = response.match(/```([a-z]*)\n([\s\S]*?)```/);
-                    
-                    if (codeMatch) {
-                        code = codeMatch[2];
-                        currentCode = code;
-                        codeEditor.textContent = code;
-                        codeEditor.className = `code-editor language-${codeMatch[1] || 'javascript'}`;
-                        hljs.highlightElement(codeEditor);
-                        updatePreview(code);
-                        
-                        const responseText = response.replace(/```[a-z]*\n[\s\S]*?```/g, '');
-                        addMessage(responseText, false, code);
-                    } else {
-                        addMessage(response, false);
+                    let errorMessage = 'API Error';
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        errorMessage = errorData.error || `API Error: ${response.status}`;
+                    } catch (e) {
+                        errorMessage = `API Error: ${response.status} - ${errorText.substring(0, 100)}`;
                     }
-                } catch (error) {
-                    removeTypingIndicator();
-                    addMessage("I'm sorry, I encountered an error while processing your request. Please try again later.", false);
-                    showToast('Error communicating with AI', 'error');
-                } finally {
-                    sendButton.classList.remove('loading');
+                    
+                    throw new Error(errorMessage);
                 }
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Process response
+                const data = await response.json();
+                console.log('Received data:', data);
+                
+                // Extract the actual message content correctly
+                let aiResponseContent = '';
+                
+                if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+                    aiResponseContent = data.choices[0].message.content;
+                } else if (data.content) {
+                    // Fallback if response format is different
+                    aiResponseContent = data.content;
+                } else {
+                    console.error('Unexpected response format:', data);
+                    throw new Error('Invalid response format from API');
+                }
+                
+                // Check if we actually got content
+                if (!aiResponseContent || aiResponseContent.trim() === '') {
+                    console.error('Empty AI response content');
+                    throw new Error('Empty response from AI');
+                }
+                
+                console.log('AI response content:', aiResponseContent.substring(0, 100) + '...');
+                
+                // Update API usage
+                state.settings.apiUsage++;
+                updateApiUsage();
+                
+                // Add the AI message with typing effect if enabled
+                if (state.settings.streaming) {
+                    await addMessageWithTypingEffect('assistant', aiResponseContent);
+                } else {
+                    addMessage('assistant', aiResponseContent);
+                }
+                
+                // Save conversation
+                if (state.currentConversation && !state.conversations.find(c => c.id === state.currentConversation.id)) {
+                    state.conversations.unshift(state.currentConversation);
+                    state.usageStats.totalConversations++;
+                    saveUsageStats();
+                    saveConversations();
+                    renderRecentChats();
+                }
+                
+                // Update dashboard
+                updateDashboard();
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Check if it's an API key error
+                if (error.message.includes('API key required') || error.message.includes('Authentication failed')) {
+                    addMessage('assistant', `I'm sorry, but the Claude AI service isn't properly configured. Please add the required API key in your Vercel environment variables.`);
+                } else {
+                    // Add error message
+                    addMessage('assistant', `I'm sorry, I encountered an error while processing your request. Please try again later.\n\nError: ${error.message}`);
+                }
+            } finally {
+                // Re-enable send button
+                state.isGenerating = false;
+                elements.sendBtn.disabled = false;
+                elements.sendBtn.classList.remove('loading');
             }
         }
-
-        // Function to update the preview iframe
-        function updatePreview(code) {
-            previewIframe.srcdoc = code;
+        
+        // Add message with typing effect (simulated streaming)
+        async function addMessageWithTypingEffect(role, content) {
+            // Add empty message first
+            const message = addMessage(role, '');
+            const messageElement = document.querySelector(`.message[data-id="${message.id}"] .message-content`);
+            
+            if (!messageElement) {
+                // Fallback: just add the message normally
+                const msg = state.messages.find(m => m.id === message.id);
+                if (msg) msg.content = content;
+                renderMessages();
+                return;
+            }
+            
+            // Add typing cursor
+            messageElement.innerHTML = '<span class="typing-cursor"></span>';
+            
+            // Type out the message character by character
+            let currentText = '';
+            const chars = content.split('');
+            
+            for (let i = 0; i < chars.length; i++) {
+                currentText += chars[i];
+                
+                // Format the current text and add typing cursor
+                const formattedContent = formatMessage(currentText);
+                messageElement.innerHTML = formattedContent + '<span class="typing-cursor"></span>';
+                
+                // Scroll to bottom
+                elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+                
+                // Add delay for typing effect (adjust speed as needed)
+                await new Promise(resolve => setTimeout(resolve, 20)); // 20ms per character
+            }
+            
+            // Remove typing cursor and update message in state
+            const finalContent = formatMessage(content);
+            messageElement.innerHTML = finalContent;
+            
+            // Update message in state
+            const msg = state.messages.find(m => m.id === message.id);
+            if (msg) {
+                msg.content = content;
+            }
+            
+            // Final scroll to bottom
+            elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+        }
+        
+        // Update API usage display
+        function updateApiUsage() {
+            // This function would update a UI element showing API usage
+            // For now, we'll just log it
+            console.log(`API Usage: ${state.settings.apiUsage}/${state.settings.apiLimit}`);
+        }
+        
+        // Save usage stats
+        function saveUsageStats() {
+            localStorage.setItem('usageStats', JSON.stringify(state.usageStats));
+        }
+        
+        // Save conversations
+        function saveConversations() {
+            // Limit to 50 conversations
+            const limitedConversations = state.conversations.slice(0, 50);
+            localStorage.setItem('conversations', JSON.stringify(limitedConversations));
+        }
+        
+        // Render recent chats
+        function renderRecentChats() {
+            // This function would render recent chats in a sidebar
+            // For now, we'll just log it
+            console.log(`Rendering ${state.conversations.length} recent conversations`);
+        }
+        
+        // Update dashboard
+        function updateDashboard() {
+            // This function would update dashboard statistics
+            // For now, we'll just log it
+            console.log('Updating dashboard');
+        }
+        
+        // Render messages
+        function renderMessages() {
+            // Clear the chat container
+            elements.chatContainer.innerHTML = '';
+            
+            // Render all messages
+            state.messages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                if (message.role === 'user') {
+                    messageDiv.classList.add('user');
+                }
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.classList.add('message-avatar');
+                avatarDiv.innerHTML = message.role === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('message-content');
+                contentDiv.innerHTML = formatMessage(message.content);
+                
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(contentDiv);
+                
+                elements.chatContainer.appendChild(messageDiv);
+            });
+            
+            // Scroll to bottom
+            elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
         }
 
         // Function to handle key press in input
@@ -1181,21 +1682,21 @@
 
         // Function to refresh the preview
         function refreshPreview() {
-            if (previewIframe.srcdoc) {
-                previewIframe.contentWindow.location.reload();
+            if (elements.previewIframe.srcdoc) {
+                elements.previewIframe.contentWindow.location.reload();
             }
         }
 
         // Function to toggle fullscreen for preview
         function toggleFullscreen() {
-            if (previewIframe.requestFullscreen) {
-                previewIframe.requestFullscreen();
-            } else if (previewIframe.webkitRequestFullscreen) {
-                previewIframe.webkitRequestFullscreen();
-            } else if (previewIframe.mozRequestFullScreen) {
-                previewIframe.mozRequestFullScreen();
-            } else if (previewIframe.msRequestFullscreen) {
-                previewIframe.msRequestFullscreen();
+            if (elements.previewIframe.requestFullscreen) {
+                elements.previewIframe.requestFullscreen();
+            } else if (elements.previewIframe.webkitRequestFullscreen) {
+                elements.previewIframe.webkitRequestFullscreen();
+            } else if (elements.previewIframe.mozRequestFullScreen) {
+                elements.previewIframe.mozRequestFullScreen();
+            } else if (elements.previewIframe.msRequestFullscreen) {
+                elements.previewIframe.msRequestFullscreen();
             }
         }
 
@@ -1219,13 +1720,50 @@
             }
         }
 
-        // Initial welcome message with example
-        setTimeout(() => {
-            addMessage("Try asking me to create a webpage, style it with CSS, add JavaScript functionality, or even build a React component!", false);
-        }, 1500);
+        // Load saved data
+        function loadSavedData() {
+            // Load usage stats
+            const savedUsageStats = localStorage.getItem('usageStats');
+            if (savedUsageStats) {
+                state.usageStats = JSON.parse(savedUsageStats);
+            }
+            
+            // Load conversations
+            const savedConversations = localStorage.getItem('conversations');
+            if (savedConversations) {
+                state.conversations = JSON.parse(savedConversations);
+            }
+            
+            // Load settings
+            const savedSettings = localStorage.getItem('settings');
+            if (savedSettings) {
+                state.settings = { ...state.settings, ...JSON.parse(savedSettings) };
+            }
+        }
 
-        // Accessibility: Focus input on page load
-        agentInput.focus();
+        // Initialize the app
+        function initApp() {
+            // Load saved data
+            loadSavedData();
+            
+            // Set up event listeners
+            elements.chatInput.addEventListener('input', function() {
+                // Auto-resize input
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+            
+            // Focus on input
+            elements.chatInput.focus();
+            
+            // Add welcome message if no messages
+            if (state.messages.length === 0) {
+                addMessage('assistant', 'Hello! I\'m your Nexariq AI assistant. How can I help you today?');
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
