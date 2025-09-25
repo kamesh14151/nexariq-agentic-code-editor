@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexariq Agent - AI-Powered Development Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs2015.min.css">
+    <style>
+        :root {
+            --primary-black: #000000;
+            --primary-blue: #00D4FF;
+            --dark-gray: #1A1A1A;
+            --silver: #C0C0C0;
+            --light-gray: #2A2A2A;
+            --darker-gray: #0F0F0F;
+            --card-bg: #121212;
+            --hover-bg: #1E1E1E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --border-color: #333333;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --gradient-1: linear-gradient(135deg, var(--primary-blue), #0080FF);
+            --gradient-2: linear-gradient(135deg, #0080FF, #0052CC);
+            --light-bg: #F5F5F5;
+            --light-text: #1A1A1A;
+            --light-border: #E0E0E0;
+        }
+
+        [data-theme="light"] {
+            --primary-black: #FFFFFF;
+            --dark-gray: #F0F0F0;
+            --light-gray: #E5E5E5;
+            --darker-gray: #D0D0D0;
+            --card-bg: #FFFFFF;
+            --hover-bg: #F0F0F0;
+            --text-primary: #1A1A1A;
+            --text-secondary: #666666;
+            --border-color: #E0E0E0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-black);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 10% 20%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+                             radial-gradient(circle at 90% 80%, rgba(0, 128, 255, 0.07) 0%, transparent 50%);
+        }
+
+        header {
+            background-color: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] header {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--hover-bg);
+            color: var(--primary-blue);
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 80px);
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .agent-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] .agent-section {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="light"] .section-header {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        .back-button {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 212, 255, 0.2);
+        }
+
+        .agent-container {
+            flex: 1;
+            display: flex;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .agent-container.single-column {
+            flex-direction: column;
+        }
+
+        .agent-container.two-column {
+            flex-direction: row;
+        }
+
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(18, 18, 18, 0.5);
+            border-right: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .chat-panel {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .agent-container.single-column .chat-panel {
+            width: 100%;
+            height: 100%;
+            border-right: none;
+        }
+
+        .agent-container.two-column .chat-panel {
+            width: 50%;
+            height: 100%;
+            resize: horizontal;
+            min-width: 300px;
+            max-width: 70%;
+        }
+
+        .agent-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: rgba(15, 15, 15, 0.5);
+        }
+
+        [data-theme="light"] .agent-header {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.03) 0%, transparent 70%);
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            max-width: 100%;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            background-color: var(--dark-gray);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            max-width: 80%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="light"] .message-content {
+            background-color: var(--light-gray);
+        }
+
+        .message.user .message-content {
+            background-color: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .message-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(0, 212, 255, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .message.user .message-content::before {
+            background: radial-gradient(circle at top left, rgba(0, 212, 255, 0.1), transparent 70%);
+        }
+
+        .message-content:hover::before {
+            opacity: 1;
+        }
+
+        .message-content pre {
+            background-color: var(--darker-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        [data-theme="light"] .message-content pre {
+            background-color: #F5F5F5;
+        }
+
+        .message-content code {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        [data-theme="light"] .message-content code {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--text-secondary);
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .copy-button:hover {
+            background-color: var(--primary-blue);
+            color: var(--primary-black);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background-color: var(--dark-gray);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            width: fit-content;
+            animation: slideIn 0.5s ease;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: var(--text-secondary);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .agent-input-container {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(15, 15, 15, 0.5);
+        }
+
+        [data-theme="light"] .agent-input-container {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .agent-input {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .agent-input input {
+            flex: 1;
+            background-color: var(--darker-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        [data-theme="light"] .agent-input input {
+            background-color: var(--light-gray);
+        }
+
+        .agent-input input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+
+        .send-button {
+            background: var(--gradient-1);
+            color: var(--primary-black);
+            border: none;
+            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .send-button.loading {
+            pointer-events: none;
+        }
+
+        .send-button.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: var(--primary-black);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .send-button.loading i {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(18, 18, 18, 0.5);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        [data-theme="light"] .preview-panel {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .agent-container.single-column .preview-panel {
+            display: none;
+        }
+
+        .agent-container.two-column .preview-panel {
+            width: 50%;
+            height: 100%;
+            resize: horizontal;
+            min-width: 300px;
+            max-width: 70%;
+        }
+
+        .preview-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(15, 15, 15, 0.5);
+        }
+
+        [data-theme="light"] .preview-header {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .preview-title {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .preview-button {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .preview-button:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            border-color: var(--primary-blue);
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 1rem;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .preview-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .preview-tab.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .preview-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .preview-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            background-color: var(--darker-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            resize: none;
+            overflow: auto;
+        }
+
+        [data-theme="light"] .code-editor {
+            background-color: #F5F5F5;
+        }
+
+        footer {
+            background-color: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        [data-theme="light"] footer {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        @media (max-width: 768px) {
+            .agent-container.two-column {
+                flex-direction: column;
+            }
+
+            .agent-container.two-column .chat-panel,
+            .agent-container.two-column .preview-panel {
+                width: 100%;
+                height: 50%;
+                resize: none;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            background-color: var(--success);
+            color: var(--primary-black);
+        }
+
+        .toast.error .toast-icon {
+            background-color: var(--danger);
+            color: var(--text-primary);
+        }
+
+        .toast-message {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="https://z-cdn-media.chatglm.cn/files/8d86e296-c51b-4300-b896-0018b7eb0204_circle_logo.png?auth_key=1790344496-5731ed7fa11c41d098bcf94e36ee0011-0-c343735b42a002d8ca89e296e40e5ec2" alt="Nexariq Logo">
+            </div>
+            <div>
+                <div class="logo-text">Nexariq</div>
+                <div class="tagline">AI-Powered Development at the Speed of Thought</div>
+            </div>
+        </div>
+        <div class="user-profile">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="user-avatar">JD</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section id="agent-section" class="agent-section">
+            <div class="section-header">
+                <div>
+                    <a href="index.html" class="back-button" onclick="goToDashboard(event)" aria-label="Back to dashboard">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Dashboard</span>
+                    </a>
+                </div>
+                <div>
+                    <h2 class="section-title">
+                        <i class="fas fa-robot"></i>
+                        Nexariq Agent
+                    </h2>
+                    <p class="section-subtitle">Powered by Claude Sonnet-4 (Lynxa-Pro)</p>
+                </div>
+            </div>
+
+            <div class="agent-container single-column" id="agent-container">
+                <div class="chat-panel">
+                    <div class="agent-header">
+                        <div class="agent-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="agent-info">
+                            <div class="agent-name">Lynxa-Pro Assistant</div>
+                            <div class="agent-status">
+                                <span class="status-indicator"></span>
+                                <span>Online</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-container" id="chat-container">
+                        <div class="message">
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <p>Hello! I'm your Nexariq AI assistant. I can help you with code generation, debugging, optimization, and answering your technical questions.</p>
+                                <p>What would you like to work on today? I can create code snippets, build complete web pages, or help you solve coding challenges.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agent-input-container">
+                        <div class="agent-input">
+                            <input type="text" id="agent-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)" aria-label="Chat input">
+                            <button class="send-button" id="send-button" onclick="sendMessage()" aria-label="Send message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="preview-header">
+                        <div class="preview-title">
+                            <i class="fas fa-eye"></i>
+                            Live Preview
+                        </div>
+                        <div class="preview-actions">
+                            <button class="preview-button" onclick="refreshPreview()" aria-label="Refresh preview">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>Refresh</span>
+                            </button>
+                            <button class="preview-button" onclick="toggleFullscreen()" aria-label="Toggle fullscreen">
+                                <i class="fas fa-expand"></i>
+                                <span>Full Screen</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-tabs">
+                            <div class="preview-tab active" onclick="switchTab('preview')" aria-label="Preview tab">Preview</div>
+                            <div class="preview-tab" onclick="switchTab('code')" aria-label="Code tab">Code</div>
+                        </div>
+                        <div id="preview-tab-content" class="tab-content">
+                            <iframe class="preview-iframe" id="preview-iframe" title="Live preview"></iframe>
+                        </div>
+                        <div id="code-tab-content" class="tab-content" style="display: none;">
+                            <pre><code class="code-editor" id="code-editor" placeholder="Generated code will appear here..."></code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2023 Nexariq by AJ STUDIOZ. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#" aria-label="Privacy Policy">Privacy Policy</a>
+            <a href="#" aria-label="Terms of Service">Terms of Service</a>
+            <a href="#" aria-label="Documentation">Documentation</a>
+            <a href="#" aria-label="Support">Support</a>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="toast-message">Message copied to clipboard!</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        // Initialize Highlight.js
+        hljs.highlightAll();
+
+        // Function to go to dashboard
+        function goToDashboard(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        }
+
+        // DOM Elements
+        const agentContainer = document.getElementById('agent-container');
+        const chatContainer = document.getElementById('chat-container');
+        const agentInput = document.getElementById('agent-input');
+        const sendButton = document.getElementById('send-button');
+        const previewIframe = document.getElementById('preview-iframe');
+        const codeEditor = document.getElementById('code-editor');
+        const toast = document.getElementById('toast');
+
+        // Track state
+        let firstMessageSent = false;
+        let currentCode = '';
+
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle i');
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeToggle.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'dark');
+            }
+            // Re-highlight code blocks
+            document.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+        }
+
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.querySelector('.theme-toggle i').className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        // Function to show toast notification
+        function showToast(message, type = 'success') {
+            const toastMessage = toast.querySelector('.toast-message');
+            const toastIcon = toast.querySelector('.toast-icon i');
+            
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            
+            if (type === 'success') {
+                toastIcon.className = 'fas fa-check';
+            } else if (type === 'error') {
+                toastIcon.className = 'fas fa-exclamation-triangle';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Function to copy code to clipboard
+        function copyCode(code) {
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    showToast('Code copied to clipboard!');
+                })
+                .catch(err => {
+                    showToast('Failed to copy code', 'error');
+                    console.error('Failed to copy: ', err);
+                });
+        }
+
+        // Function to add a message to the chat
+        function addMessage(content, isUser = false, code = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            if (isUser) {
+                messageDiv.classList.add('user');
+            }
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.classList.add('message-avatar');
+            avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('message-content');
+            
+            if (code) {
+                contentDiv.innerHTML = `<p>${content}</p><pre><code class="language-javascript">${escapeHtml(code)}</code><button class="copy-button" onclick="copyCode(\`${escapeHtml(code).replace(/`/g, '\\`')}\`)"><i class="fas fa-copy"></i> Copy</button></pre>`;
+                setTimeout(() => hljs.highlightElement(contentDiv.querySelector('code')), 0);
+            } else {
+                contentDiv.innerHTML = `<p>${content}</p>`;
+            }
+            
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Function to add typing indicator
+        function addTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('typing-indicator');
+            typingDiv.id = 'typing-indicator';
+            
+            for (let i = 0; i < 3; i++) {
+                const span = document.createElement('span');
+                typingDiv.appendChild(span);
+            }
+            
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Function to remove typing indicator
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Function to call Claude API
+        async function callClaudeAPI(message) {
+            try {
+                const response = await fetch('/api/chat.js', {// Replace with your Vercel API URL
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
+                const data = await response.json();
+                return data.response;
+            } catch (error) {
+                console.error('Error calling Claude API:', error);
+                return "I'm sorry, I encountered an error while processing your request. Please try again later.";
+            }
+        }
+
+        // Function to handle sending a message
+        async function sendMessage() {
+            const message = agentInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                agentInput.value = '';
+                
+                if (!firstMessageSent) {
+                    agentContainer.classList.remove('single-column');
+                    agentContainer.classList.add('two-column');
+                    firstMessageSent = true;
+                }
+                
+                addTypingIndicator();
+                sendButton.classList.add('loading');
+                
+                try {
+                    const response = await callClaudeAPI(message);
+                    removeTypingIndicator();
+                    
+                    let code = null;
+                    let codeMatch = response.match(/```([a-z]*)\n([\s\S]*?)```/);
+                    
+                    if (codeMatch) {
+                        code = codeMatch[2];
+                        currentCode = code;
+                        codeEditor.textContent = code;
+                        codeEditor.className = `code-editor language-${codeMatch[1] || 'javascript'}`;
+                        hljs.highlightElement(codeEditor);
+                        updatePreview(code);
+                        
+                        const responseText = response.replace(/```[a-z]*\n[\s\S]*?```/g, '');
+                        addMessage(responseText, false, code);
+                    } else {
+                        addMessage(response, false);
+                    }
+                } catch (error) {
+                    removeTypingIndicator();
+                    addMessage("I'm sorry, I encountered an error while processing your request. Please try again later.", false);
+                    showToast('Error communicating with AI', 'error');
+                } finally {
+                    sendButton.classList.remove('loading');
+                }
+            }
+        }
+
+        // Function to update the preview iframe
+        function updatePreview(code) {
+            previewIframe.srcdoc = code;
+        }
+
+        // Function to handle key press in input
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Function to refresh the preview
+        function refreshPreview() {
+            if (previewIframe.srcdoc) {
+                previewIframe.contentWindow.location.reload();
+            }
+        }
+
+        // Function to toggle fullscreen for preview
+        function toggleFullscreen() {
+            if (previewIframe.requestFullscreen) {
+                previewIframe.requestFullscreen();
+            } else if (previewIframe.webkitRequestFullscreen) {
+                previewIframe.webkitRequestFullscreen();
+            } else if (previewIframe.mozRequestFullScreen) {
+                previewIframe.mozRequestFullScreen();
+            } else if (previewIframe.msRequestFullscreen) {
+                previewIframe.msRequestFullscreen();
+            }
+        }
+
+        // Function to switch between preview and code tabs
+        function switchTab(tab) {
+            const previewTab = document.querySelector('.preview-tab:nth-child(1)');
+            const codeTab = document.querySelector('.preview-tab:nth-child(2)');
+            const previewTabContent = document.getElementById('preview-tab-content');
+            const codeTabContent = document.getElementById('code-tab-content');
+            
+            if (tab === 'preview') {
+                previewTab.classList.add('active');
+                codeTab.classList.remove('active');
+                previewTabContent.style.display = 'block';
+                codeTabContent.style.display = 'none';
+            } else {
+                previewTab.classList.remove('active');
+                codeTab.classList.add('active');
+                previewTabContent.style.display = 'none';
+                codeTabContent.style.display = 'block';
+            }
+        }
+
+        // Initial welcome message with example
+        setTimeout(() => {
+            addMessage("Try asking me to create a webpage, style it with CSS, add JavaScript functionality, or even build a React component!", false);
+        }, 1500);
+
+        // Accessibility: Focus input on page load
+        agentInput.focus();
+    </script>
+</body>
+</html>
