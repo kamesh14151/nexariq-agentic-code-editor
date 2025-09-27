@@ -2479,19 +2479,23 @@
             // Get the typing text element
             const typingTextElement = messageDiv.querySelector('.typing-text');
             
-            // Type out the message character by character
+            // Process content to identify code blocks and other formatted elements
+            const processedContent = processContentForTyping(content);
+            
+            // Type out the message with proper formatting
             let index = 0;
-            const typingSpeed = 20; // milliseconds per character
+            const typingSpeed = 15; // milliseconds per character
             
             const typeInterval = setInterval(() => {
-                if (index < content.length) {
-                    typingTextElement.textContent = content.substring(0, index + 1);
+                if (index < processedContent.length) {
+                    // Append the next character
+                    typingTextElement.innerHTML = processedContent.substring(0, index + 1);
                     index++;
                     chatContainer.scrollTop = chatContainer.scrollHeight;
                 } else {
                     clearInterval(typeInterval);
                     
-                    // Replace with formatted content
+                    // Replace with final formatted content
                     typingTextElement.outerHTML = formatContent(content);
                     
                     // Highlight code blocks
@@ -2503,6 +2507,73 @@
             
             // Add to message history
             state.chat.messages.push({ type, content, timestamp });
+        }
+        
+        // Process content for typing effect with proper formatting
+        function processContentForTyping(content) {
+            // First, handle code blocks by replacing them with placeholders
+            const codeBlocks = [];
+            let processedContent = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+                const id = codeBlocks.length;
+                codeBlocks.push({
+                    language: language || 'text',
+                    code: code.trim()
+                });
+                return `___CODE_BLOCK_${id}___`;
+            });
+            
+            // Handle inline code
+            const inlineCodes = [];
+            processedContent = processedContent.replace(/`([^`]+)`/g, (match, code) => {
+                const id = inlineCodes.length;
+                inlineCodes.push(code);
+                return `___INLINE_CODE_${id}___`;
+            });
+            
+            // Handle other markdown elements
+            processedContent = processedContent
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            
+            // Wrap in paragraphs if not already
+            if (!processedContent.startsWith('<')) {
+                processedContent = '<p>' + processedContent + '</p>';
+            }
+            
+            // Restore inline code
+            inlineCodes.forEach((code, id) => {
+                processedContent = processedContent.replace(
+                    `___INLINE_CODE_${id}___`,
+                    `<code>${escapeHtml(code)}</code>`
+                );
+            });
+            
+            // Restore code blocks
+            codeBlocks.forEach((block, id) => {
+                const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
+                processedContent = processedContent.replace(
+                    `___CODE_BLOCK_${id}___`,
+                    `
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">${block.language}</span>
+                            <div class="code-actions">
+                                <button class="code-btn" onclick="copyCodeFromBlock('${codeId}')">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                        <div class="code-content">
+                            <pre id="${codeId}"><code class="language-${block.language}">${escapeHtml(block.code)}</code></pre>
+                        </div>
+                    </div>
+                    `
+                );
+            });
+            
+            return processedContent;
         }
         
         // Extract code from AI response
