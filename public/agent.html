@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexariq Agent - AI Assistant</title>
+    <title>AJ STUDIOZ - AI Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Poppins:wght@300;400;600&family=Play:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     
     <style>
+        /* Existing styles remain the same */
         :root {
             --primary-bg: #ffffff;
             --secondary-bg: #f7f7f8;
@@ -29,13 +33,10 @@
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             --border-radius: 8px;
             --logo-gradient: linear-gradient(135deg, var(--accent-color), #ff8c61);
-            --vault-bg: #020202;
-            --vault-color-dark: #2a2a2a;
-            --vault-color-light: #444444;
-            --gold-color: #FBBF24;
-            --gold-glow: rgba(251, 191, 36, 0.6);
-            --green-color: #34D399;
-            --green-glow: rgba(52, 211, 153, 0.7);
+            --aj-gold: #FBBF24;
+            --aj-gold-glow: rgba(251, 191, 36, 0.6);
+            --aj-green: #34D399;
+            --aj-green-glow: rgba(52, 211, 153, 0.7);
         }
 
         [data-theme="dark"] {
@@ -52,59 +53,59 @@
             --border-color: #404040;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        /* Auth Modal Styles */
-        .auth-modal {
+        /* Login Page Styles */
+        .login-page {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            height: 100%;
+            background-color: #020202;
+            z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 3000;
-            backdrop-filter: blur(5px);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
         }
 
-        .auth-container {
+        .spotlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 40%);
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        .vault-container {
             position: relative;
             width: 450px;
             height: 450px;
             perspective: 1500px;
         }
 
-        #auth-toggle {
+        #vault-toggle {
             display: none;
         }
 
-        .auth-door {
+        .vault-door {
             position: absolute;
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
             transform-origin: left center;
             transition: transform 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transition-delay: 1.2s; 
             cursor: pointer;
             z-index: 20;
+            animation: door-intro 1s ease-out forwards;
+            opacity: 0;
         }
-
-        #auth-toggle:checked ~ .auth-door {
+        
+        #vault-toggle:checked ~ .vault-door {
             transform: rotateY(-130deg) translateX(-20px);
         }
 
@@ -112,14 +113,14 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, var(--vault-color-light), var(--vault-color-dark));
+            background: radial-gradient(circle at center, #444444, #2a2a2a);
             border-radius: 20px;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 5px 5px 30px rgba(0,0,0,0.8);
             backface-visibility: hidden;
             overflow: hidden;
         }
-
-        .door-face::before {
+        
+        .door-face::before { /* Scanlines effect */
             content: '';
             position: absolute;
             top: 0;
@@ -135,12 +136,12 @@
             transform: translateZ(40px);
             border: 5px solid #1a1a1a;
         }
-
+        
         .door-face.back {
-            background: var(--vault-color-dark);
+            background: #2a2a2a;
             transform: rotateY(180deg) translateZ(40px);
         }
-
+        
         .locking-bar {
             position: absolute;
             background: linear-gradient(to right, #2c2c2c, #4a4a4a, #2c2c2c);
@@ -148,9 +149,13 @@
             transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
             z-index: -1;
         }
-
         .locking-bar.horizontal { left: -15%; width: 130%; height: 30px; }
         .locking-bar.vertical { top: -15%; width: 30px; height: 130%; background: linear-gradient(to bottom, #2c2c2c, #4a4a4a, #2c2c2c); }
+        
+        .locking-bar:nth-of-type(1) { top: 30%; animation: slide-in-right 1s 0.2s forwards; transform: translateX(150%); } 
+        .locking-bar:nth-of-type(2) { bottom: 30%; animation: slide-in-left 1s 0.2s forwards; transform: translateX(-150%); } 
+        .locking-bar:nth-of-type(3) { left: 30%; animation: slide-in-down 1s 0.4s forwards; transform: translateY(150%); } 
+        .locking-bar:nth-of-type(4) { right: 30%; animation: slide-in-up 1s 0.4s forwards; transform: translateY(-150%); } 
 
         .vault-handle {
             position: absolute;
@@ -161,9 +166,11 @@
             justify-content: center;
             align-items: center;
             z-index: 5;
-            transform: translate(-50%, -50%);
+            transition: transform 0.8s ease-in-out;
+            transform: translate(-50%, -50%) scale(0);
+            animation: handle-intro 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s forwards;
         }
-
+        
         .handle-ring {
             position: absolute;
             width: 100%; height: 100%;
@@ -172,11 +179,11 @@
             border: 8px solid #222;
             box-shadow: 0 0 35px rgba(0,0,0,0.9), inset 0 0 15px #000;
         }
-
+        
         .handle-center {
             width: 90px;
             height: 90px;
-            background: linear-gradient(145deg, var(--gold-color), #b48b1e);
+            background: linear-gradient(145deg, #FBBF24, #b48b1e);
             border-radius: 50%;
             border: 3px solid #f0e68c;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
@@ -189,18 +196,24 @@
             transition: all 0.5s ease;
             animation: pulse-gold 2.5s infinite;
             z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .handle-center img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+        #vault-toggle:checked ~ .vault-door .handle-ring {
+            animation: turn-handle 1s cubic-bezier(0.6, -0.28, 0.74, 0.05) forwards;
         }
+        #vault-toggle:checked ~ .vault-door .handle-center {
+            background: linear-gradient(145deg, #34D399, #16a34a);
+            border-color: #a7f3d0;
+            box-shadow: 0 0 35px rgba(52, 211, 153, 0.7), inset 0 0 10px rgba(0,0,0,0.5);
+            text-shadow: 0 0 10px #fff;
+            animation: none;
+        }
+        #vault-toggle:checked ~ .vault-door .locking-bar:nth-of-type(1) { animation: retract-right 0.5s 0.7s forwards; }
+        #vault-toggle:checked ~ .vault-door .locking-bar:nth-of-type(2) { animation: retract-left 0.5s 0.7s forwards; }
+        #vault-toggle:checked ~ .vault-door .locking-bar:nth-of-type(3) { animation: retract-down 0.5s 0.7s forwards; }
+        #vault-toggle:checked ~ .vault-door .locking-bar:nth-of-type(4) { animation: retract-up 0.5s 0.7s forwards; }
 
-        .auth-form-container {
+        .login-form-container {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -215,8 +228,8 @@
             flex-direction: column;
             justify-content: center;
         }
-
-        .auth-title {
+        
+        .login-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 2.5rem;
             text-align: center;
@@ -225,114 +238,113 @@
             margin: 0 0 10px;
             color: #E5E7EB;
             letter-spacing: 0.1em;
-            text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 15px var(--green-glow);
+            text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 15px rgba(52, 211, 153, 0.7);
+            animation: glitch 5s infinite;
         }
 
-        .auth-form-container h2 { 
-            margin: 0 0 10px; 
-            color: var(--gold-color); 
-            font-family: 'Play', sans-serif; 
-            font-size: 1.8rem; 
-            text-align: center; 
-            text-shadow: 0 0 10px var(--gold-glow); 
-        }
+        .login-form-container h2 { margin: 0 0 10px; color: #FBBF24; font-family: 'Play', sans-serif; font-size: 1.8rem; text-align: center; text-shadow: 0 0 10px rgba(251, 191, 36, 0.6); }
+        .login-form-container p { margin: 0 0 30px; color: #E5E7EB; font-size: 0.9rem; text-align: center; opacity: 0.8; }
+        .input-group { position: relative; width: 100%; margin-bottom: 20px; }
+        .input-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 2px solid #2a2a2a; border-radius: 5px; color: #E5E7EB; font-size: 1rem; box-sizing: border-box; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-group input:focus { border-color: #FBBF24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
+        .login-button { width: 100%; padding: 12px; border: none; border-radius: 5px; background: #FBBF24; color: #111; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .login-button:hover { background-color: #ffdf85; box-shadow: 0 0 20px rgba(251, 191, 36, 0.6); transform: translateY(-3px); }
+        .login-button:active { transform: translateY(-1px); }
         
-        .auth-form-container p { 
-            margin: 0 0 30px; 
-            color: #E5E7EB; 
-            font-size: 0.9rem; 
-            text-align: center; 
-            opacity: 0.8; 
-        }
-        
-        .input-group { 
-            position: relative; 
-            width: 100%; 
-            margin-bottom: 20px; 
-        }
-        
-        .input-group input { 
-            width: 100%; 
-            padding: 12px; 
-            background: rgba(0,0,0,0.3); 
-            border: 2px solid var(--vault-color-dark); 
-            border-radius: 5px; 
-            color: #E5E7EB; 
-            font-size: 1rem; 
-            box-sizing: border-box; 
-            outline: none; 
-            transition: border-color 0.3s, box-shadow 0.3s; 
-        }
-        
-        .input-group input:focus { 
-            border-color: var(--gold-color); 
-            box-shadow: 0 0 15px var(--gold-glow); 
-        }
-        
-        .auth-button { 
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 5px; 
-            background: var(--gold-color); 
-            color: #111; 
-            font-size: 1.1rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            margin-bottom: 15px;
-        }
-        
-        .auth-button:hover { 
-            background-color: #ffdf85; 
-            box-shadow: 0 0 20px var(--gold-glow); 
-            transform: translateY(-3px); 
-        }
-        
-        .auth-button:active { 
-            transform: translateY(-1px); 
-        }
-
-        .google-button {
+        .google-login-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #4285F4;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            background: #4285F4;
-            color: white;
         }
-
-        .google-button:hover {
-            background: #3367d6;
+        
+        .google-login-button:hover {
+            background-color: #357ae8;
+            box-shadow: 0 0 20px rgba(66, 133, 244, 0.6);
+            transform: translateY(-3px);
         }
-
-        .auth-toggle-text {
+        
+        .google-login-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .signup-link {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             color: #E5E7EB;
             font-size: 0.9rem;
         }
-
-        .auth-toggle-text a {
-            color: var(--gold-color);
+        
+        .signup-link a {
+            color: #FBBF24;
             text-decoration: none;
             font-weight: 600;
         }
-
-        .auth-toggle-text a:hover {
+        
+        .signup-link a:hover {
             text-decoration: underline;
         }
 
-        .auth-error {
-            color: #f44336;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.9rem;
+        @keyframes door-intro { to { opacity: 1; } }
+        @keyframes handle-intro { to { transform: translate(-50%, -50%) scale(1); } }
+        @keyframes slide-in-left { to { transform: translateX(0); } }
+        @keyframes slide-in-right { to { transform: translateX(0); } }
+        @keyframes slide-in-up { to { transform: translateY(0); } }
+        @keyframes slide-in-down { to { transform: translateY(0); } }
+        
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 15px rgba(251, 191, 36, 0.6); }
+            50% { box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 25px rgba(251, 191, 36, 0.6); }
+        }
+        @keyframes turn-handle {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(-15deg); }
+            80% { transform: rotate(200deg); }
+            100% { transform: rotate(180deg); }
+        }
+        @keyframes retract-up { to { transform: translateY(-150%); } }
+        @keyframes retract-down { to { transform: translateY(150%); } }
+        @keyframes retract-left { to { transform: translateX(-150%); } }
+        @keyframes retract-right { to { transform: translateX(150%); } }
+        
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+        
+        @keyframes glitch { 
+            0%, 100% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 15px rgba(52, 211, 153, 0.7); } 
+            49% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 15px rgba(52, 211, 153, 0.7); } 
+            50% { text-shadow: 2px 2px 5px rgba(52, 211, 153, 0.7), -2px -2px 5px rgba(251, 191, 36, 0.6); } 
+            51% { text-shadow: 0 0 5px rgba(255,255,255,0.2), 0 0 15px rgba(52, 211, 153, 0.7); } 
         }
 
-        /* Existing styles continue below */
+        /* Main App Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
         .app-container {
             display: flex;
             height: 100vh;
@@ -364,7 +376,7 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: var(--logo-gradient);
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -372,20 +384,15 @@
             color: white;
             font-weight: 600;
             font-size: 16px;
-            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
-            overflow: hidden;
-        }
-
-        .logo-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
         }
 
         .logo-text {
             font-size: 18px;
             font-weight: 700;
             color: var(--text-primary);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
         }
 
         .new-chat-btn {
@@ -539,13 +546,6 @@
             color: white;
             font-weight: 600;
             font-size: 14px;
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .user-info {
@@ -592,20 +592,13 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: var(--logo-gradient);
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 12px;
             font-weight: 600;
-            overflow: hidden;
-        }
-
-        .ai-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .header-title h1 {
@@ -676,25 +669,6 @@
             color: var(--text-primary);
         }
 
-        .logout-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-        }
-
-        .logout-btn:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
-
         /* Quota Usage Bar */
         .quota-usage {
             position: absolute;
@@ -708,13 +682,13 @@
 
         .quota-usage-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-color), #ff8c61);
+            background: linear-gradient(90deg, var(--aj-gold), #ff8c61);
             transition: width 0.3s ease;
         }
 
         /* Plan Upgrade Banner */
         .upgrade-banner {
-            background: linear-gradient(135deg, var(--accent-color), #ff8c61);
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             color: white;
             padding: 12px 20px;
             display: flex;
@@ -797,121 +771,12 @@
             padding: 0 16px;
         }
 
-        .sidebar-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 12px;
-        }
-
-        .sidebar-tab {
-            flex: 1;
-            padding: 10px;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: center;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-tab.active {
-            color: var(--accent-color);
-            border-bottom-color: var(--accent-color);
-        }
-
-        .sidebar-tab-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 16px;
-            display: none;
-        }
-
-        .sidebar-tab-content.active {
-            display: block;
-        }
-
-        .code-preview-container {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .code-editor {
-            flex: 1;
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .code-header {
-            background-color: var(--hover-bg);
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .code-language {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .code-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .code-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 10px;
-            transition: all 0.2s ease;
-        }
-
-        .code-btn:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
-
-        .code-content {
-            padding: 12px;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            line-height: 1.4;
-            height: 100%;
-        }
-
-        .code-content::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .code-content::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .code-content::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
-        }
-
         .preview-container {
             flex: 1;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
+            margin: 16px;
         }
 
         .preview-header {
@@ -933,29 +798,6 @@
             height: 100%;
             border: none;
             background-color: white;
-        }
-
-        .related-questions {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .related-question {
-            padding: 10px 12px;
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .related-question:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-            border-color: var(--accent-color);
         }
 
         /* Memory Chip */
@@ -1013,7 +855,6 @@
             flex-shrink: 0;
             font-weight: 600;
             font-size: 12px;
-            overflow: hidden;
         }
 
         .message.user .message-avatar {
@@ -1022,14 +863,8 @@
         }
 
         .message.ai .message-avatar {
-            background: var(--logo-gradient);
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             color: white;
-        }
-
-        .message-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .message-content {
@@ -1101,7 +936,7 @@
         .file-icon {
             width: 32px;
             height: 32px;
-            background: var(--logo-gradient);
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -1430,7 +1265,7 @@
         .empty-state-icon {
             width: 64px;
             height: 64px;
-            background: var(--logo-gradient);
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1438,13 +1273,6 @@
             margin-bottom: 20px;
             font-size: 24px;
             color: white;
-            overflow: hidden;
-        }
-
-        .empty-state-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .empty-state h2 {
@@ -1784,12 +1612,6 @@
                 right: 16px;
                 bottom: 16px;
             }
-
-            .auth-container {
-                width: 90%;
-                height: auto;
-                max-height: 90vh;
-            }
         }
 
         /* Tablet Responsive */
@@ -1850,26 +1672,17 @@
                 margin: 0 auto;
             }
         }
-
-        /* Animations */
-        @keyframes scanlines {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100%); }
-        }
-        
-        @keyframes pulse-gold {
-            0%, 100% { box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow); }
-            50% { box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 0 25px var(--gold-glow); }
-        }
     </style>
 </head>
 <body>
-    <!-- Authentication Modal -->
-    <div class="auth-modal" id="authModal">
-        <div class="auth-container">
-            <input type="checkbox" id="auth-toggle">
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="spotlight"></div>
+
+        <div class="vault-container">
+            <input type="checkbox" id="vault-toggle">
             
-            <label for="auth-toggle" class="auth-door">
+            <label for="vault-toggle" class="vault-door">
                 <div class="door-face front">
                     <div class="locking-bar horizontal"></div>
                     <div class="locking-bar horizontal"></div>
@@ -1878,56 +1691,46 @@
 
                     <div class="vault-handle">
                         <div class="handle-ring"></div>
-                        <div class="handle-center">
-                            <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="Nexariq Logo">
-                        </div>
+                        <div class="handle-center">AJ</div>
                     </div>
                 </div>
                 <div class="door-face back"></div>
             </label>
             
-            <div class="auth-form-container">
-                <h1 class="auth-title">NEXARIQ</h1>
-                <h2 id="authFormTitle">SECURE ACCESS</h2>
-                <p id="authFormSubtitle">Enter credentials to proceed.</p>
-                
-                <form id="authForm">
-                    <div class="input-group" id="nameGroup" style="display: none;">
-                        <input type="text" id="nameInput" placeholder="Full Name" required>
-                    </div>
+            <div class="login-form-container">
+                <h1 class="login-title">AJ STUDIOZ</h1>
+                <h2>SECURE ACCESS</h2>
+                <p>Enter credentials to proceed.</p>
+                <form id="loginForm">
                     <div class="input-group">
                         <input type="email" id="emailInput" placeholder="Email Address" required>
                     </div>
                     <div class="input-group">
                         <input type="password" id="passwordInput" placeholder="Password" required>
                     </div>
-                    <button type="submit" class="auth-button" id="authSubmitButton">Authenticate</button>
-                    <button type="button" class="auth-button google-button" id="googleSignInButton">
-                        <i class="fab fa-google"></i>
-                        Sign in with Google
-                    </button>
+                    <button type="submit" class="login-button">Authenticate</button>
                 </form>
                 
-                <div class="auth-error" id="authError"></div>
+                <button id="googleLoginBtn" class="google-login-button">
+                    <i class="fab fa-google"></i>
+                    Sign in with Google
+                </button>
                 
-                <div class="auth-toggle-text">
-                    <span id="authToggleText">Don't have an account?</span>
-                    <a href="#" id="authToggleLink">Sign Up</a>
+                <div class="signup-link">
+                    Don't have an account? <a href="#" id="signupLink">Sign up</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Main App Container -->
-    <div class="app-container" id="appContainer" style="display: none;">
+    <!-- Main App -->
+    <div id="mainApp" class="app-container" style="display: none;">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <div class="logo-icon">
-                        <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="Nexariq Logo">
-                    </div>
-                    <div class="logo-text">Nexariq</div>
+                    <div class="logo-icon">AJ</div>
+                    <div class="logo-text">STUDIOZ</div>
                 </div>
                 <button class="new-chat-btn" onclick="startNewChat()">
                     <i class="fas fa-plus"></i>
@@ -1956,11 +1759,9 @@
             
             <div class="sidebar-footer">
                 <div class="user-profile" onclick="openSettings()">
-                    <div class="user-avatar" id="userAvatar">
-                        <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="User Avatar">
-                    </div>
+                    <div class="user-avatar" id="userAvatar">K</div>
                     <div class="user-info">
-                        <div class="user-name" id="userName">User</div>
+                        <div class="user-name" id="userName">Karthik</div>
                         <div class="user-status" id="userStatus">Free Plan</div>
                     </div>
                     <i class="fas fa-cog" style="color: var(--text-tertiary);"></i>
@@ -1972,11 +1773,9 @@
         <div class="main-content">
             <div class="main-header">
                 <div class="header-title">
-                    <div class="ai-avatar">
-                        <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="AI Avatar">
-                    </div>
+                    <div class="ai-avatar">AJ</div>
                     <div>
-                        <h1>Nexariq Agent</h1>
+                        <h1>AJ STUDIOZ AI Assistant</h1>
                         <div class="header-subtitle">Powered by Claude Sonnet-4</div>
                     </div>
                     <div class="status-indicator">
@@ -2011,8 +1810,8 @@
                     <button class="header-btn" onclick="toggleSidebar()">
                         <i class="fas fa-bars"></i>
                     </button>
-
-                    <button class="logout-btn" onclick="logout()">
+                    
+                    <button class="header-btn" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
@@ -2032,9 +1831,9 @@
                     <!-- Empty state -->
                     <div class="empty-state" id="emptyState">
                         <div class="empty-state-icon">
-                            <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="Nexariq Logo">
+                            <i class="fas fa-robot"></i>
                         </div>
-                        <h2>Hello! I'm your Nexariq AI Assistant</h2>
+                        <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
                         <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
                         
                         <div class="suggestion-cards">
@@ -2058,50 +1857,21 @@
                     </div>
                 </div>
 
-                <!-- Right Sidebar -->
+                <!-- Right Sidebar - Preview Only -->
                 <div class="sidebar-right" id="sidebarRight">
-                    <div class="sidebar-tabs">
-                        <button class="sidebar-tab active" onclick="switchSidebarTab('code')">Code</button>
-                        <button class="sidebar-tab" onclick="switchSidebarTab('preview')">Preview</button>
-                    </div>
-                    
-                    <div id="codeTab" class="sidebar-tab-content active">
-                        <div class="code-preview-container">
-                            <div class="code-editor">
-                                <div class="code-header">
-                                    <span class="code-language" id="codeLanguage">HTML</span>
-                                    <div class="code-actions">
-                                        <button class="code-btn" onclick="copyCode()">
-                                            <i class="fas fa-copy"></i> Copy
-                                        </button>
-                                        <button class="code-btn" onclick="downloadCode()">
-                                            <i class="fas fa-download"></i> Download
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="code-content" id="codeContent">
-                                    <!-- Generated code will appear here -->
-                                    <pre><code>// Your generated code will appear here</code></pre>
-                                </div>
+                    <div class="preview-container">
+                        <div class="preview-header">
+                            <span>Preview</span>
+                            <div class="preview-actions">
+                                <button class="code-btn" onclick="refreshPreview()">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <button class="code-btn" onclick="openInNewTab()">
+                                    <i class="fas fa-external-link-alt"></i> Open
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div id="previewTab" class="sidebar-tab-content">
-                        <div class="preview-container">
-                            <div class="preview-header">
-                                <span>Preview</span>
-                                <div class="preview-actions">
-                                    <button class="code-btn" onclick="refreshPreview()">
-                                        <i class="fas fa-sync-alt"></i> Refresh
-                                    </button>
-                                    <button class="code-btn" onclick="openInNewTab()">
-                                        <i class="fas fa-external-link-alt"></i> Open
-                                    </button>
-                                </div>
-                            </div>
-                            <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
-                        </div>
+                        <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
                     </div>
                 </div>
             </div>
@@ -2112,7 +1882,7 @@
                         <textarea 
                             class="message-input" 
                             id="messageInput" 
-                            placeholder="Message Nexariq Agent..."
+                            placeholder="Message AJ STUDIOZ AI..."
                             rows="1"
                             onkeydown="handleKeyDown(event)"
                             oninput="autoResize(this)"
@@ -2155,13 +1925,13 @@
                     <div class="setting-item">
                         <div>
                             <div class="setting-label">Email</div>
-                            <div class="setting-description" id="userEmail">user@example.com</div>
+                            <div class="setting-description" id="userEmail">karthik@example.com</div>
                         </div>
                     </div>
                     <div class="setting-item">
                         <div>
                             <div class="setting-label">Plan</div>
-                            <div class="setting-description">Free Plan</div>
+                            <div class="setting-description" id="userPlan">Free Plan</div>
                         </div>
                         <button class="header-btn" onclick="upgradePlan()">Upgrade</button>
                     </div>
@@ -2224,11 +1994,6 @@
         <span id="toastMessage">Message sent successfully!</span>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script>
         // Initialize Firebase
         const firebaseConfig = {
@@ -2241,7 +2006,6 @@
             measurementId: "G-WFYVZNBYSV"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
@@ -2275,8 +2039,7 @@
                 theme: 'light',
                 sidebarOpen: false,
                 rightSidebarOpen: false,
-                activeTab: 'code',
-                authMode: 'login' // 'login' or 'signup'
+                activeTab: 'preview'
             },
             docs: {
                 uploadedFiles: [],
@@ -2307,6 +2070,8 @@
         };
         
         // DOM elements
+        const loginPage = document.getElementById('loginPage');
+        const mainApp = document.getElementById('mainApp');
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -2320,97 +2085,167 @@
         const upgradeBanner = document.getElementById('upgradeBanner');
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
-        const codeContent = document.getElementById('codeContent');
-        const codeLanguage = document.getElementById('codeLanguage');
         const previewFrame = document.getElementById('previewFrame');
         
-        // Auth elements
-        const authModal = document.getElementById('authModal');
-        const authForm = document.getElementById('authForm');
-        const authFormTitle = document.getElementById('authFormTitle');
-        const authFormSubtitle = document.getElementById('authFormSubtitle');
-        const authSubmitButton = document.getElementById('authSubmitButton');
-        const googleSignInButton = document.getElementById('googleSignInButton');
-        const authError = document.getElementById('authError');
-        const authToggleText = document.getElementById('authToggleText');
-        const authToggleLink = document.getElementById('authToggleLink');
-        const nameGroup = document.getElementById('nameGroup');
-        const nameInput = document.getElementById('nameInput');
+        // Login form elements
+        const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('emailInput');
         const passwordInput = document.getElementById('passwordInput');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const signupLink = document.getElementById('signupLink');
         
-        // User elements
+        // User profile elements
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
         const userStatus = document.getElementById('userStatus');
+        const userEmail = document.getElementById('userEmail');
+        const userPlan = document.getElementById('userPlan');
         
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeAuth();
-            setupEventListeners();
-            checkApiStatus();
-            setInterval(checkApiStatus, 30000); // Check API status every 30 seconds
+        // Spotlight effect for login page
+        const spotlight = document.querySelector('.spotlight');
+        document.addEventListener('mousemove', (e) => {
+            if (loginPage.style.display !== 'none') {
+                const { clientX, clientY } = e;
+                const x = (clientX / window.innerWidth) * 100;
+                const y = (clientY / window.innerHeight) * 100;
+                spotlight.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 40%)`;
+            }
         });
         
-        function initializeAuth() {
-            // Check if user is already signed in
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    // User is signed in
-                    state.auth.user = {
-                        uid: user.uid,
-                        displayName: user.displayName,
-                        email: user.email,
-                        photoURL: user.photoURL
-                    };
-                    
-                    // Update UI with user info
-                    updateUserProfile();
-                    
-                    // Show main app
-                    authModal.style.display = 'none';
-                    document.getElementById('appContainer').style.display = 'flex';
-                    
-                    // Initialize app
-                    initializeApp();
-                } else {
-                    // User is not signed in
-                    state.auth.user = null;
-                    
-                    // Show auth modal
-                    authModal.style.display = 'flex';
-                    document.getElementById('appContainer').style.display = 'none';
-                }
-            });
+        // Authentication state observer
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                state.auth.user = user;
+                showMainApp();
+                updateUserProfile(user);
+            } else {
+                // User is signed out
+                state.auth.user = null;
+                showLoginPage();
+            }
+        });
+        
+        // Show login page
+        function showLoginPage() {
+            loginPage.style.display = 'flex';
+            mainApp.style.display = 'none';
         }
         
+        // Show main app
+        function showMainApp() {
+            loginPage.style.display = 'none';
+            mainApp.style.display = 'flex';
+            initializeApp();
+        }
+        
+        // Update user profile
+        function updateUserProfile(user) {
+            if (user.displayName) {
+                userName.textContent = user.displayName;
+                userAvatar.textContent = user.displayName.charAt(0).toUpperCase();
+            } else {
+                userName.textContent = 'User';
+                userAvatar.textContent = 'U';
+            }
+            
+            userEmail.textContent = user.email;
+            
+            // Check if user is on free plan (default)
+            if (state.auth.user.plan === 'pro') {
+                userStatus.textContent = 'Pro Plan';
+                userPlan.textContent = 'Pro Plan';
+                upgradeBanner.style.display = 'none';
+            } else {
+                userStatus.textContent = 'Free Plan';
+                userPlan.textContent = 'Free Plan';
+                upgradeBanner.style.display = 'flex';
+            }
+        }
+        
+        // Login form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    // Signed in
+                    const user = userCredential.user;
+                    showToast('Login successful!', 'success');
+                })
+                .catch(error => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    showToast(`Login failed: ${errorMessage}`, 'error');
+                });
+        });
+        
+        // Google sign-in
+        googleLoginBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then(result => {
+                    // Signed in
+                    const user = result.user;
+                    showToast('Google sign-in successful!', 'success');
+                })
+                .catch(error => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    showToast(`Google sign-in failed: ${errorMessage}`, 'error');
+                });
+        });
+        
+        // Sign up link
+        signupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = prompt('Enter your email address:');
+            if (email) {
+                const password = prompt('Create a password:');
+                if (password) {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .then(userCredential => {
+                            // Signed up
+                            const user = userCredential.user;
+                            showToast('Account created successfully!', 'success');
+                        })
+                        .catch(error => {
+                            const errorCode = error.code;
+                            const errorMessage = error.message;
+                            showToast(`Sign up failed: ${errorMessage}`, 'error');
+                        });
+                }
+            }
+        });
+        
+        // Logout
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    showToast('Logged out successfully!', 'success');
+                })
+                .catch(error => {
+                    showToast('Logout failed: ' + error.message, 'error');
+                });
+        }
+        
+        // Initialize app
         function initializeApp() {
             messageInput.focus();
             updateQuotaBar();
             setupDragAndDrop();
             
             // Check if user is on free plan
-            if (state.auth.user && state.auth.user.plan === 'free') {
+            if (state.auth.user.plan === 'free') {
                 upgradeBanner.style.display = 'flex';
             } else {
                 upgradeBanner.style.display = 'none';
             }
-            
-            // Load sample data
-            loadSampleData();
         }
         
         function setupEventListeners() {
-            // Auth form submission
-            authForm.addEventListener('submit', handleAuthSubmit);
-            
-            // Google sign in
-            googleSignInButton.addEventListener('click', handleGoogleSignIn);
-            
-            // Auth toggle (login/signup)
-            authToggleLink.addEventListener('click', toggleAuthMode);
-            
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 if (e.key === '/' && document.activeElement !== messageInput) {
@@ -2439,107 +2274,6 @@
                     sidebar.classList.remove('open');
                 }
             });
-        }
-        
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            const name = nameInput.value;
-            
-            authError.textContent = '';
-            
-            if (state.ui.authMode === 'login') {
-                // Sign in with email and password
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
-                        showToast('Login successful!', 'success');
-                    })
-                    .catch(error => {
-                        authError.textContent = error.message;
-                    });
-            } else {
-                // Sign up with email and password
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then(userCredential => {
-                        // Update user profile with display name
-                        return userCredential.user.updateProfile({
-                            displayName: name
-                        });
-                    })
-                    .then(() => {
-                        showToast('Account created successfully!', 'success');
-                    })
-                    .catch(error => {
-                        authError.textContent = error.message;
-                    });
-            }
-        }
-        
-        function handleGoogleSignIn() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            
-            auth.signInWithPopup(provider)
-                .then(result => {
-                    showToast('Google sign-in successful!', 'success');
-                })
-                .catch(error => {
-                    authError.textContent = error.message;
-                });
-        }
-        
-        function toggleAuthMode(e) {
-            e.preventDefault();
-            
-            if (state.ui.authMode === 'login') {
-                state.ui.authMode = 'signup';
-                authFormTitle.textContent = 'CREATE ACCOUNT';
-                authFormSubtitle.textContent = 'Join Nexariq to get started.';
-                authSubmitButton.textContent = 'Sign Up';
-                authToggleText.textContent = 'Already have an account?';
-                authToggleLink.textContent = 'Log In';
-                nameGroup.style.display = 'block';
-            } else {
-                state.ui.authMode = 'login';
-                authFormTitle.textContent = 'SECURE ACCESS';
-                authFormSubtitle.textContent = 'Enter credentials to proceed.';
-                authSubmitButton.textContent = 'Authenticate';
-                authToggleText.textContent = "Don't have an account?";
-                authToggleLink.textContent = 'Sign Up';
-                nameGroup.style.display = 'none';
-            }
-        }
-        
-        function logout() {
-            auth.signOut()
-                .then(() => {
-                    showToast('Logged out successfully', 'success');
-                })
-                .catch(error => {
-                    showToast('Error logging out: ' + error.message, 'error');
-                });
-        }
-        
-        function updateUserProfile() {
-            if (state.auth.user) {
-                // Update user name
-                userName.textContent = state.auth.user.displayName || 'User';
-                
-                // Update user email in settings
-                userEmail.textContent = state.auth.user.email;
-                
-                // Update user avatar
-                if (state.auth.user.photoURL) {
-                    userAvatar.innerHTML = `<img src="${state.auth.user.photoURL}" alt="User Avatar">`;
-                } else {
-                    // Use first letter of name if no photo
-                    const initials = state.auth.user.displayName 
-                        ? state.auth.user.displayName.charAt(0).toUpperCase()
-                        : 'U';
-                    userAvatar.innerHTML = initials;
-                }
-            }
         }
         
         function loadSampleData() {
@@ -2680,8 +2414,8 @@
                 // Remove typing indicator
                 removeTypingIndicator();
                 
-                // Add AI response to chat
-                addMessage('ai', aiResponse);
+                // Add AI response to chat with typing effect
+                addMessageWithTypingEffect('ai', aiResponse);
                 
                 // Extract code from response if available
                 extractCodeFromResponse(aiResponse);
@@ -2714,6 +2448,76 @@
             }
         }
         
+        // Add message with typing effect
+        function addMessageWithTypingEffect(type, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+                hour12: true, 
+                hour: 'numeric', 
+                minute: '2-digit' 
+            });
+            
+            const messageActions = type === 'ai' ? `
+                <div class="message-actions">
+                    <button class="message-action" onclick="copyMessage(this)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="message-action" onclick="regenerateMessage(this)">
+                        <i class="fas fa-redo"></i> Regenerate
+                    </button>
+                    <button class="message-action" onclick="likeMessage(this)">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                </div>
+            ` : '';
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    ${type === 'user' ? userAvatar.textContent : 'AJ'}
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="typing-text"></div>
+                        ${messageActions}
+                    </div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Get the typing text element
+            const typingTextElement = messageDiv.querySelector('.typing-text');
+            
+            // Type out the message character by character
+            let index = 0;
+            const typingSpeed = 20; // milliseconds per character
+            
+            const typeInterval = setInterval(() => {
+                if (index < content.length) {
+                    typingTextElement.textContent = content.substring(0, index + 1);
+                    index++;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                } else {
+                    clearInterval(typeInterval);
+                    
+                    // Replace with formatted content
+                    typingTextElement.outerHTML = formatContent(content);
+                    
+                    // Highlight code blocks
+                    messageDiv.querySelectorAll('pre code').forEach(block => {
+                        hljs.highlightElement(block);
+                    });
+                }
+            }, typingSpeed);
+            
+            // Add to message history
+            state.chat.messages.push({ type, content, timestamp });
+        }
+        
         // Extract code from AI response
         function extractCodeFromResponse(response) {
             // Regular expression to match code blocks
@@ -2725,12 +2529,9 @@
                 const language = match[1] || 'text';
                 const code = match[2];
                 
-                // Update the code in the sidebar
+                // Update the code in the state
                 state.code.current = code;
                 state.code.language = language;
-                
-                // Update the UI
-                updateCodeDisplay(code, language);
                 
                 // If it's HTML, also update the preview
                 if (language === 'html') {
@@ -2739,40 +2540,12 @@
                 
                 codeFound = true;
             }
-            
-            if (!codeFound) {
-                // No code found, clear the code display
-                state.code.current = '';
-                state.code.language = 'text';
-                updateCodeDisplay('// No code found in response', 'text');
-            }
-        }
-        
-        // Update code display in the sidebar
-        function updateCodeDisplay(code, language) {
-            codeContent.innerHTML = `<pre><code class="language-${language}">${escapeHtml(code)}</code></pre>`;
-            codeLanguage.textContent = language.toUpperCase();
-            
-            // Apply syntax highlighting
-            hljs.highlightElement(codeContent.querySelector('code'));
         }
         
         // Update preview in the sidebar
         function updatePreview(html) {
             previewFrame.srcdoc = html;
             state.code.preview = html;
-        }
-        
-        // Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
         }
         
         // Check API status
@@ -2810,29 +2583,6 @@
             }
         }
         
-        // Switch sidebar tab
-        function switchSidebarTab(tabName) {
-            // Update active tab
-            document.querySelectorAll('.sidebar-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`.sidebar-tab:nth-child(${tabName === 'code' ? 1 : 2})`).classList.add('active');
-            
-            // Update active content
-            document.querySelectorAll('.sidebar-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(`${tabName}Tab`).classList.add('active');
-            
-            // Update state
-            state.ui.activeTab = tabName;
-            
-            // If switching to preview and we have HTML code, update the preview
-            if (tabName === 'preview' && state.code.language === 'html' && state.code.current) {
-                updatePreview(state.code.current);
-            }
-        }
-        
         // Copy code to clipboard
         function copyCode() {
             if (!state.code.current) {
@@ -2862,7 +2612,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `nexariq-code.${extension}`;
+            a.download = `aj-studioz-code.${extension}`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2917,16 +2667,10 @@
                 </div>
             ` : '';
             
-            const avatarContent = type === 'user' 
-                ? (state.auth.user && state.auth.user.photoURL 
-                    ? `<img src="${state.auth.user.photoURL}" alt="User">`
-                    : (state.auth.user && state.auth.user.displayName 
-                        ? state.auth.user.displayName.charAt(0).toUpperCase()
-                        : 'U'))
-                : `<img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="AI">`;
-            
             messageDiv.innerHTML = `
-                <div class="message-avatar">${avatarContent}</div>
+                <div class="message-avatar">
+                    ${type === 'user' ? userAvatar.textContent : 'AJ'}
+                </div>
                 <div class="message-content">
                     <div class="message-bubble">
                         ${formatContent(content)}
@@ -3060,13 +2804,11 @@
             typingDiv.id = 'typing-indicator';
             
             typingDiv.innerHTML = `
-                <div class="message-avatar">
-                    <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="AI">
-                </div>
+                <div class="message-avatar">AJ</div>
                 <div class="message-content">
                     <div class="typing-indicator">
                         <i class="fas fa-robot" style="margin-right: 8px;"></i>
-                        <span>Nexariq is thinking</span>
+                        <span>AJ STUDIOZ AI is thinking</span>
                         <div class="typing-dots">
                             <div class="typing-dot"></div>
                             <div class="typing-dot"></div>
@@ -3117,9 +2859,9 @@
             chatContainer.innerHTML = `
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon">
-                        <img src="https://z-cdn-media.chatglm.cn/files/c6a4b5ee-8ea6-4f9e-8168-1aa705f7ca5b_circle_logo.png?auth_key=1790525868-b74782716ecc4bafa2a41576b7fef6cb-0-eb1af23f70fffcd652ed5142b816f2de" alt="Nexariq Logo">
+                        <i class="fas fa-robot"></i>
                     </div>
-                    <h2>Hello! I'm your Nexariq AI Assistant</h2>
+                    <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
                     <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
                     
                     <div class="suggestion-cards">
@@ -3434,6 +3176,14 @@
                 toast.classList.remove('show');
             }, 3000);
         }
+        
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            loadSampleData();
+            checkApiStatus();
+            setInterval(checkApiStatus, 30000); // Check API status every 30 seconds
+        });
     </script>
 </body>
 </html>
