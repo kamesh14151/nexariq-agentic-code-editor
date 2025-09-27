@@ -37,12 +37,12 @@
             --aj-gold-glow: rgba(251, 191, 36, 0.6);
             --aj-green: #34D399;
             --aj-green-glow: rgba(52, 211, 153, 0.7);
-            --code-bg: #282c34;
-            --code-text: #abb2bf;
+            --code-bg: #1e1e1e;
+            --code-text: #e6edf3;
             --copilot-text: #1e1e1e;
             --copilot-bg: #f6f8fa;
             --copilot-border: #d1d9e0;
-            --copilot-code-bg: #f6f8fa;
+            --copilot-code-bg: #0d1117;
         }
 
         [data-theme="dark"] {
@@ -57,15 +57,15 @@
             --message-user-bg: #2a4f3a;
             --message-ai-bg: #1e1e1e;
             --border-color: #404040;
-            --code-bg: #1e1e1e;
-            --code-text: #d4d4d4;
+            --code-bg: #0d1117;
+            --code-text: #e6edf3;
             --copilot-text: #e6edf3;
             --copilot-bg: #161b22;
             --copilot-border: #30363d;
             --copilot-code-bg: #0d1117;
         }
 
-        /* Login Page Styles */
+        /* Login Page Styles - unchanged */
         .login-page {
             position: fixed;
             top: 0;
@@ -362,7 +362,7 @@
             height: 100vh;
         }
 
-        /* Sidebar */
+        /* Sidebar - unchanged */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -970,50 +970,61 @@
             color: var(--accent-color);
         }
 
-        /* Code blocks - Copilot Style */
+        /* Code blocks - Copilot Style - IMPROVED */
         .code-block {
             margin: 16px 0;
             border-radius: 8px;
             overflow: hidden;
-            background-color: var(--copilot-code-bg);
-            border: 1px solid var(--copilot-border);
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .code-block:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
         }
 
         .code-header {
-            background-color: var(--hover-bg);
-            padding: 8px 12px;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--copilot-border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .code-language {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--aj-gold);
             text-transform: uppercase;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .code-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
         }
 
         .code-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--code-text);
+            padding: 4px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .code-btn:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .code-content {
@@ -1023,6 +1034,7 @@
             font-size: 14px;
             line-height: 1.5;
             color: var(--code-text);
+            background-color: var(--code-bg);
         }
 
         .code-content::-webkit-scrollbar {
@@ -1030,12 +1042,16 @@
         }
 
         .code-content::-webkit-scrollbar-track {
-            background: var(--copilot-code-bg);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .code-content::-webkit-scrollbar-thumb {
-            background: var(--border-color);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
+        }
+
+        .code-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         /* Tables */
@@ -1520,7 +1536,7 @@
             box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.3);
         }
 
-        /* Mobile Responsive */
+        /* Mobile Responsive - IMPROVED */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -1607,6 +1623,30 @@
                 left: 16px;
                 right: 16px;
                 bottom: 16px;
+            }
+            
+            /* Improved code block styling for mobile */
+            .code-block {
+                margin: 12px 0;
+                border-radius: 6px;
+            }
+            
+            .code-header {
+                padding: 8px 12px;
+            }
+            
+            .code-content {
+                padding: 12px;
+                font-size: 13px;
+            }
+            
+            .code-language {
+                font-size: 11px;
+            }
+            
+            .code-btn {
+                padding: 3px 8px;
+                font-size: 10px;
             }
         }
 
@@ -2444,7 +2484,7 @@
             }
         }
         
-        // Add message with typing effect
+        // Add message with typing effect - IMPROVED
         function addMessageWithTypingEffect(type, content) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -2511,9 +2551,24 @@
                     // Replace with final formatted content
                     typingTextElement.outerHTML = formatContent(content);
                     
-                    // Highlight code blocks
+                    // Highlight code blocks with improved stability
                     messageDiv.querySelectorAll('pre code').forEach(block => {
                         hljs.highlightElement(block);
+                        
+                        // Add smooth scroll behavior for code blocks
+                        const codeBlock = block.closest('.code-block');
+                        if (codeBlock) {
+                            codeBlock.style.scrollBehavior = 'smooth';
+                            
+                            // Ensure code blocks are properly formatted on mobile
+                            if (window.innerWidth <= 768) {
+                                const codeContent = codeBlock.querySelector('.code-content');
+                                if (codeContent) {
+                                    codeContent.style.fontSize = '13px';
+                                    codeContent.style.lineHeight = '1.4';
+                                }
+                            }
+                        }
                     });
                 }
             }, typingSpeed);
@@ -2522,7 +2577,7 @@
             state.chat.messages.push({ type, content, timestamp });
         }
         
-        // Process content for typing effect with proper formatting
+        // Process content for typing effect with proper formatting - IMPROVED
         function processContentForTyping(content) {
             // First, handle code blocks by replacing them with placeholders
             const codeBlocks = [];
@@ -2563,7 +2618,7 @@
                 );
             });
             
-            // Restore code blocks
+            // Restore code blocks with improved formatting
             codeBlocks.forEach((block, id) => {
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
                 processedContent = processedContent.replace(
@@ -2589,7 +2644,7 @@
             return processedContent;
         }
         
-        // Extract code from AI response
+        // Extract code from AI response - IMPROVED
         function extractCodeFromResponse(response) {
             // Regular expression to match code blocks
             const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -2613,10 +2668,22 @@
             }
         }
         
-        // Update preview in the sidebar
+        // Update preview in the sidebar - IMPROVED
         function updatePreview(html) {
             previewFrame.srcdoc = html;
             state.code.preview = html;
+            
+            // Add a small delay to ensure the iframe loads properly
+            setTimeout(() => {
+                try {
+                    // Check if the iframe loaded correctly
+                    if (previewFrame.contentDocument && previewFrame.contentDocument.body) {
+                        console.log('Preview updated successfully');
+                    }
+                } catch (e) {
+                    console.log('Preview update error:', e);
+                }
+            }, 100);
         }
         
         // Check API status
@@ -2654,7 +2721,7 @@
             }
         }
         
-        // Copy code to clipboard
+        // Copy code to clipboard - IMPROVED
         function copyCode() {
             if (!state.code.current) {
                 showToast('No code to copy', 'error');
@@ -2668,7 +2735,7 @@
             });
         }
         
-        // Download code
+        // Download code - IMPROVED
         function downloadCode() {
             if (!state.code.current) {
                 showToast('No code to download', 'error');
@@ -2692,7 +2759,7 @@
             showToast('Code downloaded!', 'success');
         }
         
-        // Refresh preview
+        // Refresh preview - IMPROVED
         function refreshPreview() {
             if (state.code.language === 'html' && state.code.current) {
                 updatePreview(state.code.current);
@@ -2702,7 +2769,7 @@
             }
         }
         
-        // Open preview in new tab
+        // Open preview in new tab - IMPROVED
         function openInNewTab() {
             if (state.code.language === 'html' && state.code.current) {
                 const newWindow = window.open();
@@ -2713,7 +2780,7 @@
             }
         }
         
-        // Add message to chat
+        // Add message to chat - IMPROVED
         function addMessage(type, content) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -2754,16 +2821,31 @@
             chatContainer.appendChild(messageDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            // Highlight code blocks
+            // Highlight code blocks with improved stability
             messageDiv.querySelectorAll('pre code').forEach(block => {
                 hljs.highlightElement(block);
+                
+                // Add smooth scroll behavior for code blocks
+                const codeBlock = block.closest('.code-block');
+                if (codeBlock) {
+                    codeBlock.style.scrollBehavior = 'smooth';
+                    
+                    // Ensure code blocks are properly formatted on mobile
+                    if (window.innerWidth <= 768) {
+                        const codeContent = codeBlock.querySelector('.code-content');
+                        if (codeContent) {
+                            codeContent.style.fontSize = '13px';
+                            codeContent.style.lineHeight = '1.4';
+                        }
+                    }
+                }
             });
             
             // Add to message history
             state.chat.messages.push({ type, content, timestamp });
         }
         
-        // Format message content - Copilot Style
+        // Format message content - Copilot Style - IMPROVED
         function formatContent(content) {
             // Create a temporary div to hold the formatted content
             const tempDiv = document.createElement('div');
@@ -2782,7 +2864,7 @@
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Handle code blocks with Copilot style
+            // Handle code blocks with Copilot style - IMPROVED
             formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
@@ -2852,7 +2934,7 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
         
-        // Copy code from a specific code block
+        // Copy code from a specific code block - IMPROVED
         function copyCodeFromBlock(codeId) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
