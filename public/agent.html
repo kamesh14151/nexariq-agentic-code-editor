@@ -39,6 +39,10 @@
             --aj-green-glow: rgba(52, 211, 153, 0.7);
             --code-bg: #282c34;
             --code-text: #abb2bf;
+            --copilot-text: #1e1e1e;
+            --copilot-bg: #f6f8fa;
+            --copilot-border: #d1d9e0;
+            --copilot-code-bg: #f6f8fa;
         }
 
         [data-theme="dark"] {
@@ -55,6 +59,10 @@
             --border-color: #404040;
             --code-bg: #1e1e1e;
             --code-text: #d4d4d4;
+            --copilot-text: #e6edf3;
+            --copilot-bg: #161b22;
+            --copilot-border: #30363d;
+            --copilot-code-bg: #0d1117;
         }
 
         /* Login Page Styles */
@@ -795,7 +803,7 @@
             background-color: white;
         }
 
-        /* Messages */
+        /* Messages - Copilot Style */
         .message {
             display: flex;
             gap: 12px;
@@ -899,14 +907,15 @@
             color: var(--text-primary);
         }
 
-        /* Formatted Content */
+        /* Copilot Style Formatted Content */
         .formatted-content {
             font-size: 14px;
             line-height: 1.6;
+            color: var(--copilot-text);
         }
 
         .formatted-content p {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .formatted-content p:last-child {
@@ -915,30 +924,30 @@
 
         .formatted-content h1, .formatted-content h2, .formatted-content h3, 
         .formatted-content h4, .formatted-content h5, .formatted-content h6 {
-            margin-top: 16px;
-            margin-bottom: 8px;
+            margin-top: 24px;
+            margin-bottom: 16px;
             font-weight: 600;
             color: var(--text-primary);
         }
 
-        .formatted-content h1 { font-size: 1.5em; }
-        .formatted-content h2 { font-size: 1.3em; }
-        .formatted-content h3 { font-size: 1.2em; }
+        .formatted-content h1 { font-size: 1.75em; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .formatted-content h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        .formatted-content h3 { font-size: 1.25em; }
         .formatted-content h4 { font-size: 1.1em; }
 
         .formatted-content ul, .formatted-content ol {
-            margin-left: 20px;
-            margin-bottom: 12px;
+            margin-left: 24px;
+            margin-bottom: 16px;
         }
 
         .formatted-content li {
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .formatted-content blockquote {
             border-left: 4px solid var(--accent-color);
             padding-left: 16px;
-            margin: 12px 0;
+            margin: 16px 0;
             color: var(--text-secondary);
             font-style: italic;
         }
@@ -954,20 +963,20 @@
 
         .formatted-content code {
             background-color: var(--hover-bg);
-            padding: 2px 4px;
-            border-radius: 3px;
+            padding: 2px 6px;
+            border-radius: 4px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9em;
             color: var(--accent-color);
         }
 
-        /* Code blocks */
+        /* Code blocks - Copilot Style */
         .code-block {
             margin: 16px 0;
             border-radius: 8px;
             overflow: hidden;
-            background-color: var(--code-bg);
-            border: 1px solid var(--border-color);
+            background-color: var(--copilot-code-bg);
+            border: 1px solid var(--copilot-border);
         }
 
         .code-header {
@@ -976,11 +985,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--copilot-border);
         }
 
         .code-language {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-secondary);
             text-transform: uppercase;
             font-weight: 500;
@@ -995,10 +1004,10 @@
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            padding: 2px 6px;
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 11px;
             transition: all 0.2s ease;
         }
 
@@ -1011,22 +1020,22 @@
             padding: 16px;
             overflow-x: auto;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.5;
             color: var(--code-text);
         }
 
         .code-content::-webkit-scrollbar {
-            height: 6px;
+            height: 8px;
         }
 
         .code-content::-webkit-scrollbar-track {
-            background: transparent;
+            background: var(--copilot-code-bg);
         }
 
         .code-content::-webkit-scrollbar-thumb {
             background: var(--border-color);
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         /* Tables */
@@ -1048,7 +1057,7 @@
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .data-table th {
@@ -2479,12 +2488,16 @@
             // Get the typing text element
             const typingTextElement = messageDiv.querySelector('.typing-text');
             
-            // Process content to identify code blocks and other formatted elements
+            // Create a formatted content container
+            const formattedContainer = document.createElement('div');
+            formattedContainer.className = 'formatted-content';
+            
+            // Process content to identify and format elements
             const processedContent = processContentForTyping(content);
             
-            // Type out the message with proper formatting
+            // Type out the message character by character
             let index = 0;
-            const typingSpeed = 15; // milliseconds per character
+            const typingSpeed = 10; // Faster typing speed for better experience
             
             const typeInterval = setInterval(() => {
                 if (index < processedContent.length) {
@@ -2750,7 +2763,7 @@
             state.chat.messages.push({ type, content, timestamp });
         }
         
-        // Format message content
+        // Format message content - Copilot Style
         function formatContent(content) {
             // Create a temporary div to hold the formatted content
             const tempDiv = document.createElement('div');
@@ -2769,7 +2782,7 @@
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Handle code blocks
+            // Handle code blocks with Copilot style
             formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
