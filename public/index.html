@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexariq - AI-Powered Development Platform</title>
-    <link rel="icon" href="https://github.com/kamesh14151/nexariq-agentic-code-editor/blob/main/nexariq-logo.jpg" type="image/jpg">
+    <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" type="image/jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -1137,6 +1137,43 @@
             background: rgba(255, 71, 87, 0.1);
         }
 
+        .api-tester-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 15, 16, 0.5);
+        }
+
+        .api-tester-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .api-tester-tab:hover {
+            color: var(--primary-blue);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .api-tester-tab.active {
+            color: var(--primary-blue);
+        }
+
+        .api-tester-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-blue);
+        }
+
         .api-tester-content {
             display: flex;
             flex: 1;
@@ -1401,6 +1438,334 @@
             font-style: italic;
         }
 
+        /* cURL Runner Styles */
+        .curl-runner {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .curl-runner.active {
+            display: flex;
+        }
+
+        .curl-input-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .curl-output-container {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .curl-textarea {
+            flex: 1;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+            margin-bottom: 1rem;
+            min-height: 200px;
+        }
+
+        .curl-examples {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .curl-examples-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .curl-example {
+            background: var(--pure-black);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .curl-example:hover {
+            border-color: var(--primary-blue);
+            color: var(--text-primary);
+        }
+
+        .curl-example:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Reqbin-like cURL output */
+        .curl-output {
+            background: var(--dark-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .curl-output-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .curl-output-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .curl-output-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .curl-output-status.success {
+            color: var(--success);
+        }
+
+        .curl-output-status.error {
+            color: var(--danger);
+        }
+
+        .curl-output-status.info {
+            color: var(--primary-blue);
+        }
+
+        .curl-output-body {
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .curl-output-body pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .curl-output-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .curl-output-tab {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .curl-output-tab:hover {
+            color: var(--primary-blue);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .curl-output-tab.active {
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        .curl-output-content {
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .curl-output-section {
+            display: none;
+        }
+
+        .curl-output-section.active {
+            display: block;
+        }
+
+        .curl-output-section-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .curl-output-json {
+            background: var(--pure-black);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            overflow-x: auto;
+        }
+
+        .curl-output-headers {
+            background: var(--pure-black);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            overflow-x: auto;
+        }
+
+        .curl-output-headers div {
+            margin-bottom: 0.25rem;
+        }
+
+        .curl-output-headers div:last-child {
+            margin-bottom: 0;
+        }
+
+        /* API Key Tester Styles */
+        .api-key-tester {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .api-key-tester.active {
+            display: flex;
+        }
+
+        .api-key-input-container {
+            flex: 1;
+            padding: 1.5rem;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .api-key-result-container {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .api-key-service-select {
+            width: 100%;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        .api-key-input {
+            width: 100%;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        .api-key-info {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .api-key-info-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .api-key-info-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .api-key-test-button {
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue));
+            border: none;
+            color: var(--primary-black);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .api-key-test-button:hover {
+            background: linear-gradient(135deg, #00A8E0, #0066CC);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--glow-blue);
+        }
+
+        .api-key-result {
+            background: var(--dark-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .api-key-result-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .api-key-result-content {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .api-key-result.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .api-key-result.error {
+            border-left: 4px solid var(--danger);
+        }
+
         /* Footer */
         footer {
             background: linear-gradient(135deg, var(--darker-gray), var(--pure-black));
@@ -1656,6 +2021,12 @@
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
             }
+
+            .curl-input-container,
+            .api-key-input-container {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
         }
 
         @media (max-width: 480px) {
@@ -1704,7 +2075,7 @@
     <!-- Loading Screen -->
     <div class="loader" id="loader">
         <div class="loader-logo">
-            <img src="https://github.com/kamesh14151/nexariq-agentic-code-editor/blob/main/nexariq-logo.jpg" alt="Nexariq Logo">
+            <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
         </div>
         <div class="loader-text">Nexariq</div>
         <div class="loader-progress">
@@ -1729,7 +2100,7 @@
     <header>
         <div class="logo" onclick="showDashboard()">
             <div class="logo-icon">
-                <img src="https://github.com/kamesh14151/nexariq-agentic-code-editor/blob/main/nexariq-logo.jpgg" alt="Nexariq Logo">
+                <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
             </div>
             <div>
                 <div class="logo-text">Nexariq</div>
@@ -1791,11 +2162,11 @@
                         <i class="fas fa-plug"></i>
                     </div>
                     <h2 class="card-title">API Tester</h2>
-                    <p class="card-description">Test API endpoints and cURL commands with our powerful API testing interface. Perfect for validating API keys.</p>
+                    <p class="card-description">Test API endpoints, run cURL commands, and validate API keys with our powerful testing interface.</p>
                     <div class="card-features">
                         <span class="feature-tag">cURL Commands</span>
                         <span class="feature-tag">API Testing</span>
-                        <span class="feature-tag">Response Analysis</span>
+                        <span class="feature-tag">API Key Validation</span>
                     </div>
                     <div class="card-action">
                         <span>Test APIs</span>
@@ -1831,7 +2202,7 @@
                         <span>Back to Dashboard</span>
                     </button>
                     <div class="editor-page-logo">
-                        <img src="nexariq-logo.jpg" alt="Nexariq Logo">
+                        <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
                         <div class="editor-page-logo-text">Nexariq Editor</div>
                     </div>
                 </div>
@@ -1965,7 +2336,7 @@
             <!-- Minimal Branding -->
             <div class="editor-branding">
                 <div class="editor-logo">
-                    <img src="nexariq-logo.jpg" alt="Nexariq Logo">
+                    <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
                     <div class="editor-logo-text">Nexariq</div>
                 </div>
             </div>
@@ -1984,7 +2355,21 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="api-tester-content">
+            
+            <div class="api-tester-tabs">
+                <button class="api-tester-tab active" onclick="switchAPITesterTab('request')">
+                    <i class="fas fa-file-alt"></i> Request
+                </button>
+                <button class="api-tester-tab" onclick="switchAPITesterTab('curl')">
+                    <i class="fas fa-terminal"></i> cURL Runner
+                </button>
+                <button class="api-tester-tab" onclick="switchAPITesterTab('api-key')">
+                    <i class="fas fa-key"></i> API Key Tester
+                </button>
+            </div>
+            
+            <!-- Request Tab -->
+            <div class="api-tester-content" id="request-tab">
                 <div class="api-tester-request">
                     <div class="api-form-group">
                         <label class="api-form-label">Request Method</label>
@@ -2052,6 +2437,101 @@
                         <div id="api-response-content">
                             <div class="api-response-empty">
                                 Send a request to see the response here
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- cURL Runner Tab -->
+            <div class="curl-runner" id="curl-tab">
+                <div class="curl-input-container">
+                    <div class="api-form-group">
+                        <label class="api-form-label">cURL Command</label>
+                        <textarea class="curl-textarea" id="curl-command" placeholder="Enter your cURL command here...">curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-4",
+    "input": "Write a short bedtime story about a unicorn."
+  }'</textarea>
+                    </div>
+                    
+                    <div class="curl-examples">
+                        <div class="curl-examples-title">cURL Examples</div>
+                        <div class="curl-example" onclick="setCurlExample('openai')">
+                            OpenAI API Example
+                        </div>
+                        <div class="curl-example" onclick="setCurlExample('github')">
+                            GitHub API Example
+                        </div>
+                        <div class="curl-example" onclick="setCurlExample('weather')">
+                            Weather API Example
+                        </div>
+                    </div>
+                    
+                    <button class="api-send-button" onclick="runCurlCommand()">
+                        <i class="fas fa-play"></i>
+                        <span>Run cURL Command</span>
+                    </button>
+                </div>
+                
+                <div class="curl-output-container">
+                    <div class="api-response-section">
+                        <h3 class="api-response-title">
+                            <i class="fas fa-terminal"></i>
+                            <span>cURL Output</span>
+                        </h3>
+                        <div id="curl-response-content">
+                            <div class="api-response-empty">
+                                Run a cURL command to see the output here
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- API Key Tester Tab -->
+            <div class="api-key-tester" id="api-key-tab">
+                <div class="api-key-input-container">
+                    <div class="api-form-group">
+                        <label class="api-form-label">API Service</label>
+                        <select class="api-key-service-select" id="api-key-service">
+                            <option value="openai">OpenAI</option>
+                            <option value="github">GitHub</option>
+                            <option value="google">Google</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="stripe">Stripe</option>
+                        </select>
+                    </div>
+                    
+                    <div class="api-form-group">
+                        <label class="api-form-label">API Key</label>
+                        <input type="password" class="api-key-input" id="api-key-input" placeholder="Enter your API key">
+                    </div>
+                    
+                    <div class="api-key-info" id="api-key-info">
+                        <div class="api-key-info-title">OpenAI API Key</div>
+                        <div class="api-key-info-text">
+                            Enter your OpenAI API key to test if it's valid. The key should start with "sk-" and be at least 40 characters long.
+                        </div>
+                    </div>
+                    
+                    <button class="api-key-test-button" onclick="testAPIKey()">
+                        <i class="fas fa-vial"></i>
+                        <span>Test API Key</span>
+                    </button>
+                </div>
+                
+                <div class="api-key-result-container">
+                    <div class="api-response-section">
+                        <h3 class="api-response-title">
+                            <i class="fas fa-vial"></i>
+                            <span>API Key Test Result</span>
+                        </h3>
+                        <div id="api-key-result-content">
+                            <div class="api-response-empty">
+                                Test an API key to see the result here
                             </div>
                         </div>
                     </div>
@@ -2219,6 +2699,7 @@
         let settingsPanelOpen = false;
         let aiAssistantOpen = false;
         let apiTesterOpen = false;
+        let currentAPITesterTab = 'request';
         
         // Initialize the app
         window.addEventListener('load', () => {
@@ -2232,6 +2713,9 @@
             
             // Initialize settings event listeners
             initializeSettings();
+            
+            // Initialize API service dropdown
+            document.getElementById('api-key-service').addEventListener('change', updateAPIKeyInfo);
         });
         
         // Add floating particles
@@ -2379,7 +2863,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Nexariq Project</title>
-    <link rel="icon" href="nexariq-logo.jpg" type="image/jpg">
+    <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" type="image/jpg">
     <style>
         * {
             margin: 0;
@@ -2496,7 +2980,7 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="nexariq-logo.jpg" alt="Nexariq Logo">
+            <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
             <h1>Welcome to Nexariq</h1>
         </div>
         <p>Experience the future of web development with AI-powered coding assistance. Edit this code to see changes in real-time!</p>
@@ -2629,11 +3113,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Document</title>
-    <link rel="icon" href="nexariq-logo.jpg" type="image/jpg">
+    <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" type="image/jpg">
 </head>
 <body>
     <div class="logo">
-        <img src="nexariq-logo.jpg" alt="Nexariq Logo">
+        <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
         <h1>Hello, HTML!</h1>
     </div>
     <p>Start building your HTML structure here.</p>
@@ -2705,7 +3189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logo = document.createElement('div');
     logo.className = 'logo';
     logo.innerHTML = \`
-        <img src="nexariq-logo.jpg" alt="Nexariq Logo">
+        <img src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" alt="Nexariq Logo">
         <h1>Nexariq JavaScript</h1>
     \`;
     document.body.prepend(logo);
@@ -2746,7 +3230,7 @@ const NexariqApp = () => {
                 marginBottom: '1.5rem'
             }}>
                 <img 
-                    src="nexariq-logo.jpg" 
+                    src="https://z-cdn-media.chatglm.cn/files/3c770dba-2f1b-40b2-9746-6c768685fa38_pasted_image_1759071948149.jpg?auth_key=1790608007-a3a757cddf1d4d6c91db429381fa3019-0-1f2c8643fbeb69c342183be5994639bd" 
                     alt="Nexariq Logo"
                     style={{
                         width: '60px',
@@ -3102,6 +3586,30 @@ if __name__ == "__main__":
             apiTesterOpen = false;
         }
 
+        function switchAPITesterTab(tabName) {
+            // Update active tab
+            document.querySelectorAll('.api-tester-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Hide all tabs
+            document.getElementById('request-tab').style.display = 'none';
+            document.getElementById('curl-tab').classList.remove('active');
+            document.getElementById('api-key-tab').classList.remove('active');
+            
+            // Show selected tab
+            if (tabName === 'request') {
+                document.getElementById('request-tab').style.display = 'flex';
+            } else if (tabName === 'curl') {
+                document.getElementById('curl-tab').classList.add('active');
+            } else if (tabName === 'api-key') {
+                document.getElementById('api-key-tab').classList.add('active');
+            }
+            
+            currentAPITesterTab = tabName;
+        }
+
         function addAPIHeader() {
             const headersList = document.getElementById('api-headers-list');
             const headerItem = document.createElement('div');
@@ -3254,6 +3762,435 @@ if __name__ == "__main__":
                             ${bodyHtml}
                         </div>
                     </div>
+                </div>
+            `;
+        }
+
+        // cURL Runner Functions
+        function setCurlExample(type) {
+            const curlTextarea = document.getElementById('curl-command');
+            
+            const examples = {
+                openai: `curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-4",
+    "input": "Write a short bedtime story about a unicorn."
+  }'`,
+                github: `curl -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/users/octocat`,
+                weather: `curl "https://api.openweathermap.org/data/2.5/weather?q=London&appid=YOUR_API_KEY"`
+            };
+            
+            curlTextarea.value = examples[type] || '';
+        }
+
+        async function runCurlCommand() {
+            const curlCommand = document.getElementById('curl-command').value.trim();
+            
+            if (!curlCommand) {
+                showNotification('Please enter a cURL command', 'warning');
+                return;
+            }
+
+            // Show loading state
+            const responseContent = document.getElementById('curl-response-content');
+            responseContent.innerHTML = `
+                <div class="api-response-status info">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Running cURL command...</span>
+                </div>
+            `;
+
+            try {
+                // Parse cURL command (simplified)
+                const parsed = parseCurlCommand(curlCommand);
+                
+                // Execute the request
+                const response = await fetch(parsed.url, parsed.options);
+                
+                // Get response data
+                const responseData = await response.text();
+                let responseJson;
+                
+                try {
+                    responseJson = JSON.parse(responseData);
+                } catch (e) {
+                    // Response is not JSON
+                }
+
+                // Display response in reqbin-like format
+                displayReqbinResponse(response, responseJson || responseData, parsed);
+                
+                showNotification('cURL command executed successfully!', 'success');
+            } catch (error) {
+                // Display error
+                responseContent.innerHTML = `
+                    <div class="api-response-status error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Error: ${error.message}</span>
+                    </div>
+                `;
+                
+                showNotification('cURL command failed', 'error');
+            }
+        }
+
+        function parseCurlCommand(curlCommand) {
+            // This is a simplified cURL parser
+            const result = {
+                url: '',
+                options: {
+                    method: 'GET',
+                    headers: {}
+                }
+            };
+
+            // Extract URL
+            const urlMatch = curlCommand.match(/curl\s+['"]?([^'"\s]+)/);
+            if (urlMatch) {
+                result.url = urlMatch[1];
+            }
+
+            // Extract method
+            const methodMatch = curlCommand.match(/-X\s+([A-Z]+)/);
+            if (methodMatch) {
+                result.options.method = methodMatch[1];
+            }
+
+            // Extract headers
+            const headerMatches = curlCommand.match(/-H\s+['"]([^'"]+)['"]/g);
+            if (headerMatches) {
+                headerMatches.forEach(match => {
+                    const headerMatch = match.match(/-H\s+['"]([^:]+):\s*([^'"]+)['"]/);
+                    if (headerMatch) {
+                        result.options.headers[headerMatch[1]] = headerMatch[2];
+                    }
+                });
+            }
+
+            // Extract data
+            const dataMatch = curlCommand.match(/-d\s+['"]([^'"]+)['"]/);
+            if (dataMatch) {
+                try {
+                    result.options.body = JSON.parse(dataMatch[1]);
+                } catch (e) {
+                    result.options.body = dataMatch[1];
+                }
+            }
+
+            return result;
+        }
+
+        function displayReqbinResponse(response, data, parsed) {
+            const responseContent = document.getElementById('curl-response-content');
+            
+            // Format status
+            let statusClass = 'info';
+            let statusIcon = 'info-circle';
+            let statusText = 'Info';
+            
+            if (response.status >= 200 && response.status < 300) {
+                statusClass = 'success';
+                statusIcon = 'check-circle';
+                statusText = 'Success';
+            } else if (response.status >= 400) {
+                statusClass = 'error';
+                statusIcon = 'exclamation-circle';
+                statusText = 'Error';
+            }
+            
+            // Create reqbin-like output
+            const outputHtml = `
+                <div class="curl-output">
+                    <div class="curl-output-header">
+                        <div class="curl-output-title">Response</div>
+                        <div class="curl-output-status ${statusClass}">
+                            <i class="fas fa-${statusIcon}"></i>
+                            <span>${statusText} (${response.status})</span>
+                        </div>
+                    </div>
+                    
+                    <div class="curl-output-tabs">
+                        <button class="curl-output-tab active" onclick="switchCurlOutputTab('body')">Body</button>
+                        <button class="curl-output-tab" onclick="switchCurlOutputTab('headers')">Headers</button>
+                        <button class="curl-output-tab" onclick="switchCurlOutputTab('request')">Request</button>
+                    </div>
+                    
+                    <div class="curl-output-content">
+                        <div class="curl-output-section active" id="curl-output-body">
+                            <div class="curl-output-section-title">Response Body</div>
+                            <div class="curl-output-json">
+                                <pre>${typeof data === 'object' ? JSON.stringify(data, null, 2) : data}</pre>
+                            </div>
+                        </div>
+                        
+                        <div class="curl-output-section" id="curl-output-headers">
+                            <div class="curl-output-section-title">Response Headers</div>
+                            <div class="curl-output-headers">
+                                ${formatResponseHeaders(response.headers)}
+                            </div>
+                        </div>
+                        
+                        <div class="curl-output-section" id="curl-output-request">
+                            <div class="curl-output-section-title">Request Details</div>
+                            <div class="curl-output-json">
+                                <pre>${JSON.stringify({
+                                    method: parsed.options.method,
+                                    url: parsed.url,
+                                    headers: parsed.options.headers,
+                                    body: parsed.options.body || null
+                                }, null, 2)}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            responseContent.innerHTML = outputHtml;
+        }
+
+        function formatResponseHeaders(headers) {
+            if (!headers) {
+                return '<div>No headers available</div>';
+            }
+            
+            let headersHtml = '';
+            headers.forEach((value, key) => {
+                headersHtml += `<div>${key}: ${value}</div>`;
+            });
+            
+            return headersHtml || '<div>No headers available</div>';
+        }
+
+        function switchCurlOutputTab(tabName) {
+            // Update active tab
+            document.querySelectorAll('.curl-output-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.curl-output-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`curl-output-${tabName}`).classList.add('active');
+        }
+
+        // API Key Tester Functions
+        function updateAPIKeyInfo() {
+            const service = document.getElementById('api-key-service').value;
+            const infoDiv = document.getElementById('api-key-info');
+            
+            const serviceInfo = {
+                openai: {
+                    title: 'OpenAI API Key',
+                    description: 'Enter your OpenAI API key to test if it\'s valid. The key should start with "sk-" and be at least 40 characters long.'
+                },
+                github: {
+                    title: 'GitHub API Key',
+                    description: 'Enter your GitHub personal access token to test if it\'s valid. The token should have the necessary permissions for the APIs you want to access.'
+                },
+                google: {
+                    title: 'Google API Key',
+                    description: 'Enter your Google API key to test if it\'s valid. The key should be associated with your Google Cloud project and have the necessary APIs enabled.'
+                },
+                twitter: {
+                    title: 'Twitter API Key',
+                    description: 'Enter your Twitter API key and secret to test if they\'re valid. These credentials are used to authenticate with the Twitter API.'
+                },
+                stripe: {
+                    title: 'Stripe API Key',
+                    description: 'Enter your Stripe API key to test if it\'s valid. The key should start with "sk_test_" for test mode or "sk_live_" for live mode.'
+                }
+            };
+            
+            const info = serviceInfo[service] || serviceInfo.openai;
+            infoDiv.innerHTML = `
+                <div class="api-key-info-title">${info.title}</div>
+                <div class="api-key-info-text">${info.description}</div>
+            `;
+        }
+
+        async function testAPIKey() {
+            const service = document.getElementById('api-key-service').value;
+            const apiKey = document.getElementById('api-key-input').value.trim();
+            
+            if (!apiKey) {
+                showNotification('Please enter an API key', 'warning');
+                return;
+            }
+
+            // Show loading state
+            const resultContent = document.getElementById('api-key-result-content');
+            resultContent.innerHTML = `
+                <div class="api-response-status info">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Testing API key...</span>
+                </div>
+            `;
+
+            try {
+                // Test the API key based on the service
+                let testResult;
+                
+                switch (service) {
+                    case 'openai':
+                        testResult = await testOpenAIKey(apiKey);
+                        break;
+                    case 'github':
+                        testResult = await testGitHubKey(apiKey);
+                        break;
+                    case 'google':
+                        testResult = await testGoogleKey(apiKey);
+                        break;
+                    case 'twitter':
+                        testResult = await testTwitterKey(apiKey);
+                        break;
+                    case 'stripe':
+                        testResult = await testStripeKey(apiKey);
+                        break;
+                    default:
+                        testResult = { valid: false, message: 'Unknown service' };
+                }
+                
+                // Display result
+                displayAPIKeyResult(testResult, service);
+                
+                if (testResult.valid) {
+                    showNotification('API key is valid!', 'success');
+                } else {
+                    showNotification('API key is invalid', 'error');
+                }
+            } catch (error) {
+                // Display error
+                resultContent.innerHTML = `
+                    <div class="api-key-result error">
+                        <div class="api-key-result-title">Error</div>
+                        <div class="api-key-result-content">${error.message}</div>
+                    </div>
+                `;
+                
+                showNotification('API key test failed', 'error');
+            }
+        }
+
+        async function testOpenAIKey(apiKey) {
+            try {
+                const response = await fetch('https://api.openai.com/v1/models', {
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+                
+                if (response.ok) {
+                    return { valid: true, message: 'API key is valid and has access to models' };
+                } else {
+                    const errorData = await response.json();
+                    return { valid: false, message: errorData.error?.message || 'Invalid API key' };
+                }
+            } catch (error) {
+                return { valid: false, message: error.message };
+            }
+        }
+
+        async function testGitHubKey(apiKey) {
+            try {
+                const response = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `token ${apiKey}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    return { 
+                        valid: true, 
+                        message: `API key is valid. User: ${userData.login}` 
+                    };
+                } else {
+                    return { valid: false, message: 'Invalid API key' };
+                }
+            } catch (error) {
+                return { valid: false, message: error.message };
+            }
+        }
+
+        async function testGoogleKey(apiKey) {
+            try {
+                // Test with a simple Google API call
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=test&key=${apiKey}`);
+                
+                if (response.ok) {
+                    return { valid: true, message: 'API key is valid and has access to YouTube API' };
+                } else {
+                    const errorData = await response.json();
+                    return { 
+                        valid: false, 
+                        message: errorData.error?.message || 'Invalid API key' 
+                    };
+                }
+            } catch (error) {
+                return { valid: false, message: error.message };
+            }
+        }
+
+        async function testTwitterKey(apiKey) {
+            try {
+                // Note: Twitter API v2 requires both API key and secret for app-only auth
+                // This is a simplified test
+                const response = await fetch('https://api.twitter.com/2/tweets/sample/stream', {
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+                
+                if (response.status === 200) {
+                    return { valid: true, message: 'API key is valid' };
+                } else {
+                    return { valid: false, message: 'Invalid API key' };
+                }
+            } catch (error) {
+                return { valid: false, message: error.message };
+            }
+        }
+
+        async function testStripeKey(apiKey) {
+            try {
+                const response = await fetch('https://api.stripe.com/v1/balance', {
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+                
+                if (response.ok) {
+                    return { valid: true, message: 'API key is valid and has access to balance information' };
+                } else {
+                    const errorData = await response.json();
+                    return { 
+                        valid: false, 
+                        message: errorData.error?.message || 'Invalid API key' 
+                    };
+                }
+            } catch (error) {
+                return { valid: false, message: error.message };
+            }
+        }
+
+        function displayAPIKeyResult(result, service) {
+            const resultContent = document.getElementById('api-key-result-content');
+            
+            const resultClass = result.valid ? 'success' : 'error';
+            
+            resultContent.innerHTML = `
+                <div class="api-key-result ${resultClass}">
+                    <div class="api-key-result-title">
+                        ${result.valid ? 'Valid API Key' : 'Invalid API Key'}
+                    </div>
+                    <div class="api-key-result-content">${result.message}</div>
                 </div>
             `;
         }
