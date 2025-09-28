@@ -2055,6 +2055,11 @@
                 <div class="curl-main">
                     <div class="curl-input-section">
                         <div class="curl-form-group">
+                            <label class="curl-form-label">cURL Command</label>
+                            <textarea class="curl-form-textarea" id="curl-command" rows="10" placeholder="Paste your complete cURL command here...&#10;Example: curl -X GET 'https://api.example.com/endpoint' -H 'Authorization: Bearer YOUR_TOKEN'"></textarea>
+                        </div>
+                        
+                        <div class="curl-form-group">
                             <label class="curl-form-label">Request Method</label>
                             <select class="curl-form-select" id="curl-method">
                                 <option value="GET">GET</option>
@@ -2365,22 +2370,34 @@
             const dashboard = document.getElementById('dashboard');
             const editor = document.getElementById('editor-section');
             const curl = document.getElementById('curl-section');
+            const header = document.querySelector('header');
+            const footer = document.querySelector('footer');
             
             editor.style.display = 'none';
             curl.style.display = 'none';
             dashboard.style.display = 'block';
             dashboard.style.animation = 'fadeIn 0.6s ease';
+            
+            // Show header and footer
+            header.style.display = 'flex';
+            footer.style.display = 'block';
         }
         
         function showEditor() {
             const dashboard = document.getElementById('dashboard');
             const editor = document.getElementById('editor-section');
             const curl = document.getElementById('curl-section');
+            const header = document.querySelector('header');
+            const footer = document.querySelector('footer');
             
             dashboard.style.display = 'none';
             curl.style.display = 'none';
             editor.style.display = 'flex';
             editor.style.animation = 'fadeIn 0.6s ease';
+            
+            // Hide header and footer for full-page experience
+            header.style.display = 'none';
+            footer.style.display = 'none';
             
             // Initialize Monaco Editor if not already initialized
             if (!editorInitialized) {
@@ -2393,11 +2410,17 @@
             const dashboard = document.getElementById('dashboard');
             const editor = document.getElementById('editor-section');
             const curl = document.getElementById('curl-section');
+            const header = document.querySelector('header');
+            const footer = document.querySelector('footer');
             
             dashboard.style.display = 'none';
             editor.style.display = 'none';
             curl.style.display = 'flex';
             curl.style.animation = 'fadeIn 0.6s ease';
+            
+            // Hide header and footer for full-page experience
+            header.style.display = 'none';
+            footer.style.display = 'none';
         }
         
         // Open Agent page - Redirect to agent.html
@@ -3322,6 +3345,9 @@ if __name__ == "__main__":
             document.getElementById('curl-headers').addEventListener('input', updateCurlCommandPreview);
             document.getElementById('curl-body').addEventListener('input', updateCurlCommandPreview);
             
+            // Add event listener for the full cURL command textarea
+            document.getElementById('curl-command').addEventListener('input', parseCurlCommand);
+            
             // Initialize command preview
             updateCurlCommandPreview();
         }
@@ -3360,18 +3386,69 @@ if __name__ == "__main__":
             document.getElementById('curl-command-preview').textContent = command;
         }
         
+        function parseCurlCommand() {
+            const commandText = document.getElementById('curl-command').value.trim();
+            if (!commandText) return;
+            
+            // Parse method
+            const methodMatch = commandText.match(/-X\s+(\w+)/);
+            if (methodMatch) {
+                document.getElementById('curl-method').value = methodMatch[1];
+            }
+            
+            // Parse URL
+            const urlMatch = commandText.match(/['"]([^'"]+)['"](?!\s*-)/);
+            if (urlMatch) {
+                document.getElementById('curl-url').value = urlMatch[1];
+            }
+            
+            // Parse headers
+            const headerMatches = commandText.match(/-H\s+['"]([^'"]+)['"]/g);
+            if (headerMatches) {
+                const headers = {};
+                headerMatches.forEach(match => {
+                    const headerMatch = match.match(/-H\s+['"]([^'"]+)['"]/);
+                    if (headerMatch) {
+                        const [key, ...valueParts] = headerMatch[1].split(':');
+                        if (key && valueParts.length > 0) {
+                            headers[key.trim()] = valueParts.join(':').trim();
+                        }
+                    }
+                });
+                document.getElementById('curl-headers').value = JSON.stringify(headers, null, 2);
+            }
+            
+            // Parse body
+            const bodyMatch = commandText.match(/-d\s+['"]([^'"]+)['"]/);
+            if (bodyMatch) {
+                try {
+                    const bodyObj = JSON.parse(bodyMatch[1]);
+                    document.getElementById('curl-body').value = JSON.stringify(bodyObj, null, 2);
+                } catch (e) {
+                    document.getElementById('curl-body').value = bodyMatch[1];
+                }
+            }
+            
+            // Update command preview
+            updateCurlCommandPreview();
+        }
+        
         function loadCurlExample() {
             // Load example API request
-            document.getElementById('curl-method').value = 'GET';
-            document.getElementById('curl-url').value = 'https://jsonplaceholder.typicode.com/posts/1';
-            document.getElementById('curl-headers').value = '{"Content-Type": "application/json"}';
-            document.getElementById('curl-body').value = '';
+            const exampleCommand = `curl -X GET 'https://jsonplaceholder.typicode.com/posts/1' \\
+-H 'accept: application/json' \\
+-H 'Authorization: Bearer YOUR_TOKEN'`;
             
-            updateCurlCommandPreview();
+            document.getElementById('curl-command').value = exampleCommand;
+            
+            // Parse the example to populate the form
+            parseCurlCommand();
+            
             showNotification('Example loaded successfully!', 'success');
         }
         
         function clearCurlForm() {
+            document.getElementById('curl-command').value = '';
             document.getElementById('curl-method').value = 'GET';
             document.getElementById('curl-url').value = '';
             document.getElementById('curl-headers').value = '';
