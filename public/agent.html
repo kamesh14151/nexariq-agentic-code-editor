@@ -2892,7 +2892,7 @@
                 // Remove typing indicator
                 removeCopilotTypingIndicator();
                 
-                // Generate mock AI response with increased token limit
+                // Generate mock AI response with limited length
                 const aiResponse = generateMockResponse(message);
                 
                 // Add AI response with typing effect
@@ -2920,16 +2920,16 @@
             }
         }
         
-        // Generate mock responses with increased token limit (4000+ tokens)
+        // Generate mock responses with limited length (1000 tokens)
         function generateMockResponse(userMessage) {
             const lowerMessage = userMessage.toLowerCase();
             
             if (lowerMessage.includes('code') || lowerMessage.includes('html') || lowerMessage.includes('css') || lowerMessage.includes('javascript')) {
-                return `I'll help you create a comprehensive web development solution. Here's a complete example with detailed explanations:
+                return `I'll help you create a modern web component. Here's a complete example:
 
-## Modern Responsive Web Application
+## Modern Card Component
 
-This example demonstrates a modern, responsive web application with multiple components, animations, and best practices.
+This component features a clean design with hover effects and responsive behavior.
 
 \`\`\`html
 <!DOCTYPE html>
@@ -2937,900 +2937,113 @@ This example demonstrates a modern, responsive web application with multiple com
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Web Application</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Modern Card Component</title>
     <style>
-        :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #6366f1;
-            --accent-color: #818cf8;
-            --text-primary: #1f2937;
-            --text-secondary: #4b5563;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f9fafb;
-            --bg-tertiary: #f3f4f6;
-            --border-color: #e5e7eb;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --radius-sm: 0.25rem;
-            --radius-md: 0.375rem;
-            --radius-lg: 0.5rem;
-            --radius-xl: 0.75rem;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        /* Header Styles */
-        header {
-            background-color: var(--bg-primary);
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--bg-tertiary);
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 4rem 2rem;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        /* Card Components */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
         .card {
-            background-color: var(--bg-primary);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
+        
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
-
-        .card-image {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
+        
         .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-description {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .card-tags {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .tag {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            background-color: var(--bg-tertiary);
-            color: var(--text-secondary);
-            border-radius: var(--radius-sm);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 4rem 2rem;
-            background-color: var(--bg-primary);
-        }
-
-        .features-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .features h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature {
-            text-align: center;
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background-color: var(--bg-tertiary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
             font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        .feature h3 {
-            font-size: 1.25rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            color: #1f2937;
+            margin-bottom: 12px;
         }
-
-        .feature p {
-            color: var(--text-secondary);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--bg-primary);
-            border-top: 1px solid var(--border-color);
-            padding: 2rem;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-column h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-column ul li a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-column ul li a:hover {
-            color: var(--primary-color);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
+        
+        .card-content {
+            color: #6b7280;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <i class="fas fa-code"></i>
-                <span>WebApp</span>
-            </div>
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#features">Features</a>
-                <a href="#gallery">Gallery</a>
-                <a href="#contact">Contact</a>
-            </div>
-            <div class="nav-actions">
-                <button class="btn btn-secondary">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Sign In
-                </button>
-                <button class="btn btn-primary">
-                    Get Started
-                </button>
-            </div>
-        </nav>
-    </header>
-
-    <section class="hero">
-        <h1>Build Beautiful Web Experiences</h1>
-        <p>Create stunning, responsive websites with modern design principles and best practices.</p>
-        <button class="btn btn-primary">
-            <i class="fas fa-rocket"></i>
-            Start Building
-        </button>
-    </section>
-
-    <section class="card-grid">
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://picsum.photos/seed/web1/600/400.jpg');"></div>
-            <div class="card-content">
-                <h3 class="card-title">Responsive Design</h3>
-                <p class="card-description">Create websites that look great on all devices, from mobile phones to desktop computers.</p>
-                <div class="card-footer">
-                    <div class="card-tags">
-                        <span class="tag">CSS</span>
-                        <span class="tag">HTML</span>
-                    </div>
-                    <button class="btn btn-primary">Learn More</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://picsum.photos/seed/web2/600/400.jpg');"></div>
-            <div class="card-content">
-                <h3 class="card-title">Modern JavaScript</h3>
-                <p class="card-description">Build interactive web applications with the latest JavaScript features and frameworks.</p>
-                <div class="card-footer">
-                    <div class="card-tags">
-                        <span class="tag">JavaScript</span>
-                        <span class="tag">React</span>
-                    </div>
-                    <button class="btn btn-primary">Learn More</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://picsum.photos/seed/web3/600/400.jpg');"></div>
-            <div class="card-content">
-                <h3 class="card-title">Performance Optimization</h3>
-                <p class="card-description">Optimize your website for speed and better user experience with proven techniques.</p>
-                <div class="card-footer">
-                    <div class="card-tags">
-                        <span class="tag">Performance</span>
-                        <span class="tag">SEO</span>
-                    </div>
-                    <button class="btn btn-primary">Learn More</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="features">
-        <div class="features-container">
-            <h2>Powerful Features</h2>
-            <div class="features-grid">
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Mobile First</h3>
-                    <p>Design for mobile devices first, then scale up to larger screens.</p>
-                </div>
-                
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-palette"></i>
-                    </div>
-                    <h3>Beautiful UI</h3>
-                    <p>Create stunning user interfaces with modern design principles.</p>
-                </div>
-                
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    <h3>Fast Loading</h3>
-                    <p>Optimize your website for speed and better user experience.</p>
-                </div>
-                
-                <div class="feature">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Secure</h3>
-                    <p>Implement best security practices to protect your users.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-container">
-            <div class="footer-column">
-                <h4>Product</h4>
-                <ul>
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">Pricing</a></li>
-                    <li><a href="#">Documentation</a></li>
-                    <li><a href="#">Updates</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="#">Support</a></li>
-                    <li><a href="#">Community</a></li>
-                    <li><a href="#">Events</a></li>
-                    <li><a href="#">Partners</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Privacy</a></li>
-                    <li><a href="#">Terms</a></li>
-                    <li><a href="#">Cookies</a></li>
-                    <li><a href="#">Licenses</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2023 WebApp. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script>
-        // Add interactivity
-        document.addEventListener('DOMContentLoaded', function() {
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-            
-            // Add animation to cards on scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -100px 0px'
-            };
-            
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = 1;
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-            
-            document.querySelectorAll('.card').forEach(card => {
-                card.style.opacity = 0;
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                observer.observe(card);
-            });
-        });
-    </script>
+    <div class="card">
+        <h3 class="card-title">Modern Design</h3>
+        <p class="card-content">This card component uses modern CSS techniques including gradients, smooth transitions, and subtle shadows for a professional appearance.</p>
+    </div>
 </body>
 </html>
 \`\`\`
 
-This comprehensive web application includes:
+The code above creates a beautiful, interactive card component with:
 
-### Key Features:
-1. **Responsive Design** - Works perfectly on all device sizes
-2. **Modern CSS** - Uses CSS Grid, Flexbox, and CSS Variables
-3. **Interactive Elements** - Smooth scrolling, hover effects, and animations
-4. **Semantic HTML5** - Proper structure for accessibility and SEO
-5. **Performance Optimized** - Efficient CSS and JavaScript
+- **Gradient background** for visual depth
+- **Smooth hover animations** using CSS transforms
+- **Modern spacing** and typography
+- **Responsive design** principles
 
-### Components Included:
-- **Navigation Header** - Sticky navigation with logo and links
-- **Hero Section** - Eye-catching introduction with call-to-action
-- **Card Grid** - Responsive card layout with images and content
-- **Features Section** - Highlighting key product features
-- **Footer** - Multi-column footer with links
-
-### Technical Highlights:
-- **CSS Variables** - For consistent theming and easy customization
-- **Intersection Observer** - For scroll-triggered animations
-- **Mobile-First Approach** - Designed for mobile devices first
-- **Accessibility** - Semantic HTML and proper ARIA attributes
-- **Performance** - Optimized CSS and minimal JavaScript
-
-You can customize the colors, fonts, and content to match your specific needs. The code is well-structured and follows modern web development best practices.`;
+You can customize the colors, spacing, and effects to match your project's design system.`;
             }
             
             if (lowerMessage.includes('explain') || lowerMessage.includes('what is')) {
-                return `I'll provide a comprehensive explanation with detailed examples and practical applications:
+                return `Let me provide a comprehensive explanation:
 
-## Understanding Complex Concepts: A Detailed Guide
+## Key Concepts
 
-When learning new concepts, it's essential to break them down into manageable parts and understand both the theoretical foundations and practical applications. Let's explore this approach in depth.
+Understanding this topic requires breaking it down into several important components:
 
-### 1. **Theoretical Foundation**
-
-Every complex concept is built upon fundamental principles. Understanding these core ideas creates a solid foundation for deeper knowledge.
-
-#### Core Principles:
-- **Abstraction**: Simplifying complex systems by focusing on essential features
-- **Decomposition**: Breaking down complex problems into smaller, manageable parts
-- **Pattern Recognition**: Identifying recurring patterns and structures
-- **Systems Thinking**: Understanding how components interact within a larger system
+### 1. **Fundamental Principles**
+The core concepts that form the foundation of this subject are essential for building a solid understanding.
 
 ### 2. **Practical Applications**
+These principles can be applied in various real-world scenarios:
 
-Theory alone isn't enough; practical application solidifies understanding and reveals nuances that theory might miss.
-
-#### Application Methods:
-- **Hands-on Practice**: Direct engagement with the concept through projects
-- **Case Studies**: Analyzing real-world examples and implementations
-- **Problem Solving**: Applying the concept to solve specific challenges
-- **Teaching Others**: Explaining the concept to reinforce understanding
+- **Business applications** - How this applies in professional settings
+- **Technical implementation** - The technical aspects and considerations
+- **Best practices** - Industry-standard approaches and methodologies
 
 ### 3. **Advanced Considerations**
 
-Once you grasp the basics, you can explore more complex aspects and edge cases.
+For more complex scenarios, you'll want to consider:
 
-#### Advanced Topics:
-- **Optimization**: Improving efficiency and performance
-- **Integration**: Combining with other concepts and systems
-- **Innovation**: Creating new applications and approaches
-- **Troubleshooting**: Identifying and solving complex problems
+> "The key to mastering any concept is understanding not just the 'what' but also the 'why' and 'when' to apply it."
 
-### 4. **Learning Strategies**
+This approach ensures you can adapt the knowledge to different situations and contexts.
 
-Effective learning requires strategic approaches tailored to the complexity of the material.
-
-#### Effective Strategies:
-- **Spaced Repetition**: Reviewing material at increasing intervals
-- **Active Recall**: Testing your knowledge rather than passive review
-- **Interleaving**: Mixing different topics during study sessions
-- **Elaboration**: Connecting new information to existing knowledge
-
-### 5. **Common Challenges and Solutions**
-
-Every learning journey faces obstacles. Recognizing these challenges and having strategies to overcome them is crucial.
-
-#### Typical Challenges:
-- **Information Overload**: Too much information at once
-- **Misconceptions**: Incorrect initial understandings
-- **Plateaus**: Periods where progress seems to stall
-- **Application Gaps**: Difficulty applying theoretical knowledge
-
-#### Solutions:
-- **Chunking**: Breaking information into smaller, manageable pieces
-- **Concept Mapping**: Visualizing relationships between ideas
-- **Deliberate Practice**: Focused practice on specific weaknesses
-- **Mentorship**: Learning from those with more experience
-
-### 6. **Real-World Examples**
-
-Let's examine how these principles apply to specific domains:
-
-#### Example 1: Programming
-- **Theory**: Understanding algorithms, data structures, and design patterns
-- **Practice**: Building projects, debugging code, and optimizing performance
-- **Advanced**: System architecture, scalability, and security considerations
-
-#### Example 2: Design
-- **Theory**: Color theory, typography, and composition principles
-- **Practice**: Creating designs, receiving feedback, and iterating
-- **Advanced**: User experience research, accessibility, and design systems
-
-#### Example 3: Business
-- **Theory**: Market analysis, financial principles, and organizational behavior
-- **Practice**: Running projects, making decisions, and leading teams
-- **Advanced**: Strategic planning, innovation management, and global expansion
-
-### 7. **Continuous Improvement**
-
-Learning is not a one-time event but a continuous process of growth and refinement.
-
-#### Improvement Methods:
-- **Feedback Loops**: Regularly seeking and incorporating feedback
-- **Reflection**: Analyzing successes and failures to extract lessons
-- **Adaptation**: Adjusting approaches based on new information and experiences
-- **Collaboration**: Learning from others through teamwork and community
-
-### 8. **Measuring Progress**
-
-Understanding how to measure your progress helps maintain motivation and identify areas for improvement.
-
-#### Progress Indicators:
-- **Skill Acquisition**: Developing new abilities and competencies
-- **Problem Solving**: Successfully tackling increasingly complex challenges
-- **Efficiency**: Improving speed and quality of work
-- **Innovation**: Creating novel solutions and approaches
-
-### 9. **Leveraging Resources**
-
-Making the most of available resources accelerates learning and provides diverse perspectives.
-
-#### Resource Types:
-- **Educational Materials**: Books, courses, tutorials, and documentation
-- **Community**: Forums, groups, mentors, and peers
-- **Tools**: Software, frameworks, and platforms that facilitate learning
-- **Experiences**: Projects, internships, and real-world applications
-
-### 10. **Developing Expertise**
-
-Moving from proficiency to expertise requires dedication, strategic practice, and a growth mindset.
-
-#### Expertise Development:
-- **Deliberate Practice**: Focused, goal-oriented practice with specific improvement targets
-- **Knowledge Integration**: Connecting disparate pieces of information into a coherent framework
-- **Intuition Development**: Cultivating the ability to make quick, accurate judgments
-- **Mentorship**: Both receiving guidance from experts and providing it to others
-
-### Conclusion
-
-Understanding complex concepts is a journey that combines theoretical knowledge, practical application, strategic learning, and continuous improvement. By approaching learning systematically and embracing both challenges and opportunities, you can develop deep expertise in any field.
-
-Remember that mastery takes time and persistence. Celebrate small victories along the way, stay curious, and remain open to new perspectives and approaches. The most successful learners are those who view challenges as opportunities for growth and maintain a lifelong commitment to learning.
-
-Would you like me to elaborate on any specific aspect of this explanation or provide examples related to a particular field of interest?`;
+Would you like me to dive deeper into any specific aspect of this topic?`;
             }
             
-            return `I'm here to help you with comprehensive web development solutions and detailed explanations. Let me provide you with an extensive overview of my capabilities and how I can assist you in your development journey.
+            return `Thank you for your question! I'm here to help you with a wide range of topics.
 
-## Comprehensive Web Development Assistance
+## How I Can Assist You
 
-### Frontend Development Expertise
+I can help with various tasks including:
 
-I can help you with all aspects of frontend development, from basic HTML/CSS to advanced JavaScript frameworks:
+### 💻 **Development & Coding**
+- Web development (HTML, CSS, JavaScript, React)
+- Backend development (Python, Node.js, APIs)
+- Code debugging and optimization
+- Architecture and design patterns
 
-#### HTML & CSS Fundamentals
-- **Semantic HTML5**: Creating accessible, well-structured markup
-- **Modern CSS**: Flexbox, Grid, Custom Properties, and advanced layouts
-- **Responsive Design**: Mobile-first approaches and media queries
-- **CSS Frameworks**: Bootstrap, Tailwind, and custom design systems
-- **CSS Preprocessors**: Sass, Less, and PostCSS for efficient styling
+### 📝 **Content Creation**
+- Technical writing and documentation
+- Creative writing and storytelling
+- Business content and marketing copy
+- Research and analysis
 
-#### JavaScript Development
-- **Modern JavaScript**: ES6+ features, async/await, modules
-- **DOM Manipulation**: Efficient interaction with web pages
-- **API Integration**: RESTful APIs, GraphQL, and third-party services
-- **State Management**: Context API, Redux, Vuex, and other solutions
-- **Testing**: Unit tests, integration tests, and end-to-end testing
+### 🎨 **Design & UI/UX**
+- User interface design principles
+- User experience optimization
+- Design system creation
+- Accessibility best practices
 
-#### Frontend Frameworks
-- **React**: Components, hooks, context, performance optimization
-- **Vue.js**: Composition API, Vuex, Nuxt.js for SSR
-- **Angular**: Services, dependency injection, RxJS
-- **Svelte**: Reactive programming and compiler optimization
+### 🧠 **Problem Solving**
+- Complex analysis and reasoning
+- Strategic planning and decision making
+- Process optimization
+- Educational explanations
 
-### Backend Development Solutions
-
-I can assist with server-side development, databases, and API design:
-
-#### Server-Side Languages
-- **Node.js**: Express, Koa, NestJS for scalable applications
-- **Python**: Django, Flask, FastAPI for rapid development
-- **PHP**: Laravel, Symfony for enterprise applications
-- **Ruby**: Rails for convention-over-configuration approach
-
-#### Database Management
-- **SQL Databases**: PostgreSQL, MySQL, SQLite design and optimization
-- **NoSQL Solutions**: MongoDB, Redis, Firebase for flexible data storage
-- **ORMs**: Sequelize, Mongoose, Prisma for efficient database interactions
-- **Database Design**: Schema design, normalization, and performance tuning
-
-#### API Development
-- **RESTful APIs**: Best practices, versioning, documentation
-- **GraphQL**: Schema design, resolvers, and efficient data fetching
-- **Authentication**: JWT, OAuth, session management
-- **Security**: CORS, CSRF protection, input validation, sanitization
-
-### DevOps and Deployment
-
-I can guide you through modern deployment and operations practices:
-
-#### Containerization and Orchestration
-- **Docker**: Container creation, optimization, and management
-- **Kubernetes**: Deployment, scaling, and management of containerized apps
-- **CI/CD Pipelines**: GitHub Actions, Jenkins, GitLab CI for automation
-
-#### Cloud Platforms
-- **AWS**: EC2, S3, Lambda, RDS, and other services
-- **Google Cloud**: App Engine, Cloud Functions, Firestore
-- **Azure**: App Service, Functions, Cosmos DB
-- **Vercel/Netlify**: Frontend deployment and serverless functions
-
-#### Monitoring and Performance
-- **Performance Optimization**: Code splitting, lazy loading, caching strategies
-- **Monitoring**: Logging, error tracking, performance metrics
-- **SEO Best Practices**: Meta tags, structured data, page speed optimization
-
-### Specialized Development Areas
-
-I have expertise in specialized web development areas:
-
-#### Web Accessibility
-- **WCAG Compliance**: A, AA, and AAA level guidelines
-- **ARIA Attributes**: Proper implementation for screen readers
-- **Keyboard Navigation**: Ensuring full keyboard accessibility
-- **Color Contrast**: Meeting contrast requirements for readability
-
-#### Progressive Web Apps (PWAs)
-- **Service Workers**: Offline functionality and background sync
-- **Web App Manifests**: Installation and app-like experience
-- **Push Notifications**: User engagement through notifications
-- **Caching Strategies**: Optimizing performance with smart caching
-
-#### Web Security
-- **OWASP Top 10**: Protection against common vulnerabilities
-- **Content Security Policy**: Preventing XSS and injection attacks
-- **HTTPS Implementation**: SSL/TLS configuration and best practices
-- **Data Protection**: GDPR, CCPA compliance and privacy considerations
-
-### Development Workflow and Best Practices
-
-I can help you establish efficient development workflows:
-
-#### Version Control
-- **Git Strategies**: Branching models, commit conventions, and workflows
-- **Collaboration**: Pull requests, code reviews, and conflict resolution
-- **Project Management**: Issue tracking, project boards, and documentation
-
-#### Code Quality
-- **Linting and Formatting**: ESLint, Prettier, and automated code quality checks
-- **Architecture Patterns**: MVC, MVVM, microservices, and monorepos
-- **Documentation**: JSDoc, Markdown, and automated documentation generation
-
-#### Testing Strategies
-- **Unit Testing**: Jest, Mocha, Jasmine for isolated component testing
-- **Integration Testing**: Testing component interactions and API endpoints
-- **E2E Testing**: Cypress, Selenium for full application testing
-- **Visual Regression**: Detecting UI changes with tools like Percy
-
-### Emerging Technologies and Trends
-
-I stay current with the latest web development trends and technologies:
-
-#### Modern JavaScript Features
-- **ES2023+**: Latest JavaScript features and proposals
-- **TypeScript**: Static typing for large-scale applications
-- **WebAssembly**: High-performance applications in the browser
-- **Web Components**: Reusable custom elements across frameworks
-
-#### New CSS Capabilities
-- **Container Queries**: Responsive components based on container size
-- **Cascade Layers**: Better control over CSS specificity
-- **Subgrid**: Advanced grid layouts with nested grids
-- **CSS Houdini**: Low-level access to the browser's rendering engine
-
-#### Performance Innovations
-- **Edge Computing**: CDN edge functions for faster processing
-- **Serverless Architectures**: Scalable, cost-effective backend solutions
-- **JAMstack**: JavaScript, APIs, and Markup for modern web apps
-- **Web Vitals**: Core metrics for user experience optimization
-
-### Learning Resources and Career Development
-
-I can provide guidance on learning paths and career advancement:
-
-#### Learning Strategies
-- **Roadmaps**: Structured learning paths for different specializations
-- **Project-Based Learning**: Building portfolio projects with real-world applications
-- **Community Engagement**: Contributing to open source and attending meetups
-- **Continuous Learning**: Staying updated with newsletters, podcasts, and conferences
-
-#### Career Development
-- **Portfolio Building**: Showcasing projects with detailed explanations
-- **Interview Preparation**: Technical questions and coding challenges
-- **Freelancing**: Finding clients, pricing projects, and delivering value
-- **Specialization**: Finding your niche and developing deep expertise
-
-### Practical Project Examples
-
-I can provide detailed examples and walkthroughs for various project types:
-
-#### E-commerce Applications
-- Product catalogs with filtering and search
-- Shopping cart and checkout processes
-- User authentication and order management
-- Payment integration with Stripe, PayPal, etc.
-
-#### Content Management Systems
-- Custom CMS with admin panels
-- Content modeling and relationships
-- Media management and optimization
-- User roles and permissions
-
-#### Real-time Applications
-- Chat applications with WebSockets
-- Collaborative editing with operational transformation
-- Live notifications and updates
-- Real-time data visualization
-
-#### Data Visualization
-- Charts and graphs with D3.js, Chart.js
-- Interactive dashboards with filtering and drill-down
-- Geographic data visualization with mapping libraries
-- Custom data visualization components
-
-### Troubleshooting and Debugging
-
-I can help you solve complex problems and debug issues:
-
-#### Common Issues
-- **Browser Compatibility**: Handling differences between browsers
-- **Performance Bottlenecks**: Identifying and resolving slow operations
-- **Memory Leaks**: Finding and fixing memory management issues
-- **Concurrency Problems**: Race conditions and async operation handling
-
-#### Debugging Techniques
-- **Browser DevTools**: Using console, network, and performance tabs
-- **Remote Debugging**: Debugging applications on mobile devices
-- **Error Tracking**: Implementing comprehensive error monitoring
-- **Log Analysis**: Extracting insights from application logs
-
-### Conclusion
-
-My goal is to provide you with comprehensive, detailed assistance for all your web development needs. Whether you're a beginner learning the basics or an experienced developer tackling complex challenges, I can offer the guidance, code examples, and explanations you need to succeed.
-
-I'm constantly updating my knowledge to stay current with the rapidly evolving web development landscape, ensuring that the assistance I provide reflects modern best practices and emerging technologies.
-
-Feel free to ask me anything specific about web development, and I'll provide you with detailed, actionable information tailored to your needs and level of expertise. Together, we can build amazing web experiences!`;
+Feel free to ask me anything specific, and I'll provide detailed, helpful responses tailored to your needs!`;
         }
         
         // Add message with Microsoft Copilot styling
@@ -4588,4 +3801,4 @@ Feel free to ask me anything specific about web development, and I'll provide yo
         });
     </script>
 </body>
-</html>
+</html>  also in this real AI works merge both and give me real Ai perfect working and all i needes
