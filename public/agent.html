@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AJ STUDIOZ - AI Assistant</title>
+    
+    <!-- Embedded Favicon -->
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjE2IiB5PSIyMiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QTwvdGV4dD48dGV4dCB4PSIyNCIgeT0iMjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPko8L3RleHQ+PC9zdmc+" type="image/svg+xml">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Poppins:wght@300;400;600&family=Play:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
@@ -70,6 +74,9 @@
             --corporate-blue: #1e40af;
             --corporate-gray: #f8fafc;
             --corporate-dark: #1e293b;
+            
+            /* Embedded logo as data URL */
+            --logo-url: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzAwMDAwMCIvPjx0ZXh0IHg9IjE2IiB5PSIyMiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmZmZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+QTwvdGV4dD48dGV4dCB4PSIyNCIgeT0iMjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPko8L3RleHQ+PC9zdmc+");
         }
 
         [data-theme="dark"] {
@@ -228,19 +235,17 @@
         .handle-center {
             width: 90px;
             height: 90px;
-            background: linear-gradient(145deg, #FBBF24, #b48b1e);
             border-radius: 50%;
             border: 3px solid #f0e68c;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            color: #fff;
-            text-align: center;
-            line-height: 90px;
-            font-size: 2.5rem;
-            font-family: 'Play', sans-serif;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             transition: all 0.5s ease;
             animation: pulse-gold 2.5s infinite;
             z-index: 10;
+            /* Using embedded logo */
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         #vault-toggle:checked ~ .vault-door .handle-ring {
@@ -250,7 +255,6 @@
             background: linear-gradient(145deg, #34D399, #16a34a);
             border-color: #a7f3d0;
             box-shadow: 0 0 35px rgba(52, 211, 153, 0.7), inset 0 0 10px rgba(0,0,0,0.5);
-            text-shadow: 0 0 10px #fff;
             animation: none;
         }
         #vault-toggle:checked ~ .vault-door .locking-bar:nth-of-type(1) { animation: retract-right 0.5s 0.7s forwards; }
@@ -421,15 +425,16 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
-            border-radius: 6px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
             box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+            /* Using embedded logo */
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .logo-text {
@@ -637,13 +642,14 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
+            /* Using embedded logo */
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .header-title h1 {
@@ -881,8 +887,11 @@
         }
 
         .message.ai .message-avatar {
-            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
-            color: white;
+            /* Using embedded logo */
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .message-content {
@@ -1335,7 +1344,6 @@
         .empty-state-icon {
             width: 64px;
             height: 64px;
-            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1343,6 +1351,11 @@
             margin-bottom: 20px;
             font-size: 24px;
             color: white;
+            /* Using embedded logo */
+            background-image: var(--logo-url);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .empty-state h2 {
@@ -1865,7 +1878,7 @@
 
                     <div class="vault-handle">
                         <div class="handle-ring"></div>
-                        <div class="handle-center">AJ</div>
+                        <div class="handle-center"></div>
                     </div>
                 </div>
                 <div class="door-face back"></div>
@@ -1903,7 +1916,7 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <div class="logo-icon">AJ</div>
+                    <div class="logo-icon"></div>
                     <div class="logo-text">STUDIOZ</div>
                 </div>
                 <button class="new-chat-btn" onclick="startNewChat()">
@@ -1947,7 +1960,7 @@
         <div class="main-content">
             <div class="main-header">
                 <div class="header-title">
-                    <div class="ai-avatar">AJ</div>
+                    <div class="ai-avatar"></div>
                     <div>
                         <h1>AJ STUDIOZ AI Assistant</h1>
                         <div class="header-subtitle">Powered by Claude Sonnet-4</div>
@@ -2004,9 +2017,7 @@
                 <div class="chat-container" id="chatContainer">
                     <!-- Empty state -->
                     <div class="empty-state" id="emptyState">
-                        <div class="empty-state-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
+                        <div class="empty-state-icon"></div>
                         <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
                         <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
                         
@@ -2750,7 +2761,7 @@
             
             messageDiv.innerHTML = `
                 <div class="message-avatar">
-                    ${type === 'user' ? userAvatar.textContent : 'AJ'}
+                    ${type === 'user' ? userAvatar.textContent : ''}
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">
@@ -2990,7 +3001,7 @@
             
             messageDiv.innerHTML = `
                 <div class="message-avatar">
-                    ${type === 'user' ? userAvatar.textContent : 'AJ'}
+                    ${type === 'user' ? userAvatar.textContent : ''}
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">
@@ -3263,7 +3274,7 @@
             typingDiv.id = 'typing-indicator';
             
             typingDiv.innerHTML = `
-                <div class="message-avatar">AJ</div>
+                <div class="message-avatar"></div>
                 <div class="message-content">
                     <div class="typing-indicator">
                         <i class="fas fa-robot" style="margin-right: 8px;"></i>
@@ -3300,9 +3311,7 @@
         function startNewChat() {
             chatContainer.innerHTML = `
                 <div class="empty-state" id="emptyState">
-                    <div class="empty-state-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
+                    <div class="empty-state-icon"></div>
                     <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
                     <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
                     
