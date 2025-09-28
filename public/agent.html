@@ -43,6 +43,9 @@
             --copilot-bg: #f6f8fa;
             --copilot-border: #d1d9e0;
             --copilot-code-bg: #0d1117;
+            --modal-bg: rgba(0, 0, 0, 0.7);
+            --modal-content-bg: #ffffff;
+            --modal-border-radius: 16px;
         }
 
         [data-theme="dark"] {
@@ -63,6 +66,8 @@
             --copilot-bg: #161b22;
             --copilot-border: #30363d;
             --copilot-code-bg: #0d1117;
+            --modal-bg: rgba(0, 0, 0, 0.85);
+            --modal-content-bg: #2d2d2d;
         }
 
         /* Login Page Styles - unchanged */
@@ -803,7 +808,7 @@
             background-color: white;
         }
 
-        /* Messages - Copilot Style */
+        /* Messages - Copilot Style - IMPROVED */
         .message {
             display: flex;
             gap: 12px;
@@ -907,7 +912,7 @@
             color: var(--text-primary);
         }
 
-        /* Copilot Style Formatted Content */
+        /* Copilot Style Formatted Content - IMPROVED */
         .formatted-content {
             font-size: 14px;
             line-height: 1.6;
@@ -930,10 +935,22 @@
             color: var(--text-primary);
         }
 
-        .formatted-content h1 { font-size: 1.75em; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-        .formatted-content h2 { font-size: 1.5em; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
-        .formatted-content h3 { font-size: 1.25em; }
-        .formatted-content h4 { font-size: 1.1em; }
+        .formatted-content h1 { 
+            font-size: 1.75em; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 8px; 
+        }
+        .formatted-content h2 { 
+            font-size: 1.5em; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 6px; 
+        }
+        .formatted-content h3 { 
+            font-size: 1.25em; 
+        }
+        .formatted-content h4 { 
+            font-size: 1.1em; 
+        }
 
         .formatted-content ul, .formatted-content ol {
             margin-left: 24px;
@@ -1335,18 +1352,19 @@
             line-height: 1.4;
         }
 
-        /* Settings Modal */
+        /* Settings Modal - IMPROVED */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: var(--modal-bg);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            backdrop-filter: blur(8px);
         }
 
         .modal.active {
@@ -1354,64 +1372,89 @@
         }
 
         .modal-content {
-            background-color: var(--primary-bg);
-            border-radius: 12px;
+            background-color: var(--modal-content-bg);
+            border-radius: var(--modal-border-radius);
             width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
+            max-width: 600px;
+            max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
-            padding: 20px;
+            padding: 24px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: linear-gradient(135deg, var(--aj-gold), #ff8c61);
+            color: white;
+            border-top-left-radius: var(--modal-border-radius);
+            border-top-right-radius: var(--modal-border-radius);
         }
 
         .modal-title {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 600;
-            color: var(--text-primary);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
         }
 
         .modal-close {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
-            color: var(--text-secondary);
+            color: white;
             cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
+            padding: 6px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s ease;
         }
 
         .modal-close:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
         }
 
         .modal-body {
-            padding: 20px;
+            padding: 24px;
         }
 
         .settings-section {
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .settings-section h3 {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .setting-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
+            padding: 16px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -1421,18 +1464,19 @@
 
         .setting-label {
             font-size: 14px;
+            font-weight: 500;
             color: var(--text-primary);
         }
 
         .setting-description {
             font-size: 12px;
             color: var(--text-secondary);
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
         .toggle-switch {
             position: relative;
-            width: 44px;
+            width: 48px;
             height: 24px;
             background-color: var(--border-color);
             border-radius: 12px;
@@ -1457,12 +1501,12 @@
         }
 
         .toggle-switch.active::after {
-            transform: translateX(20px);
+            transform: translateX(24px);
         }
 
         .select-input {
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             background-color: var(--input-bg);
@@ -1503,10 +1547,12 @@
 
         .toast.success {
             border-color: #4caf50;
+            background-color: rgba(76, 175, 80, 0.1);
         }
 
         .toast.error {
             border-color: #f44336;
+            background-color: rgba(244, 67, 54, 0.1);
         }
 
         /* Status Indicator */
@@ -1591,6 +1637,7 @@
             .modal-content {
                 width: 95%;
                 max-height: 90vh;
+                border-radius: 12px;
             }
 
             .header-actions {
@@ -1647,6 +1694,27 @@
             .code-btn {
                 padding: 3px 8px;
                 font-size: 10px;
+            }
+            
+            /* Mobile improvements for settings modal */
+            .modal-header {
+                padding: 16px;
+            }
+            
+            .modal-title {
+                font-size: 18px;
+            }
+            
+            .modal-body {
+                padding: 16px;
+            }
+            
+            .settings-section {
+                margin-bottom: 24px;
+            }
+            
+            .setting-item {
+                padding: 12px 0;
             }
         }
 
@@ -1946,7 +2014,7 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Settings Modal - IMPROVED -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -3121,7 +3189,7 @@
             showToast('Redirecting to upgrade page...', 'success');
         }
         
-        // Settings modal
+        // Settings modal - IMPROVED
         function openSettings() {
             settingsModal.classList.add('active');
             state.ui.modals.settings = true;
