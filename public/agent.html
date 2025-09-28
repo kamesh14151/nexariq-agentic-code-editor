@@ -2518,8 +2518,8 @@
                 // Remove typing indicator
                 removeTypingIndicator();
                 
-                // Add AI response to chat with fade-in effect
-                addMessageWithFadeIn('ai', aiResponse);
+                // Add AI response to chat with typing effect
+                addMessageWithTypingEffect('ai', aiResponse);
                 
                 // Extract code from response if available
                 extractCodeFromResponse(aiResponse);
@@ -2552,8 +2552,8 @@
             }
         }
         
-        // Add message with fade-in effect - IMPROVED
-        function addMessageWithFadeIn(type, content) {
+        // Add message with typing effect - NEW
+        function addMessageWithTypingEffect(type, content) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             messageDiv.style.opacity = '0';
@@ -2585,7 +2585,7 @@
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">
-                        ${formatContent(content)}
+                        <div class="formatted-content" id="typing-content-${Date.now()}"></div>
                         ${messageActions}
                     </div>
                     <div class="message-timestamp">${timestamp}</div>
@@ -2595,33 +2595,67 @@
             chatContainer.appendChild(messageDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            // Highlight code blocks with improved stability
-            messageDiv.querySelectorAll('pre code').forEach(block => {
-                hljs.highlightElement(block);
-                
-                // Add smooth scroll behavior for code blocks
-                const codeBlock = block.closest('.code-block');
-                if (codeBlock) {
-                    codeBlock.style.scrollBehavior = 'smooth';
-                    
-                    // Ensure code blocks are properly formatted on mobile
-                    if (window.innerWidth <= 768) {
-                        const codeContent = codeBlock.querySelector('.code-content');
-                        if (codeContent) {
-                            codeContent.style.fontSize = '13px';
-                            codeContent.style.lineHeight = '1.4';
-                        }
-                    }
-                }
-            });
+            // Get the content element
+            const contentElement = messageDiv.querySelector('.formatted-content');
+            const contentId = contentElement.id;
             
-            // Fade in
-            setTimeout(() => {
-                messageDiv.style.opacity = '1';
-            }, 10);
+            // Start typing effect
+            typeWriter(content, contentElement, 0);
             
             // Add to message history
             state.chat.messages.push({ type, content, timestamp });
+        }
+        
+        // Typewriter effect - NEW
+        function typeWriter(text, element, index) {
+            if (index < text.length) {
+                // Check if we're at a code block start
+                if (text.substr(index, 3) === '```') {
+                    // Find the end of the code block
+                    const codeEnd = text.indexOf('```', index + 3);
+                    if (codeEnd !== -1) {
+                        // Extract the code block
+                        const codeBlock = text.substring(index, codeEnd + 3);
+                        // Add the entire code block at once
+                        element.innerHTML += formatContent(codeBlock);
+                        
+                        // Highlight code blocks
+                        element.querySelectorAll('pre code').forEach(block => {
+                            hljs.highlightElement(block);
+                        });
+                        
+                        // Continue after the code block
+                        setTimeout(() => {
+                            typeWriter(text, element, codeEnd + 3);
+                        }, 50);
+                        return;
+                    }
+                }
+                
+                // Add character by character for regular text
+                element.innerHTML += text.charAt(index);
+                index++;
+                
+                // Calculate typing speed (random between 10-30ms per character)
+                const typingSpeed = Math.random() * 20 + 10;
+                
+                setTimeout(() => {
+                    typeWriter(text, element, index);
+                }, typingSpeed);
+            } else {
+                // Final formatting after typing is complete
+                const formattedContent = formatContent(element.innerHTML);
+                element.innerHTML = formattedContent;
+                
+                // Highlight code blocks
+                element.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Show the message with fade-in effect
+                const messageDiv = element.closest('.message');
+                messageDiv.style.opacity = '1';
+            }
         }
         
         // Extract code from AI response - IMPROVED
