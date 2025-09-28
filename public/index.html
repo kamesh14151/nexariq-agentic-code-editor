@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexariq - AI-Powered Development Platform</title>
-    <link rel="icon" href="https://z-cdn-media.chatglm.cn/testimage_0_1740459289143.png" type="image/png">
+    <link rel="icon" href="nexariq-logo.jpg" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -683,104 +683,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        /* Terminal - Initially Collapsed */
-        .terminal {
-            height: 36px; /* Initially collapsed */
-            background: rgba(15, 15, 16, 0.8);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .terminal.expanded {
-            height: 180px; /* Expanded height */
-        }
-
-        .terminal-header {
-            padding: 0.4rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-        }
-
-        .terminal-title {
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .terminal-toggle {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: color 0.3s ease;
-        }
-
-        .terminal-toggle:hover {
-            color: var(--primary-blue);
-        }
-
-        .terminal.expanded .terminal-toggle {
-            transform: rotate(180deg);
-        }
-
-        .terminal-content {
-            flex: 1;
-            padding: 0.75rem;
-            overflow-y: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            display: none;
-        }
-
-        .terminal.expanded .terminal-content {
-            display: block;
-        }
-
-        .terminal-line {
-            margin-bottom: 0.4rem;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .terminal-prompt {
-            color: var(--primary-blue);
-            margin-right: 0.4rem;
-            flex-shrink: 0;
-        }
-
-        .terminal-output {
-            flex: 1;
-        }
-
-        .terminal-input-container {
-            display: flex;
-            align-items: center;
-            margin-top: 0.4rem;
-        }
-
-        .terminal-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            outline: none;
-        }
-
         /* Full Page Editor Header */
         .editor-page-header {
             display: flex;
@@ -1163,6 +1065,342 @@
             transform: scale(1.1);
         }
 
+        /* API Tester Modal */
+        .api-tester-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .api-tester-modal.open {
+            display: flex;
+        }
+
+        .api-tester-container {
+            background: linear-gradient(135deg, var(--card-bg), rgba(26, 26, 27, 0.9));
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 1200px;
+            height: 90%;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .api-tester-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 15, 16, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .api-tester-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .api-tester-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .api-tester-close:hover {
+            color: var(--danger);
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .api-tester-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .api-tester-request {
+            flex: 1;
+            padding: 1.5rem;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .api-tester-response {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .api-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .api-form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .api-form-input,
+        .api-form-select,
+        .api-form-textarea {
+            width: 100%;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .api-form-input:focus,
+        .api-form-select:focus,
+        .api-form-textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+
+        .api-form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .api-form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .api-form-row .api-form-group {
+            flex: 1;
+        }
+
+        .api-headers-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .api-headers-header {
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .api-headers-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .api-headers-add {
+            background: var(--primary-blue);
+            border: none;
+            color: var(--primary-black);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .api-headers-add:hover {
+            background: var(--electric-blue);
+            transform: translateY(-2px);
+        }
+
+        .api-headers-list {
+            padding: 1rem;
+        }
+
+        .api-header-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+
+        .api-header-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .api-header-key,
+        .api-header-value {
+            flex: 1;
+            background: var(--pure-black);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .api-header-key:focus,
+        .api-header-value:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .api-header-remove {
+            background: var(--danger);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .api-header-remove:hover {
+            background: #ff3838;
+            transform: scale(1.1);
+        }
+
+        .api-send-button {
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue));
+            border: none;
+            color: var(--primary-black);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .api-send-button:hover {
+            background: linear-gradient(135deg, #00A8E0, #0066CC);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--glow-blue);
+        }
+
+        .api-response-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .api-response-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .api-response-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .api-response-status.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .api-response-status.error {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .api-response-status.info {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--primary-blue);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .api-response-headers {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--dark-gray);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .api-response-headers-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .api-response-body {
+            padding: 0.75rem;
+            background: var(--dark-gray);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .api-response-body-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .api-response-body pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .api-response-empty {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
+            font-style: italic;
+        }
+
         /* Footer */
         footer {
             background: linear-gradient(135deg, var(--darker-gray), var(--pure-black));
@@ -1393,10 +1631,6 @@
                 border-bottom: 1px solid var(--border-color);
             }
 
-            .terminal {
-                height: 36px;
-            }
-
             .settings-panel {
                 width: 100%;
                 right: -100%;
@@ -1407,6 +1641,20 @@
                 right: 20px;
                 left: 20px;
                 height: 350px;
+            }
+
+            .api-tester-container {
+                width: 95%;
+                height: 95%;
+            }
+
+            .api-tester-content {
+                flex-direction: column;
+            }
+
+            .api-tester-request {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
             }
         }
 
@@ -1456,7 +1704,7 @@
     <!-- Loading Screen -->
     <div class="loader" id="loader">
         <div class="loader-logo">
-            <img src="https://z-cdn-media.chatglm.cn/testimage_0_1740459289143.png" alt="Nexariq Logo">
+            <img src="nexariq-logo.jpg" alt="Nexariq Logo">
         </div>
         <div class="loader-text">Nexariq</div>
         <div class="loader-progress">
@@ -1481,7 +1729,7 @@
     <header>
         <div class="logo" onclick="showDashboard()">
             <div class="logo-icon">
-                <img src="https://z-cdn-media.chatglm.cn/testimage_0_1740459289143.png" alt="Nexariq Logo">
+                <img src="nexariq-logo.jpg" alt="Nexariq Logo">
             </div>
             <div>
                 <div class="logo-text">Nexariq</div>
@@ -1538,24 +1786,7 @@
                     </div>
                 </div>
                 
-                <div class="card" id="terminal-card" onclick="showTerminal()">
-                    <div class="card-icon">
-                        <i class="fas fa-terminal"></i>
-                    </div>
-                    <h2 class="card-title">Terminal</h2>
-                    <p class="card-description">Execute commands, run scripts, and manage your projects with our powerful terminal interface with AI assistance.</p>
-                    <div class="card-features">
-                        <span class="feature-tag">Command Line</span>
-                        <span class="feature-tag">Script Execution</span>
-                        <span class="feature-tag">AI Assistance</span>
-                    </div>
-                    <div class="card-action">
-                        <span>Open Terminal</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                </div>
-                
-                <div class="card" id="curl-card" onclick="showCurl()">
+                <div class="card" id="api-card" onclick="showAPITester()">
                     <div class="card-icon">
                         <i class="fas fa-plug"></i>
                     </div>
@@ -1631,9 +1862,9 @@
                             <i class="fas fa-folder"></i>
                             <span>Files</span>
                         </button>
-                        <button class="action-button" onclick="toggleTerminal()">
-                            <i class="fas fa-terminal"></i>
-                            <span>Terminal</span>
+                        <button class="action-button" onclick="openAPITester()">
+                            <i class="fas fa-plug"></i>
+                            <span>API</span>
                         </button>
                         <button class="action-button" onclick="openSettings()">
                             <i class="fas fa-cog"></i>
@@ -1729,33 +1960,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Terminal - Initially Collapsed -->
-                <div class="terminal" id="terminal">
-                    <div class="terminal-header" onclick="toggleTerminal()">
-                        <div class="terminal-title">
-                            <i class="fas fa-terminal"></i>
-                            <span>Terminal</span>
-                        </div>
-                        <button class="terminal-toggle">
-                            <i class="fas fa-chevron-up"></i>
-                        </button>
-                    </div>
-                    <div class="terminal-content" id="terminal-content">
-                        <div class="terminal-line">
-                            <div class="terminal-prompt">$</div>
-                            <div class="terminal-output">Welcome to Nexariq Terminal</div>
-                        </div>
-                        <div class="terminal-line">
-                            <div class="terminal-prompt">$</div>
-                            <div class="terminal-output">Type 'help' for available commands</div>
-                        </div>
-                        <div class="terminal-input-container">
-                            <div class="terminal-prompt">$</div>
-                            <input type="text" class="terminal-input" id="terminal-input" placeholder="Enter command..." onkeypress="handleTerminalInput(event)">
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <!-- Minimal Branding -->
@@ -1766,6 +1970,94 @@
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- API Tester Modal -->
+    <div class="api-tester-modal" id="api-tester-modal">
+        <div class="api-tester-container">
+            <div class="api-tester-header">
+                <div class="api-tester-title">
+                    <i class="fas fa-plug"></i>
+                    <span>API Tester</span>
+                </div>
+                <button class="api-tester-close" onclick="closeAPITester()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="api-tester-content">
+                <div class="api-tester-request">
+                    <div class="api-form-group">
+                        <label class="api-form-label">Request Method</label>
+                        <select class="api-form-select" id="api-method">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PATCH">PATCH</option>
+                            <option value="HEAD">HEAD</option>
+                            <option value="OPTIONS">OPTIONS</option>
+                        </select>
+                    </div>
+                    
+                    <div class="api-form-group">
+                        <label class="api-form-label">URL</label>
+                        <input type="text" class="api-form-input" id="api-url" placeholder="https://api.example.com/endpoint">
+                    </div>
+                    
+                    <div class="api-form-group">
+                        <label class="api-form-label">Headers</label>
+                        <div class="api-headers-container">
+                            <div class="api-headers-header">
+                                <div class="api-headers-title">Request Headers</div>
+                                <button class="api-headers-add" onclick="addAPIHeader()">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                            </div>
+                            <div class="api-headers-list" id="api-headers-list">
+                                <div class="api-header-item">
+                                    <input type="text" class="api-header-key" placeholder="Header name" value="Content-Type">
+                                    <input type="text" class="api-header-value" placeholder="Header value" value="application/json">
+                                    <button class="api-header-remove" onclick="removeAPIHeader(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="api-header-item">
+                                    <input type="text" class="api-header-key" placeholder="Header name" value="Authorization">
+                                    <input type="text" class="api-header-value" placeholder="Header value" value="Bearer YOUR_TOKEN">
+                                    <button class="api-header-remove" onclick="removeAPIHeader(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="api-form-group">
+                        <label class="api-form-label">Request Body (JSON)</label>
+                        <textarea class="api-form-textarea" id="api-body" placeholder='{"key": "value"}'></textarea>
+                    </div>
+                    
+                    <button class="api-send-button" onclick="sendAPIRequest()">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Send Request</span>
+                    </button>
+                </div>
+                
+                <div class="api-tester-response">
+                    <div class="api-response-section">
+                        <h3 class="api-response-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Response</span>
+                        </h3>
+                        <div id="api-response-content">
+                            <div class="api-response-empty">
+                                Send a request to see the response here
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Settings Panel -->
@@ -1924,9 +2216,9 @@
         let editorInitialized = false;
         let currentFile = 'index.html';
         let fileExplorerCollapsed = false;
-        let terminalCollapsed = true; // Initially collapsed
         let settingsPanelOpen = false;
         let aiAssistantOpen = false;
+        let apiTesterOpen = false;
         
         // Initialize the app
         window.addEventListener('load', () => {
@@ -1940,9 +2232,6 @@
             
             // Initialize settings event listeners
             initializeSettings();
-            
-            // Set terminal to initially collapsed
-            document.getElementById('terminal').classList.remove('expanded');
         });
         
         // Add floating particles
@@ -2000,27 +2289,17 @@
             window.location.href = 'agent.html';
         }
         
-        // Show Terminal
-        function showTerminal() {
+        // Show API Tester
+        function showAPITester() {
             showEditor();
-            // Make sure terminal is visible
-            if (terminalCollapsed) {
-                toggleTerminal();
-            }
-            // Focus on terminal input
             setTimeout(() => {
-                document.getElementById('terminal-input').focus();
+                openAPITester();
             }, 300);
         }
         
         // Show Analytics
         function showAnalytics() {
             showNotification('Analytics feature coming soon!', 'info');
-        }
-        
-        // Show cURL
-        function showCurl() {
-            showNotification('API Tester feature coming soon!', 'info');
         }
         
         // Notification system
@@ -2602,106 +2881,6 @@ if __name__ == "__main__":
             }
         }
         
-        // Terminal Functions
-        function toggleTerminal() {
-            const terminal = document.getElementById('terminal');
-            terminalCollapsed = !terminalCollapsed;
-            
-            if (terminalCollapsed) {
-                terminal.classList.remove('expanded');
-            } else {
-                terminal.classList.add('expanded');
-                // Focus on terminal input when expanded
-                setTimeout(() => {
-                    document.getElementById('terminal-input').focus();
-                }, 300);
-            }
-        }
-        
-        function handleTerminalInput(event) {
-            if (event.key === 'Enter') {
-                const input = event.target;
-                const command = input.value.trim();
-                
-                if (command) {
-                    // Add command to terminal
-                    addTerminalLine(`$ ${command}`);
-                    
-                    // Process command
-                    processTerminalCommand(command);
-                    
-                    // Clear input
-                    input.value = '';
-                }
-            }
-        }
-        
-        function addTerminalLine(text, isCommand = false) {
-            const terminalContent = document.getElementById('terminal-content');
-            const inputContainer = terminalContent.querySelector('.terminal-input-container');
-            
-            const line = document.createElement('div');
-            line.className = 'terminal-line';
-            
-            const prompt = document.createElement('div');
-            prompt.className = 'terminal-prompt';
-            prompt.textContent = isCommand ? '$' : '';
-            
-            const output = document.createElement('div');
-            output.className = 'terminal-output';
-            output.textContent = text;
-            
-            line.appendChild(prompt);
-            line.appendChild(output);
-            
-            // Insert before input container
-            terminalContent.insertBefore(line, inputContainer);
-            
-            // Scroll to bottom
-            terminalContent.scrollTop = terminalContent.scrollHeight;
-        }
-        
-        function processTerminalCommand(command) {
-            const cmd = command.toLowerCase();
-            
-            // Simple command processing
-            if (cmd === 'help') {
-                addTerminalLine('Available commands:');
-                addTerminalLine('  help - Show this help message');
-                addTerminalLine('  clear - Clear the terminal');
-                addTerminalLine('  date - Show current date and time');
-                addTerminalLine('  echo [text] - Echo the provided text');
-                addTerminalLine('  run - Run the current code');
-                addTerminalLine('  theme [dark|light] - Change editor theme');
-            } else if (cmd === 'clear') {
-                const terminalContent = document.getElementById('terminal-content');
-                const lines = terminalContent.querySelectorAll('.terminal-line');
-                lines.forEach(line => line.remove());
-            } else if (cmd === 'date') {
-                addTerminalLine(new Date().toString());
-            } else if (cmd.startsWith('echo ')) {
-                const text = command.substring(5);
-                addTerminalLine(text);
-            } else if (cmd === 'run') {
-                addTerminalLine('Running code...');
-                // In a real implementation, this would execute the code
-                setTimeout(() => {
-                    addTerminalLine('Code executed successfully!');
-                }, 1000);
-            } else if (cmd.startsWith('theme ')) {
-                const theme = command.substring(6);
-                if (theme === 'dark' || theme === 'light') {
-                    document.getElementById('theme-select').value = theme;
-                    applyTheme(theme);
-                    addTerminalLine(`Theme changed to ${theme}`);
-                } else {
-                    addTerminalLine('Invalid theme. Use "dark" or "light"');
-                }
-            } else {
-                addTerminalLine(`Command not found: ${cmd}. Type "help" for available commands.`);
-            }
-        }
-        
         // Settings Functions
         function openSettings() {
             const settingsPanel = document.getElementById('settings-panel');
@@ -2908,6 +3087,175 @@ if __name__ == "__main__":
                     document.exitFullscreen();
                 }
             }
+        }
+
+        // API Tester Functions
+        function openAPITester() {
+            const modal = document.getElementById('api-tester-modal');
+            modal.classList.add('open');
+            apiTesterOpen = true;
+        }
+
+        function closeAPITester() {
+            const modal = document.getElementById('api-tester-modal');
+            modal.classList.remove('open');
+            apiTesterOpen = false;
+        }
+
+        function addAPIHeader() {
+            const headersList = document.getElementById('api-headers-list');
+            const headerItem = document.createElement('div');
+            headerItem.className = 'api-header-item';
+            headerItem.innerHTML = `
+                <input type="text" class="api-header-key" placeholder="Header name">
+                <input type="text" class="api-header-value" placeholder="Header value">
+                <button class="api-header-remove" onclick="removeAPIHeader(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            headersList.appendChild(headerItem);
+        }
+
+        function removeAPIHeader(button) {
+            button.parentElement.remove();
+        }
+
+        async function sendAPIRequest() {
+            const method = document.getElementById('api-method').value;
+            const url = document.getElementById('api-url').value;
+            const body = document.getElementById('api-body').value;
+            
+            if (!url) {
+                showNotification('Please enter a URL', 'warning');
+                return;
+            }
+
+            // Collect headers
+            const headers = {};
+            const headerItems = document.querySelectorAll('.api-header-item');
+            headerItems.forEach(item => {
+                const key = item.querySelector('.api-header-key').value.trim();
+                const value = item.querySelector('.api-header-value').value.trim();
+                if (key && value) {
+                    headers[key] = value;
+                }
+            });
+
+            // Prepare request options
+            const options = {
+                method: method,
+                headers: headers
+            };
+
+            // Add body for methods that support it
+            if (['POST', 'PUT', 'PATCH'].includes(method) && body) {
+                try {
+                    options.body = JSON.stringify(JSON.parse(body));
+                } catch (e) {
+                    showNotification('Invalid JSON in request body', 'error');
+                    return;
+                }
+            }
+
+            // Show loading state
+            const responseContent = document.getElementById('api-response-content');
+            responseContent.innerHTML = `
+                <div class="api-response-status info">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Sending request...</span>
+                </div>
+            `;
+
+            try {
+                // Send the request
+                const response = await fetch(url, options);
+                
+                // Get response data
+                const responseData = await response.text();
+                let responseJson;
+                
+                try {
+                    responseJson = JSON.parse(responseData);
+                } catch (e) {
+                    // Response is not JSON
+                }
+
+                // Display response
+                displayAPIResponse(response, responseJson || responseData, response.headers);
+                
+                showNotification('Request completed successfully!', 'success');
+            } catch (error) {
+                // Display error
+                responseContent.innerHTML = `
+                    <div class="api-response-status error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Error: ${error.message}</span>
+                    </div>
+                `;
+                
+                showNotification('Request failed', 'error');
+            }
+        }
+
+        function displayAPIResponse(response, data, headers) {
+            const responseContent = document.getElementById('api-response-content');
+            
+            // Format status
+            let statusClass = 'info';
+            let statusIcon = 'info-circle';
+            
+            if (response.status >= 200 && response.status < 300) {
+                statusClass = 'success';
+                statusIcon = 'check-circle';
+            } else if (response.status >= 400) {
+                statusClass = 'error';
+                statusIcon = 'exclamation-circle';
+            }
+            
+            // Format headers
+            let headersHtml = '';
+            if (headers) {
+                headers.forEach((value, key) => {
+                    headersHtml += `<div>${key}: ${value}</div>`;
+                });
+            }
+            
+            // Format body
+            let bodyHtml = '';
+            if (typeof data === 'object') {
+                bodyHtml = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } else {
+                bodyHtml = `<pre>${data}</pre>`;
+            }
+            
+            responseContent.innerHTML = `
+                <div class="api-response-status ${statusClass}">
+                    <i class="fas fa-${statusIcon}"></i>
+                    <span>${response.status} ${response.statusText}</span>
+                </div>
+                
+                <div class="api-response-section">
+                    <h4 class="api-response-title">
+                        <i class="fas fa-list"></i>
+                        <span>Response Headers</span>
+                    </h4>
+                    <div class="api-response-headers">
+                        ${headersHtml || 'No headers'}
+                    </div>
+                </div>
+                
+                <div class="api-response-section">
+                    <h4 class="api-response-title">
+                        <i class="fas fa-code"></i>
+                        <span>Response Body</span>
+                    </h4>
+                    <div class="api-response-body">
+                        <div class="api-response-body-content">
+                            ${bodyHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         // Add smooth scrolling to all internal links
