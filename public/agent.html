@@ -37,8 +37,9 @@
             --aj-gold-glow: rgba(251, 191, 36, 0.6);
             --aj-green: #34D399;
             --aj-green-glow: rgba(52, 211, 153, 0.7);
-            --code-bg: #1e1e1e;
-            --code-text: #e6edf3;
+            /* Code block styling - updated for pure black background and white text */
+            --code-bg: #000000;
+            --code-text: #ffffff;
             --copilot-text: #1e1e1e;
             --copilot-bg: #f6f8fa;
             --copilot-border: #d1d9e0;
@@ -60,7 +61,7 @@
             --shell-color: #89e051;
             --yaml-color: #cb171e;
             --xml-color: #0060ac;
-            --code-header-bg: #161b22;
+            --code-header-bg: #1a1a1a;
             --code-header-border: #30363d;
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
@@ -78,15 +79,15 @@
             --message-user-bg: #2a4f3a;
             --message-ai-bg: #1e1e1e;
             --border-color: #404040;
-            --code-bg: #0d1117;
-            --code-text: #e6edf3;
+            --code-bg: #000000; /* Pure black in dark mode too */
+            --code-text: #ffffff; /* Pure white in dark mode too */
             --copilot-text: #e6edf3;
             --copilot-bg: #161b22;
             --copilot-border: #30363d;
             --copilot-code-bg: #0d1117;
             --modal-bg: rgba(0, 0, 0, 0.85);
             --modal-content-bg: #2d2d2d;
-            --code-header-bg: #0d1117;
+            --code-header-bg: #1a1a1a;
             --code-header-border: #30363d;
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
@@ -1082,8 +1083,8 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
             line-height: 1.5;
-            color: var(--code-text);
-            background-color: var(--code-bg);
+            color: var(--code-text); /* White text in black box */
+            background-color: var(--code-bg); /* Pure black background */
             max-height: 400px;
             overflow-y: auto;
         }
