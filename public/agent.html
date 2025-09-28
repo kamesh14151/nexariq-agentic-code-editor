@@ -14,6 +14,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
     
     <style>
         /* Existing styles remain the same */
@@ -65,6 +66,10 @@
             --code-header-border: #30363d;
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
+            /* Corporate colors */
+            --corporate-blue: #1e40af;
+            --corporate-gray: #f8fafc;
+            --corporate-dark: #1e293b;
         }
 
         [data-theme="dark"] {
@@ -1618,6 +1623,35 @@
             box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.3);
         }
 
+        /* Corporate styling */
+        .corporate-header {
+            background-color: var(--corporate-blue);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .corporate-header i {
+            font-size: 16px;
+        }
+
+        .corporate-badge {
+            background-color: var(--corporate-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+
         /* Mobile Responsive - IMPROVED */
         @media (max-width: 768px) {
             .sidebar {
@@ -2148,6 +2182,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // Initialize highlight.js
         hljs.highlightAll();
@@ -2172,7 +2207,8 @@
                 messages: [],
                 contextWindow: [],
                 pendingMessages: [],
-                hasMessages: false
+                hasMessages: false,
+                currentChatId: null
             },
             ui: {
                 modals: { settings: false, billing: false },
@@ -2259,6 +2295,7 @@
                 state.auth.user = user;
                 showMainApp();
                 updateUserProfile(user);
+                loadUserConversations();
             } else {
                 // User is signed out
                 state.auth.user = null;
@@ -2416,27 +2453,123 @@
             });
         }
         
+        // Load user conversations from Firestore
+        async function loadUserConversations() {
+            if (!state.auth.user) return;
+            
+            try {
+                const conversationsRef = db.collection('users').doc(state.auth.user.uid).collection('conversations');
+                const snapshot = await conversationsRef.orderBy('updatedAt', 'desc').limit(10).get();
+                
+                const chatHistory = document.getElementById('chatHistory');
+                chatHistory.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    // No conversations found, show empty state
+                    const emptyItem = document.createElement('div');
+                    emptyItem.className = 'chat-history-item';
+                    emptyItem.innerHTML = '<i class="fas fa-inbox"></i><span>No conversations yet</span>';
+                    emptyItem.style.color = 'var(--text-tertiary)';
+                    emptyItem.style.cursor = 'default';
+                    chatHistory.appendChild(emptyItem);
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const conversation = doc.data();
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'chat-history-item';
+                    historyItem.innerHTML = `
+                        <i class="fas fa-message"></i>
+                        <span>${conversation.title || 'Untitled Conversation'}</span>
+                        <span class="corporate-badge">${conversation.messagesCount || 0} msgs</span>
+                    `;
+                    historyItem.onclick = () => loadConversation(doc.id, conversation);
+                    chatHistory.appendChild(historyItem);
+                });
+                
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                showToast('Failed to load conversations', 'error');
+            }
+        }
+        
+        // Save conversation to Firestore
+        async function saveConversation() {
+            if (!state.auth.user || state.chat.messages.length === 0) return;
+            
+            try {
+                const conversationRef = db.collection('users').doc(state.auth.user.uid).collection('conversations');
+                
+                // Get first user message as title
+                const firstUserMessage = state.chat.messages.find(msg => msg.type === 'user');
+                const title = firstUserMessage ? firstUserMessage.content.substring(0, 50) + (firstUserMessage.content.length > 50 ? '...' : '') : 'Untitled Conversation';
+                
+                const conversationData = {
+                    title: title,
+                    messages: state.chat.messages,
+                    messagesCount: state.chat.messages.length,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                if (state.chat.currentChatId) {
+                    // Update existing conversation
+                    await conversationRef.doc(state.chat.currentChatId).update(conversationData);
+                } else {
+                    // Create new conversation
+                    const docRef = await conversationRef.add(conversationData);
+                    state.chat.currentChatId = docRef.id;
+                }
+                
+                // Refresh conversation list
+                loadUserConversations();
+                
+            } catch (error) {
+                console.error('Error saving conversation:', error);
+                showToast('Failed to save conversation', 'error');
+            }
+        }
+        
+        // Load a specific conversation
+        async function loadConversation(conversationId, conversationData) {
+            try {
+                // Clear current chat
+                state.chat.messages = [];
+                state.chat.currentChatId = conversationId;
+                
+                // Hide empty state
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // Enable two-column layout
+                if (!state.chat.hasMessages) {
+                    state.chat.hasMessages = true;
+                    sidebarRight.classList.add('active');
+                }
+                
+                // Load messages
+                chatContainer.innerHTML = '';
+                conversationData.messages.forEach(msg => {
+                    addMessage(msg.type, msg.content, false); // false to prevent saving again
+                });
+                
+                // Highlight as active
+                document.querySelectorAll('.chat-history-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.currentTarget.classList.add('active');
+                
+                showToast('Conversation loaded', 'success');
+                
+            } catch (error) {
+                console.error('Error loading conversation:', error);
+                showToast('Failed to load conversation', 'error');
+            }
+        }
+        
         function loadSampleData() {
-            // Load sample chat history
-            const sampleChats = [
-                { id: 1, title: "Create a React dashboard", type: 'chat' },
-                { id: 2, title: "Explain machine learning", type: 'chat' },
-                { id: 3, title: "Debug JavaScript error", type: 'chat' },
-                { id: 4, title: "Write a product description", type: 'chat' }
-            ];
-            
-            const chatHistory = document.getElementById('chatHistory');
-            sampleChats.forEach(chat => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'chat-history-item';
-                historyItem.innerHTML = `
-                    <i class="fas fa-message"></i>
-                    <span>${chat.title}</span>
-                `;
-                historyItem.onclick = () => loadChat(chat.id);
-                chatHistory.appendChild(historyItem);
-            });
-            
             // Load sample projects
             const sampleProjects = [
                 { id: 1, title: "Web Development", icon: 'fas fa-code' },
@@ -2568,8 +2701,8 @@
                 // Remove from pending messages
                 state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
                 
-                // Add to chat history
-                addToChatHistory(message);
+                // Save conversation to Firestore
+                saveConversation();
                 
                 showToast('Response generated successfully!', 'success');
                 
@@ -2831,7 +2964,7 @@
         }
         
         // Add message to chat - IMPROVED
-        function addMessage(type, content) {
+        function addMessage(type, content, shouldSave = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             
@@ -2893,6 +3026,11 @@
             
             // Add to message history
             state.chat.messages.push({ type, content, timestamp });
+            
+            // Save conversation if needed
+            if (shouldSave) {
+                saveConversation();
+            }
         }
         
         // Format message content - Copilot Style - IMPROVED
@@ -3158,23 +3296,6 @@
             sendMessage();
         }
         
-        // Add to chat history
-        function addToChatHistory(message) {
-            const chatHistory = document.getElementById('chatHistory');
-            const historyItem = document.createElement('div');
-            historyItem.className = 'chat-history-item';
-            historyItem.innerHTML = `
-                <i class="fas fa-message"></i>
-                <span>${message.length > 50 ? message.substring(0, 50) + '...' : message}</span>
-            `;
-            historyItem.onclick = () => {
-                // You could implement chat loading here
-                console.log('Load chat:', message);
-            };
-            
-            chatHistory.insertBefore(historyItem, chatHistory.firstChild);
-        }
-        
         // Start new chat
         function startNewChat() {
             chatContainer.innerHTML = `
@@ -3207,8 +3328,14 @@
             `;
             state.chat.messages = [];
             state.chat.hasMessages = false;
+            state.chat.currentChatId = null;
             sidebarRight.classList.remove('active');
             messageInput.focus();
+            
+            // Remove active state from chat history
+            document.querySelectorAll('.chat-history-item').forEach(item => {
+                item.classList.remove('active');
+            });
         }
         
         // Clear chat
