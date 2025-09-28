@@ -46,6 +46,24 @@
             --modal-bg: rgba(0, 0, 0, 0.7);
             --modal-content-bg: #ffffff;
             --modal-border-radius: 16px;
+            /* New color variables for enhanced code blocks */
+            --javascript-color: #f7df1e;
+            --python-color: #3776ab;
+            --html-color: #e34c26;
+            --css-color: #1572b6;
+            --typescript-color: #3178c6;
+            --java-color: #007396;
+            --cpp-color: #00599c;
+            --json-color: #000000;
+            --markdown-color: #083fa1;
+            --sql-color: #336791;
+            --shell-color: #89e051;
+            --yaml-color: #cb171e;
+            --xml-color: #0060ac;
+            --code-header-bg: #161b22;
+            --code-header-border: #30363d;
+            --code-action-bg: #21262d;
+            --code-action-hover: #30363d;
         }
 
         [data-theme="dark"] {
@@ -68,6 +86,10 @@
             --copilot-code-bg: #0d1117;
             --modal-bg: rgba(0, 0, 0, 0.85);
             --modal-content-bg: #2d2d2d;
+            --code-header-bg: #0d1117;
+            --code-header-border: #30363d;
+            --code-action-bg: #21262d;
+            --code-action-hover: #30363d;
         }
 
         /* Login Page Styles - unchanged */
@@ -1004,12 +1026,12 @@
         }
 
         .code-header {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--code-header-bg);
             padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--code-header-border);
         }
 
         .code-language {
@@ -1018,6 +1040,16 @@
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .language-icon {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            display: inline-block;
         }
 
         .code-actions {
@@ -1026,8 +1058,8 @@
         }
 
         .code-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--code-action-bg);
+            border: 1px solid var(--code-header-border);
             color: var(--code-text);
             padding: 4px 10px;
             border-radius: 4px;
@@ -1040,8 +1072,8 @@
         }
 
         .code-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: var(--code-action-hover);
+            border-color: var(--code-text);
         }
 
         .code-content {
@@ -1052,10 +1084,13 @@
             line-height: 1.5;
             color: var(--code-text);
             background-color: var(--code-bg);
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .code-content::-webkit-scrollbar {
             height: 8px;
+            width: 8px;
         }
 
         .code-content::-webkit-scrollbar-track {
@@ -2883,13 +2918,25 @@
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
                 
+                // Get language color
+                const langColor = getLanguageColor(lang);
+                
                 return `
                     <div class="code-block">
                         <div class="code-header">
-                            <span class="code-language">${lang}</span>
+                            <span class="code-language">
+                                <span class="language-icon" style="background-color: ${langColor}"></span>
+                                ${lang}
+                            </span>
                             <div class="code-actions">
                                 <button class="code-btn" onclick="copyCodeFromBlock('${codeId}')">
                                     <i class="fas fa-copy"></i> Copy
+                                </button>
+                                <button class="code-btn" onclick="runCodeFromBlock('${codeId}', '${lang}')">
+                                    <i class="fas fa-play"></i> Run
+                                </button>
+                                <button class="code-btn" onclick="downloadCodeFromBlock('${codeId}', '${lang}')">
+                                    <i class="fas fa-download"></i> Download
                                 </button>
                             </div>
                         </div>
@@ -2936,6 +2983,34 @@
             return tempDiv.outerHTML;
         }
         
+        // Get language color for code block headers
+        function getLanguageColor(language) {
+            const colors = {
+                'javascript': 'var(--javascript-color)',
+                'js': 'var(--javascript-color)',
+                'python': 'var(--python-color)',
+                'py': 'var(--python-color)',
+                'html': 'var(--html-color)',
+                'css': 'var(--css-color)',
+                'typescript': 'var(--typescript-color)',
+                'ts': 'var(--typescript-color)',
+                'java': 'var(--java-color)',
+                'cpp': 'var(--cpp-color)',
+                'c++': 'var(--cpp-color)',
+                'json': 'var(--json-color)',
+                'markdown': 'var(--markdown-color)',
+                'md': 'var(--markdown-color)',
+                'sql': 'var(--sql-color)',
+                'shell': 'var(--shell-color)',
+                'bash': 'var(--shell-color)',
+                'yaml': 'var(--yaml-color)',
+                'yml': 'var(--yaml-color)',
+                'xml': 'var(--xml-color)'
+            };
+            
+            return colors[language.toLowerCase()] || 'var(--aj-gold)';
+        }
+        
         // Escape HTML to prevent XSS
         function escapeHtml(text) {
             const map = {
@@ -2958,6 +3033,54 @@
             }).catch(err => {
                 showToast('Failed to copy code', 'error');
             });
+        }
+        
+        // Run code from a specific code block - NEW
+        function runCodeFromBlock(codeId, language) {
+            const codeElement = document.getElementById(codeId);
+            const code = codeElement.textContent;
+            
+            if (language === 'html' || language === 'htmlmixed') {
+                updatePreview(code);
+                showToast('Code executed in preview pane!', 'success');
+            } else if (language === 'javascript' || language === 'js') {
+                try {
+                    eval(code);
+                    showToast('JavaScript code executed!', 'success');
+                } catch (error) {
+                    showToast('Error executing JavaScript: ' + error.message, 'error');
+                }
+            } else if (language === 'css') {
+                const styleElement = document.createElement('style');
+                styleElement.textContent = code;
+                document.head.appendChild(styleElement);
+                showToast('CSS applied to page!', 'success');
+            } else {
+                showToast('Cannot execute ' + language + ' code', 'error');
+            }
+        }
+        
+        // Download code from a specific code block - NEW
+        function downloadCodeFromBlock(codeId, language) {
+            const codeElement = document.getElementById(codeId);
+            const code = codeElement.textContent;
+            
+            const extension = language === 'html' ? 'html' : 
+                             language === 'css' ? 'css' : 
+                             language === 'javascript' || language === 'js' ? 'js' : 
+                             language === 'python' || language === 'py' ? 'py' : 'txt';
+            
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aj-studioz-code.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Code downloaded!', 'success');
         }
         
         // Copy message content
