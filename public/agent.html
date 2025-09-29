@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJ STUDIOZ - Agentic AI for Developers</title>
+    <title>AJ STUDIOZ - Agentic AI</title>
     
     <!-- Professional Favicon -->
     <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0" type="image/png">
@@ -14,15 +14,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
     
+    <!-- Pyodide for Python execution -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    
     <style>
-        /* Existing styles remain the same */
+        /* CSS Variables */
         :root {
             --primary-bg: #ffffff;
             --secondary-bg: #f7f7f8;
@@ -43,7 +45,6 @@
             --aj-gold-glow: rgba(251, 191, 36, 0.6);
             --aj-green: #34D399;
             --aj-green-glow: rgba(52, 211, 153, 0.7);
-            /* Code block styling - updated for pure black background and white text */
             --code-bg: #000000;
             --code-text: #ffffff;
             --copilot-text: #1e1e1e;
@@ -53,7 +54,6 @@
             --modal-bg: rgba(0, 0, 0, 0.7);
             --modal-content-bg: #ffffff;
             --modal-border-radius: 16px;
-            /* New color variables for enhanced code blocks */
             --javascript-color: #f7df1e;
             --python-color: #3776ab;
             --html-color: #e34c26;
@@ -71,25 +71,37 @@
             --code-header-border: #30363d;
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
-            /* Corporate colors */
             --corporate-blue: #1e40af;
             --corporate-gray: #f8fafc;
             --corporate-dark: #1e293b;
-            
-            /* Professional embedded logo as data URL - replaced with favicon.png */
             --logo-url: url("https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0");
             --logo-glow: 0 0 10px rgba(0, 0, 0, 0.2);
             
-            /* New variables for agentic features */
-            --terminal-bg: #1e1e1e;
-            --terminal-text: #ffffff;
-            --terminal-header-bg: #2d2d2d;
-            --file-explorer-bg: #252526;
-            --file-explorer-text: #cccccc;
-            --editor-bg: #1e1e1e;
-            --editor-text: #d4d4d4;
-            --agent-status-bg: #0d6efd;
-            --agent-status-text: #ffffff;
+            /* Agent-specific colors */
+            --agent-primary: #6366f1;
+            --agent-secondary: #8b5cf6;
+            --agent-accent: #ec4899;
+            --agent-bg: #f8fafc;
+            --agent-border: #e2e8f0;
+            --agent-code-bg: #0f172a;
+            --agent-terminal-bg: #1e293b;
+            --agent-terminal-text: #e2e8f0;
+            --agent-success: #10b981;
+            --agent-warning: #f59e0b;
+            --agent-error: #ef4444;
+            
+            /* Agent panel colors */
+            --panel-bg: #ffffff;
+            --panel-border: #e5e7eb;
+            --panel-header: #f9fafb;
+            --panel-active: #f3f4f6;
+            
+            /* Tool colors */
+            --tool-code: #3b82f6;
+            --tool-web: #10b981;
+            --tool-file: #8b5cf6;
+            --tool-calc: #f59e0b;
+            --tool-image: #ec4899;
         }
 
         [data-theme="dark"] {
@@ -104,8 +116,8 @@
             --message-user-bg: #2a4f3a;
             --message-ai-bg: #1e1e1e;
             --border-color: #404040;
-            --code-bg: #000000; /* Pure black in dark mode too */
-            --code-text: #ffffff; /* Pure white in dark mode too */
+            --code-bg: #000000;
+            --code-text: #ffffff;
             --copilot-text: #e6edf3;
             --copilot-bg: #161b22;
             --copilot-border: #30363d;
@@ -118,19 +130,19 @@
             --code-action-hover: #30363d;
             --logo-glow: 0 0 15px rgba(255, 255, 255, 0.1);
             
-            /* Dark mode for agentic features */
-            --terminal-bg: #1e1e1e;
-            --terminal-text: #ffffff;
-            --terminal-header-bg: #2d2d2d;
-            --file-explorer-bg: #252526;
-            --file-explorer-text: #cccccc;
-            --editor-bg: #1e1e1e;
-            --editor-text: #d4d4d4;
-            --agent-status-bg: #0d6efd;
-            --agent-status-text: #ffffff;
+            /* Agent dark mode */
+            --agent-bg: #1e293b;
+            --agent-border: #334155;
+            --agent-code-bg: #0f172a;
+            --agent-terminal-bg: #0f172a;
+            --agent-terminal-text: #e2e8f0;
+            --panel-bg: #1e293b;
+            --panel-border: #334155;
+            --panel-header: #334155;
+            --panel-active: #475569;
         }
 
-        /* Login Page Styles - unchanged */
+        /* Login Page Styles */
         .login-page {
             position: fixed;
             top: 0;
@@ -266,12 +278,11 @@
             transition: all 0.5s ease;
             animation: pulse-gold 2.5s infinite;
             z-index: 10;
-            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000; /* Black background to match favicon */
+            background-color: #000;
             box-shadow: var(--logo-glow);
         }
 
@@ -426,7 +437,7 @@
             height: 100vh;
         }
 
-        /* Sidebar - unchanged */
+        /* Sidebar */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -457,12 +468,11 @@
             align-items: center;
             justify-content: center;
             box-shadow: var(--logo-glow);
-            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000; /* Black background to match favicon */
+            background-color: #000;
             transition: transform 0.3s ease;
         }
 
@@ -646,14 +656,13 @@
             color: var(--text-tertiary);
         }
 
-        /* Main Content - Agentic Layout */
+        /* Main Content */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             background-color: var(--primary-bg);
             position: relative;
-            overflow: hidden;
         }
 
         .main-header {
@@ -664,7 +673,6 @@
             justify-content: space-between;
             padding: 0 20px;
             background-color: var(--secondary-bg);
-            z-index: 10;
         }
 
         .header-title {
@@ -680,12 +688,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000; /* Black background to match favicon */
+            background-color: #000;
             box-shadow: var(--logo-glow);
             transition: transform 0.3s ease;
         }
@@ -762,42 +769,6 @@
             color: var(--text-primary);
         }
 
-        /* Agent Status Bar */
-        .agent-status-bar {
-            height: 30px;
-            background-color: var(--agent-status-bg);
-            color: var(--agent-status-text);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 12px;
-            z-index: 9;
-        }
-
-        .agent-status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .agent-status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        .agent-status-text {
-            font-weight: 500;
-        }
-
         /* Quota Usage Bar */
         .quota-usage {
             position: absolute;
@@ -841,51 +812,392 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        /* Agentic Layout */
-        .agentic-layout {
+        /* Agent Chat Layout */
+        .agent-chat-layout {
             display: flex;
-            flex: 1;
-            overflow: hidden;
+            height: 100%;
+            gap: 16px;
+            padding: 16px;
         }
 
-        /* File Explorer */
-        .file-explorer {
-            width: 220px;
-            background-color: var(--file-explorer-bg);
-            color: var(--file-explorer-text);
-            border-right: 1px solid var(--border-color);
+        .agent-chat-panel {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
-        .file-explorer-header {
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            font-size: 14px;
+        .agent-sidebar {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Agent Panel Styles */
+        .agent-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .agent-panel:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-header {
+            background-color: var(--panel-header);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--panel-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .file-explorer-actions {
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
             display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .panel-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .panel-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        /* Agent Tools */
+        .agent-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .agent-tool {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .agent-tool:hover {
+            background-color: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+
+        .agent-tool.active {
+            background-color: var(--agent-primary);
+            color: white;
+            border-color: var(--agent-primary);
+        }
+
+        .agent-tool.code {
+            border-left: 3px solid var(--tool-code);
+        }
+
+        .agent-tool.web {
+            border-left: 3px solid var(--tool-web);
+        }
+
+        .agent-tool.file {
+            border-left: 3px solid var(--tool-file);
+        }
+
+        .agent-tool.calc {
+            border-left: 3px solid var(--tool-calc);
+        }
+
+        .agent-tool.image {
+            border-left: 3px solid var(--tool-image);
+        }
+
+        /* Agent Status */
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background-color: var(--panel-header);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--agent-success);
+        }
+
+        .status-indicator.busy {
+            background-color: var(--agent-warning);
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-indicator.error {
+            background-color: var(--agent-error);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        /* Agent Actions */
+        .agent-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .agent-action-btn {
+            background-color: var(--agent-primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
             gap: 6px;
         }
 
-        .file-explorer-action {
-            background: transparent;
-            border: none;
-            color: var(--file-explorer-text);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+        .agent-action-btn:hover {
+            background-color: var(--agent-secondary);
+            transform: translateY(-2px);
         }
 
-        .file-explorer-action:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .agent-action-btn.secondary {
+            background-color: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .agent-action-btn.secondary:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* Agent Memory */
+        .agent-memory {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .memory-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .memory-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .memory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .memory-item {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .memory-item .remove-memory {
+            cursor: pointer;
+            color: var(--text-tertiary);
+        }
+
+        .memory-item .remove-memory:hover {
+            color: var(--agent-error);
+        }
+
+        /* Agent Workspace */
+        .agent-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 16px;
+            height: calc(100vh - 300px);
+        }
+
+        .workspace-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Code Editor */
+        .code-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-toolbar {
+            background-color: var(--panel-header);
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .language-selector {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .editor-content {
+            flex: 1;
+            overflow: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background-color: var(--agent-code-bg);
+            color: var(--code-text);
+            padding: 16px;
+        }
+
+        #codeEditor {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--code-text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+        }
+
+        /* Terminal */
+        .terminal {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--agent-terminal-bg);
+        }
+
+        .terminal-header {
+            background-color: var(--panel-header);
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--agent-terminal-text);
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
+            white-space: pre-wrap;
+        }
+
+        .terminal-input {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            padding: 0 12px 12px;
+        }
+
+        .terminal-prompt {
+            color: var(--agent-accent);
+            margin-right: 8px;
+        }
+
+        .terminal-command {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--agent-terminal-text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        /* File Explorer */
+        .file-explorer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .file-tree {
@@ -895,265 +1207,79 @@
         }
 
         .file-item {
-            padding: 6px 8px;
-            border-radius: 4px;
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
             font-size: 13px;
             transition: all 0.2s ease;
         }
 
         .file-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--hover-bg);
         }
 
         .file-item.active {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: var(--panel-active);
         }
 
         .file-icon {
-            font-size: 14px;
             width: 16px;
-            text-align: center;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
         }
 
         .file-name {
             flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Editor Area */
-        .editor-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .editor-tabs {
-            display: flex;
-            background-color: var(--secondary-bg);
-            border-bottom: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
-        .editor-tab {
-            padding: 8px 16px;
-            border-right: 1px solid var(--border-color);
-            cursor: pointer;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            background-color: var(--secondary-bg);
-            color: var(--text-secondary);
-            transition: all 0.2s ease;
-        }
-
-        .editor-tab:hover {
-            background-color: var(--hover-bg);
-        }
-
-        .editor-tab.active {
-            background-color: var(--primary-bg);
             color: var(--text-primary);
-            border-bottom: 2px solid var(--accent-color);
         }
 
-        .editor-tab-close {
-            font-size: 12px;
-            opacity: 0.7;
-            transition: opacity 0.2s ease;
-        }
-
-        .editor-tab-close:hover {
-            opacity: 1;
-        }
-
-        .editor-container {
+        /* Preview Panel */
+        .preview-container {
             flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             overflow: hidden;
-            position: relative;
-        }
-
-        #monaco-editor {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Terminal */
-        .terminal {
-            height: 200px;
-            background-color: var(--terminal-bg);
-            color: var(--terminal-text);
-            border-top: 1px solid var(--border-color);
+            margin: 16px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
-        .terminal-header {
-            padding: 6px 12px;
-            background-color: var(--terminal-header-bg);
+        .preview-header {
+            background-color: var(--hover-bg);
+            padding: 8px 12px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            font-size: 12px;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .terminal-actions {
+        .preview-actions {
             display: flex;
             gap: 6px;
         }
 
-        .terminal-action {
-            background: transparent;
-            border: none;
-            color: var(--terminal-text);
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-            transition: all 0.2s ease;
-        }
-
-        .terminal-action:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .terminal-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 12px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-        .terminal-line {
-            margin-bottom: 4px;
-            display: flex;
-        }
-
-        .terminal-prompt {
-            color: var(--aj-green);
-            margin-right: 8px;
-        }
-
-        .terminal-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--terminal-text);
-            outline: none;
-            font-family: inherit;
-            font-size: inherit;
-        }
-
-        /* Preview Panel */
-        .preview-panel {
-            width: 400px;
-            background-color: var(--primary-bg);
-            border-left: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .preview-tabs {
-            display: flex;
-            background-color: var(--secondary-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .preview-tab {
-            flex: 1;
-            padding: 8px 12px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 13px;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .preview-tab:hover {
-            background-color: var(--hover-bg);
-        }
-
-        .preview-tab.active {
-            border-bottom-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
         .preview-content {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .preview-frame {
             width: 100%;
             height: 100%;
             border: none;
             background-color: white;
         }
 
-        /* Chat Panel */
-        .chat-panel {
-            width: 350px;
-            background-color: var(--primary-bg);
-            border-left: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .chat-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .chat-action {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .chat-action:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
-
+        /* Chat Layout */
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
+            max-height: calc(100vh - 200px);
         }
 
         .chat-container::-webkit-scrollbar {
@@ -1173,11 +1299,13 @@
             background: var(--text-tertiary);
         }
 
-        /* Messages - Copilot Style - IMPROVED */
+        /* Messages - Copilot Style */
         .message {
             display: flex;
-            gap: 8px;
-            max-width: 100%;
+            gap: 12px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
             opacity: 0;
             animation: slideIn 0.3s ease forwards;
         }
@@ -1199,15 +1327,15 @@
         }
 
         .message-avatar {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             font-weight: 600;
-            font-size: 10px;
+            font-size: 12px;
             box-shadow: var(--logo-glow);
             transition: transform 0.3s ease;
         }
@@ -1222,28 +1350,26 @@
         }
 
         .message.ai .message-avatar {
-            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000; /* Black background to match favicon */
+            background-color: #000;
         }
 
         .message-content {
             flex: 1;
-            max-width: calc(100% - 32px);
+            max-width: calc(100% - 40px);
         }
 
         .message-bubble {
             background-color: var(--message-ai-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
-            padding: 10px;
+            padding: 16px;
             position: relative;
             word-wrap: break-word;
-            line-height: 1.5;
-            font-size: 13px;
+            line-height: 1.6;
         }
 
         .message.user .message-bubble {
@@ -1252,21 +1378,16 @@
         }
 
         .message-timestamp {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-tertiary);
-            margin-top: 2px;
-            text-align: right;
-        }
-
-        .message.user .message-timestamp {
-            text-align: left;
+            margin-top: 4px;
         }
 
         /* Message Actions */
         .message-actions {
             display: flex;
-            gap: 4px;
-            margin-top: 4px;
+            gap: 6px;
+            margin-top: 6px;
             opacity: 0;
             transition: opacity 0.2s ease;
         }
@@ -1279,10 +1400,10 @@
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            padding: 2px 4px;
+            padding: 2px 6px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 9px;
+            font-size: 10px;
             transition: all 0.2s ease;
         }
 
@@ -1291,15 +1412,15 @@
             color: var(--text-primary);
         }
 
-        /* Copilot Style Formatted Content - IMPROVED */
+        /* Copilot Style Formatted Content */
         .formatted-content {
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.6;
             color: var(--copilot-text);
         }
 
         .formatted-content p {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .formatted-content p:last-child {
@@ -1308,39 +1429,42 @@
 
         .formatted-content h1, .formatted-content h2, .formatted-content h3, 
         .formatted-content h4, .formatted-content h5, .formatted-content h6 {
-            margin-top: 16px;
-            margin-bottom: 12px;
+            margin-top: 24px;
+            margin-bottom: 16px;
             font-weight: 600;
             color: var(--text-primary);
         }
 
         .formatted-content h1 { 
+            font-size: 1.75em; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 8px; 
+        }
+        .formatted-content h2 { 
             font-size: 1.5em; 
             border-bottom: 1px solid var(--border-color); 
             padding-bottom: 6px; 
         }
-        .formatted-content h2 { 
-            font-size: 1.3em; 
-            border-bottom: 1px solid var(--border-color); 
-            padding-bottom: 4px; 
-        }
         .formatted-content h3 { 
+            font-size: 1.25em; 
+        }
+        .formatted-content h4 { 
             font-size: 1.1em; 
         }
 
         .formatted-content ul, .formatted-content ol {
-            margin-left: 20px;
-            margin-bottom: 12px;
+            margin-left: 24px;
+            margin-bottom: 16px;
         }
 
         .formatted-content li {
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .formatted-content blockquote {
             border-left: 4px solid var(--accent-color);
-            padding-left: 12px;
-            margin: 12px 0;
+            padding-left: 16px;
+            margin: 16px 0;
             color: var(--text-secondary);
             font-style: italic;
         }
@@ -1356,17 +1480,17 @@
 
         .formatted-content code {
             background-color: var(--hover-bg);
-            padding: 2px 4px;
+            padding: 2px 6px;
             border-radius: 4px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9em;
             color: var(--accent-color);
         }
 
-        /* Code blocks - Copilot Style - IMPROVED */
+        /* Code blocks - Copilot Style */
         .code-block {
-            margin: 12px 0;
-            border-radius: 6px;
+            margin: 16px 0;
+            border-radius: 8px;
             overflow: hidden;
             background-color: var(--code-bg);
             border: 1px solid var(--border-color);
@@ -1381,7 +1505,7 @@
 
         .code-header {
             background-color: var(--code-header-bg);
-            padding: 8px 12px;
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -1389,7 +1513,7 @@
         }
 
         .code-language {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--aj-gold);
             text-transform: uppercase;
             font-weight: 600;
@@ -1400,25 +1524,25 @@
         }
 
         .language-icon {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 2px;
             display: inline-block;
         }
 
         .code-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
         }
 
         .code-btn {
             background: var(--code-action-bg);
             border: 1px solid var(--code-header-border);
             color: var(--code-text);
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 11px;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
@@ -1431,20 +1555,20 @@
         }
 
         .code-content {
-            padding: 12px;
+            padding: 16px;
             overflow-x: auto;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            line-height: 1.4;
-            color: var(--code-text); /* White text in black box */
-            background-color: var(--code-bg); /* Pure black background */
-            max-height: 300px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--code-text);
+            background-color: var(--code-bg);
+            max-height: 400px;
             overflow-y: auto;
         }
 
         .code-content::-webkit-scrollbar {
-            height: 6px;
-            width: 6px;
+            height: 8px;
+            width: 8px;
         }
 
         .code-content::-webkit-scrollbar-track {
@@ -1453,7 +1577,7 @@
 
         .code-content::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            border-radius: 4px;
         }
 
         .code-content::-webkit-scrollbar-thumb:hover {
@@ -1462,7 +1586,7 @@
 
         /* Tables */
         .table-container {
-            margin: 12px 0;
+            margin: 16px 0;
             overflow-x: auto;
         }
 
@@ -1470,16 +1594,16 @@
             width: 100%;
             border-collapse: collapse;
             background-color: var(--secondary-bg);
-            border-radius: 6px;
+            border-radius: 8px;
             overflow: hidden;
         }
 
         .data-table th,
         .data-table td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
-            font-size: 12px;
+            font-size: 14px;
         }
 
         .data-table th {
@@ -1497,12 +1621,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 12px;
+            padding: 12px 16px;
             background-color: var(--message-ai-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
             color: var(--text-secondary);
-            font-size: 13px;
         }
 
         .typing-dots {
@@ -1535,12 +1658,14 @@
 
         /* Input Area */
         .input-area {
-            padding: 12px;
+            padding: 16px 20px;
             border-top: 1px solid var(--border-color);
             background-color: var(--secondary-bg);
         }
 
         .input-container {
+            max-width: 800px;
+            margin: 0 auto;
             position: relative;
         }
 
@@ -1566,7 +1691,7 @@
             border: none;
             outline: none;
             color: var(--text-primary);
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.4;
             resize: none;
             min-height: 20px;
@@ -1605,8 +1730,8 @@
         .send-btn {
             background-color: var(--accent-color);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
         }
 
@@ -1689,12 +1814,11 @@
             margin-bottom: 20px;
             font-size: 24px;
             color: white;
-            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000; /* Black background to match favicon */
+            background-color: #000;
             box-shadow: var(--logo-glow);
             transition: transform 0.3s ease;
         }
@@ -1751,7 +1875,7 @@
             line-height: 1.4;
         }
 
-        /* Settings Modal - IMPROVED */
+        /* Settings Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -2010,39 +2134,7 @@
             margin-left: 8px;
         }
 
-        /* Agent Tools */
-        .agent-tools {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .agent-tool {
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .agent-tool:hover {
-            background-color: var(--hover-bg);
-            border-color: var(--accent-color);
-        }
-
-        .agent-tool.active {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-
-        /* Mobile Responsive - IMPROVED */
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -2060,31 +2152,30 @@
                 width: 100%;
             }
 
-            .agentic-layout {
-                flex-direction: column;
+            .chat-container {
+                padding: 16px;
             }
 
-            .file-explorer {
-                width: 100%;
-                height: 200px;
-            }
-
-            .preview-panel {
-                width: 100%;
-                height: 300px;
-            }
-
-            .chat-panel {
-                width: 100%;
-                height: 400px;
-            }
-
-            .terminal {
-                height: 150px;
+            .input-area {
+                padding: 16px;
             }
 
             .suggestion-cards {
                 grid-template-columns: 1fr;
+            }
+
+            .sidebar-right {
+                width: 100%;
+                position: fixed;
+                right: -100%;
+                top: 0;
+                height: 100vh;
+                z-index: 999;
+                transition: right 0.3s ease;
+            }
+
+            .sidebar-right.active {
+                right: 0;
             }
 
             .message {
@@ -2133,49 +2224,20 @@
                 bottom: 16px;
             }
             
-            /* Improved code block styling for mobile */
-            .code-block {
-                margin: 12px 0;
-                border-radius: 6px;
+            /* Agent workspace mobile adjustments */
+            .agent-workspace {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 1fr);
             }
             
-            .code-header {
-                padding: 8px 12px;
+            .agent-sidebar {
+                width: 100%;
+                flex-direction: row;
+                overflow-x: auto;
             }
             
-            .code-content {
-                padding: 12px;
-                font-size: 13px;
-            }
-            
-            .code-language {
-                font-size: 11px;
-            }
-            
-            .code-btn {
-                padding: 3px 8px;
-                font-size: 10px;
-            }
-            
-            /* Mobile improvements for settings modal */
-            .modal-header {
-                padding: 16px;
-            }
-            
-            .modal-title {
-                font-size: 18px;
-            }
-            
-            .modal-body {
-                padding: 16px;
-            }
-            
-            .settings-section {
-                margin-bottom: 24px;
-            }
-            
-            .setting-item {
-                padding: 12px 0;
+            .agent-panel {
+                min-width: 250px;
             }
         }
 
@@ -2185,16 +2247,8 @@
                 width: 240px;
             }
 
-            .file-explorer {
-                width: 180px;
-            }
-
-            .preview-panel {
-                width: 300px;
-            }
-
-            .chat-panel {
-                width: 300px;
+            .sidebar-right {
+                width: 280px;
             }
 
             .chat-container {
@@ -2212,20 +2266,12 @@
                 width: 280px;
             }
 
-            .file-explorer {
-                width: 240px;
-            }
-
-            .preview-panel {
-                width: 450px;
-            }
-
-            .chat-panel {
-                width: 400px;
+            .sidebar-right {
+                width: 320px;
             }
 
             .message {
-                max-width: 90%;
+                max-width: 900px;
             }
 
             .chat-container {
@@ -2240,20 +2286,12 @@
                 width: 320px;
             }
 
-            .file-explorer {
-                width: 280px;
-            }
-
-            .preview-panel {
-                width: 500px;
-            }
-
-            .chat-panel {
-                width: 450px;
+            .sidebar-right {
+                width: 400px;
             }
 
             .message {
-                max-width: 90%;
+                max-width: 1000px;
             }
 
             .chat-container {
@@ -2288,8 +2326,8 @@
             
             <div class="login-form-container">
                 <h1 class="login-title">AJ STUDIOZ</h1>
-                <h2>AGENTIC AI</h2>
-                <p>Enter credentials to access your AI development assistant.</p>
+                <h2>SECURE ACCESS</h2>
+                <p>Enter credentials to proceed.</p>
                 <form id="loginForm">
                     <div class="input-group">
                         <input type="email" id="emailInput" placeholder="Email Address" required>
@@ -2323,13 +2361,13 @@
                 </div>
                 <button class="new-chat-btn" onclick="startNewChat()">
                     <i class="fas fa-plus"></i>
-                    New Project
+                    New Chat
                 </button>
             </div>
             
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search projects..." onkeyup="searchConversations(this.value)">
+                <input type="text" class="search-input" placeholder="Search conversations..." onkeyup="searchConversations(this.value)">
             </div>
             
             <div class="chat-history" id="chatHistory">
@@ -2338,7 +2376,7 @@
             
             <div class="project-section">
                 <div class="project-header">
-                    <span>Tools</span>
+                    <span>Projects</span>
                     <i class="fas fa-plus" style="cursor: pointer; font-size: 12px;" onclick="createNewProject()"></i>
                 </div>
                 <div id="projectList">
@@ -2351,7 +2389,7 @@
                     <div class="user-avatar" id="userAvatar">K</div>
                     <div class="user-info">
                         <div class="user-name" id="userName">Karthik</div>
-                        <div class="user-status" id="userStatus">Developer Plan</div>
+                        <div class="user-status" id="userStatus">Free Plan</div>
                     </div>
                     <i class="fas fa-cog" style="color: var(--text-tertiary);"></i>
                 </div>
@@ -2365,7 +2403,7 @@
                     <div class="ai-avatar"></div>
                     <div>
                         <h1>AJ STUDIOZ Agentic AI</h1>
-                        <div class="header-subtitle">Autonomous Development Assistant</div>
+                        <div class="header-subtitle">Powered by Claude Sonnet-4</div>
                     </div>
                     <div class="status-indicator">
                         <span class="status-dot online" id="statusDot"></span>
@@ -2378,8 +2416,6 @@
                         <option value="claude-3-sonnet">Claude 3 Sonnet</option>
                         <option value="claude-3-opus">Claude 3 Opus</option>
                         <option value="claude-3-haiku">Claude 3 Haiku</option>
-                        <option value="gpt-4">GPT-4</option>
-                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
                     </select>
                     
                     <select class="tone-selector" onchange="changeTone(this.value)">
@@ -2387,7 +2423,6 @@
                         <option value="casual">Casual</option>
                         <option value="friendly">Friendly</option>
                         <option value="analytical">Analytical</option>
-                        <option value="technical">Technical</option>
                     </select>
                     
                     <button class="header-btn" onclick="toggleTheme()">
@@ -2414,152 +2449,50 @@
             </div>
 
             <div class="upgrade-banner" id="upgradeBanner">
-                <span>Upgrade to Pro for unlimited agent tasks and advanced features</span>
+                <span>Upgrade to Pro for unlimited messages and advanced features</span>
                 <button onclick="upgradePlan()">Upgrade Now</button>
             </div>
 
-            <!-- Agent Status Bar -->
-            <div class="agent-status-bar">
-                <div class="agent-status-indicator">
-                    <div class="agent-status-dot"></div>
-                    <span class="agent-status-text" id="agentStatusText">Agent Ready</span>
-                </div>
-                <div class="agent-tools">
-                    <div class="agent-tool active" onclick="activateTool('code')" id="codeTool">
-                        <i class="fas fa-code"></i>
-                        <span>Code</span>
-                    </div>
-                    <div class="agent-tool" onclick="activateTool('web')" id="webTool">
-                        <i class="fas fa-globe"></i>
-                        <span>Web</span>
-                    </div>
-                    <div class="agent-tool" onclick="activateTool('terminal')" id="terminalTool">
-                        <i class="fas fa-terminal"></i>
-                        <span>Terminal</span>
-                    </div>
-                    <div class="agent-tool" onclick="activateTool('files')" id="filesTool">
-                        <i class="fas fa-folder"></i>
-                        <span>Files</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Agentic Layout -->
-            <div class="agentic-layout">
-                <!-- File Explorer -->
-                <div class="file-explorer" id="fileExplorer">
-                    <div class="file-explorer-header">
-                        <span>Project Files</span>
-                        <div class="file-explorer-actions">
-                            <button class="file-explorer-action" onclick="createNewFile()" title="New File">
-                                <i class="fas fa-file-plus"></i>
-                            </button>
-                            <button class="file-explorer-action" onclick="createNewFolder()" title="New Folder">
-                                <i class="fas fa-folder-plus"></i>
-                            </button>
-                            <button class="file-explorer-action" onclick="refreshFileExplorer()" title="Refresh">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="file-tree" id="fileTree">
-                        <!-- File tree will be populated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Editor Area -->
-                <div class="editor-area">
-                    <div class="editor-tabs" id="editorTabs">
-                        <div class="editor-tab active" data-file="index.html">
-                            <span>index.html</span>
-                            <button class="editor-tab-close" onclick="closeEditorTab(this)">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="editor-container">
-                        <div id="monaco-editor"></div>
-                    </div>
-                    <div class="terminal" id="terminal">
-                        <div class="terminal-header">
-                            <span>Terminal</span>
-                            <div class="terminal-actions">
-                                <button class="terminal-action" onclick="clearTerminal()">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <button class="terminal-action" onclick="runCommand()">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="terminal-body" id="terminalBody">
-                            <div class="terminal-line">
-                                <span class="terminal-prompt">$</span>
-                                <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." onkeydown="handleTerminalInput(event)">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Preview Panel -->
-                <div class="preview-panel" id="previewPanel">
-                    <div class="preview-tabs">
-                        <div class="preview-tab active" onclick="switchPreview('preview')">Preview</div>
-                        <div class="preview-tab" onclick="switchPreview('console')">Console</div>
-                        <div class="preview-tab" onclick="switchPreview('network')">Network</div>
-                    </div>
-                    <div class="preview-content">
-                        <iframe id="previewFrame" class="preview-frame" sandbox="allow-scripts"></iframe>
-                    </div>
-                </div>
-
-                <!-- Chat Panel -->
-                <div class="chat-panel" id="chatPanel">
-                    <div class="chat-header">
-                        <div class="chat-title">AI Assistant</div>
-                        <div class="chat-actions">
-                            <button class="chat-action" onclick="clearChat()" title="Clear Chat">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="chat-action" onclick="exportChat()" title="Export Chat">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </div>
-                    </div>
+            <!-- Agent Chat Layout -->
+            <div class="agent-chat-layout">
+                <!-- Agent Chat Panel -->
+                <div class="agent-chat-panel">
                     <div class="chat-container" id="chatContainer">
                         <!-- Empty state -->
                         <div class="empty-state" id="emptyState">
                             <div class="empty-state-icon"></div>
-                            <h2>Hello! I'm your Agentic AI Assistant</h2>
-                            <p>I can help you with coding, web development, file management, and more. How can I assist you today?</p>
+                            <h2>Hello! I'm your AJ STUDIOZ Agentic AI</h2>
+                            <p>I can perform complex tasks, execute code, search the web, and manage files. How can I assist you today?</p>
                             
                             <div class="suggestion-cards">
-                                <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
+                                <div class="suggestion-card" onclick="sendSuggestion('Create a Python script to analyze stock market data')">
+                                    <h3>🐍 Python Analysis</h3>
+                                    <p>Analyze data with Python and pandas</p>
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('Search for the latest AI research papers and summarize them')">
+                                    <h3>🔍 Web Research</h3>
+                                    <p>Find and summarize online information</p>
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('Create a complete HTML/CSS/JS project with interactive elements')">
                                     <h3>🎨 Web Development</h3>
-                                    <p>Create a modern landing page with animations</p>
+                                    <p>Build a complete web application</p>
                                 </div>
-                                <div class="suggestion-card" onclick="sendSuggestion('Debug this JavaScript code that is not working correctly')">
-                                    <h3>🐛 Code Debugging</h3>
-                                    <p>Debug and fix code issues</p>
-                                </div>
-                                <div class="suggestion-card" onclick="sendSuggestion('Search for the latest React documentation and summarize it')">
-                                    <h3>🌐 Web Research</h3>
-                                    <p>Research and summarize web content</p>
-                                </div>
-                                <div class="suggestion-card" onclick="sendSuggestion('Set up a new Node.js project with Express')">
-                                    <h3>⚙️ Project Setup</h3>
-                                    <p>Initialize and configure projects</p>
+                                <div class="suggestion-card" onclick="sendSuggestion('Analyze this dataset and create visualizations')">
+                                    <h3>📊 Data Visualization</h3>
+                                    <p>Create charts and graphs from data</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Input Area -->
                     <div class="input-area">
                         <div class="input-container">
                             <div class="input-wrapper" id="inputWrapper">
                                 <textarea 
                                     class="message-input" 
                                     id="messageInput" 
-                                    placeholder="Message AI Agent..."
+                                    placeholder="Message AJ STUDIOZ AI..."
                                     rows="1"
                                     onkeydown="handleKeyDown(event)"
                                     oninput="autoResize(this)"
@@ -2585,11 +2518,213 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Agent Sidebar -->
+                <div class="agent-sidebar">
+                    <!-- Agent Status Panel -->
+                    <div class="agent-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fas fa-robot"></i>
+                                Agent Status
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="agent-status">
+                                <div class="status-indicator" id="agentStatusIndicator"></div>
+                                <div>
+                                    <div id="agentStatusText">Ready</div>
+                                    <div style="font-size: 12px; color: var(--text-tertiary);" id="agentStatusDetail">Waiting for input</div>
+                                </div>
+                            </div>
+                            
+                            <div class="agent-tools">
+                                <div class="agent-tool code" onclick="activateTool('code')">
+                                    <i class="fas fa-code"></i>
+                                    <span>Code</span>
+                                </div>
+                                <div class="agent-tool web" onclick="activateTool('web')">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Web</span>
+                                </div>
+                                <div class="agent-tool file" onclick="activateTool('file')">
+                                    <i class="fas fa-folder"></i>
+                                    <span>Files</span>
+                                </div>
+                                <div class="agent-tool calc" onclick="activateTool('calc')">
+                                    <i class="fas fa-calculator"></i>
+                                    <span>Calculate</span>
+                                </div>
+                                <div class="agent-tool image" onclick="activateTool('image')">
+                                    <i class="fas fa-image"></i>
+                                    <span>Image</span>
+                                </div>
+                            </div>
+                            
+                            <div class="agent-actions">
+                                <button class="agent-action-btn" onclick="executeAgentAction()">
+                                    <i class="fas fa-play"></i>
+                                    Execute
+                                </button>
+                                <button class="agent-action-btn secondary" onclick="resetAgent()">
+                                    <i class="fas fa-redo"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agent Memory Panel -->
+                    <div class="agent-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <i class="fas fa-brain"></i>
+                                Agent Memory
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="memory-items" id="memoryItems">
+                                <div class="memory-item">
+                                    <span>Project: Web App</span>
+                                    <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
+                                </div>
+                                <div class="memory-item">
+                                    <span>Language: Python</span>
+                                    <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
+                                </div>
+                                <div class="memory-item">
+                                    <span>Dataset: Stocks</span>
+                                    <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 12px;">
+                                <input type="text" placeholder="Add to memory..." style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;" id="memoryInput">
+                                <button onclick="addToMemory()" style="margin-top: 8px; width: 100%; padding: 6px; background-color: var(--agent-primary); color: white; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Workspace -->
+            <div class="agent-workspace">
+                <!-- Code Editor Panel -->
+                <div class="workspace-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fas fa-code"></i>
+                            Code Editor
+                        </div>
+                        <div class="panel-actions">
+                            <select class="language-selector" id="languageSelector" onchange="changeLanguage(this.value)">
+                                <option value="javascript">JavaScript</option>
+                                <option value="python">Python</option>
+                                <option value="html">HTML</option>
+                                <option value="css">CSS</option>
+                                <option value="sql">SQL</option>
+                            </select>
+                            <button class="panel-btn" onclick="runCode()">
+                                <i class="fas fa-play"></i> Run
+                            </button>
+                            <button class="panel-btn" onclick="clearEditor()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-content">
+                        <textarea id="codeEditor" placeholder="// Write your code here..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Terminal Panel -->
+                <div class="workspace-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fas fa-terminal"></i>
+                            Terminal
+                        </div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" onclick="clearTerminal()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="terminal">
+                        <div class="terminal-content" id="terminalContent">
+                            <div class="terminal-line">Agent Terminal v1.0</div>
+                            <div class="terminal-line">Type 'help' for available commands.</div>
+                        </div>
+                        <div class="terminal-input">
+                            <span class="terminal-prompt">$</span>
+                            <input type="text" class="terminal-command" id="terminalCommand" onkeydown="handleTerminalCommand(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Explorer Panel -->
+                <div class="workspace-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fas fa-folder"></i>
+                            File Explorer
+                        </div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" onclick="createNewFile()">
+                                <i class="fas fa-plus"></i> New
+                            </button>
+                            <button class="panel-btn" onclick="uploadFile()">
+                                <i class="fas fa-upload"></i> Upload
+                            </button>
+                        </div>
+                    </div>
+                    <div class="file-explorer">
+                        <div class="file-tree" id="fileTree">
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-folder"></i></div>
+                                <div class="file-name">Projects</div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-folder"></i></div>
+                                <div class="file-name">Documents</div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                                <div class="file-name">script.js</div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon"><i class="fas fa-file-image"></i></div>
+                                <div class="file-name">chart.png</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="workspace-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fas fa-eye"></i>
+                            Preview
+                        </div>
+                        <div class="panel-actions">
+                            <button class="panel-btn" onclick="refreshPreview()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="panel-btn" onclick="openInNewTab()">
+                                <i class="fas fa-external-link-alt"></i> Open
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-container">
+                        <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Settings Modal - IMPROVED -->
+    <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -2610,41 +2745,9 @@
                     <div class="setting-item">
                         <div>
                             <div class="setting-label">Plan</div>
-                            <div class="setting-description" id="userPlan">Developer Plan</div>
+                            <div class="setting-description" id="userPlan">Free Plan</div>
                         </div>
                         <button class="header-btn" onclick="upgradePlan()">Upgrade</button>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Agent Preferences</h3>
-                    <div class="setting-item">
-                        <div>
-                            <div class="setting-label">Auto-execute Code</div>
-                            <div class="setting-description">Automatically run generated code</div>
-                        </div>
-                        <div class="toggle-switch" id="autoExecuteToggle" onclick="toggleAutoExecute()"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <div class="setting-label">Web Access</div>
-                            <div class="setting-description">Allow agent to browse the web</div>
-                        </div>
-                        <div class="toggle-switch active" id="webAccessToggle" onclick="toggleWebAccess()"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <div class="setting-label">File Management</div>
-                            <div class="setting-description">Allow agent to create/modify files</div>
-                        </div>
-                        <div class="toggle-switch active" id="fileMgmtToggle" onclick="toggleFileMgmt()"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <div class="setting-label">Terminal Access</div>
-                            <div class="setting-description">Allow agent to run terminal commands</div>
-                        </div>
-                        <div class="toggle-switch" id="terminalAccessToggle" onclick="toggleTerminalAccess()"></div>
                     </div>
                 </div>
                 
@@ -2674,7 +2777,6 @@
                             <option value="casual">Casual</option>
                             <option value="friendly">Friendly</option>
                             <option value="analytical">Analytical</option>
-                            <option value="technical">Technical</option>
                         </select>
                     </div>
                 </div>
@@ -2733,7 +2835,7 @@
             }
         };
         
-        // Global State Management
+        // Global State Management - Enhanced for Agent
         const state = {
             auth: {
                 user: null,
@@ -2752,8 +2854,8 @@
                 modals: { settings: false, billing: false },
                 theme: 'light',
                 sidebarOpen: false,
-                activeTab: 'preview',
-                activeTool: 'code'
+                rightSidebarOpen: false,
+                activeTab: 'preview'
             },
             docs: {
                 uploadedFiles: [],
@@ -2765,11 +2867,7 @@
                 persona: 'default',
                 memoryEnabled: true,
                 historyEnabled: true,
-                dataUsageEnabled: false,
-                autoExecute: false,
-                webAccess: true,
-                fileMgmt: true,
-                terminalAccess: false
+                dataUsageEnabled: false
             },
             quota: {
                 used: 65,
@@ -2782,36 +2880,52 @@
             },
             code: {
                 current: '',
-                language: 'html',
+                language: 'javascript',
                 preview: ''
             },
-            project: {
-                name: 'New Project',
-                files: [
-                    { name: 'index.html', type: 'file', content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>My Project</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>' },
-                    { name: 'styles.css', type: 'file', content: 'body {\n  font-family: Arial, sans-serif;\n  margin: 0;\n  padding: 20px;\n}' },
-                    { name: 'scripts.js', type: 'file', content: 'console.log("Hello from JavaScript!");' }
-                ],
-                activeFile: 'index.html'
-            },
+            // New agent state
             agent: {
-                status: 'ready',
-                currentTask: null,
+                status: 'ready', // ready, busy, error
+                activeTool: null,
+                memory: [],
+                executionPlan: [],
+                currentStep: 0,
                 tools: {
-                    code: { active: true, name: 'Code Editor' },
-                    web: { active: false, name: 'Web Browser' },
-                    terminal: { active: false, name: 'Terminal' },
-                    files: { active: false, name: 'File Manager' }
+                    code: {
+                        name: 'Code Execution',
+                        description: 'Execute code in various languages',
+                        enabled: true
+                    },
+                    web: {
+                        name: 'Web Search',
+                        description: 'Search the internet for information',
+                        enabled: true
+                    },
+                    file: {
+                        name: 'File Operations',
+                        description: 'Read, write, and manage files',
+                        enabled: true
+                    },
+                    calc: {
+                        name: 'Calculator',
+                        description: 'Perform mathematical calculations',
+                        enabled: true
+                    },
+                    image: {
+                        name: 'Image Generation',
+                        description: 'Generate and analyze images',
+                        enabled: true
+                    }
+                },
+                workspace: {
+                    code: '',
+                    language: 'javascript',
+                    terminalOutput: [],
+                    files: [],
+                    preview: ''
                 }
-            },
-            terminal: {
-                history: [],
-                currentCommand: ''
             }
         };
-        
-        // Monaco Editor
-        let editor;
         
         // DOM elements
         const loginPage = document.getElementById('loginPage');
@@ -2821,15 +2935,7 @@
         const sendBtn = document.getElementById('sendBtn');
         const emptyState = document.getElementById('emptyState');
         const sidebar = document.getElementById('sidebar');
-        const fileExplorer = document.getElementById('fileExplorer');
-        const fileTree = document.getElementById('fileTree');
-        const editorTabs = document.getElementById('editorTabs');
-        const terminal = document.getElementById('terminal');
-        const terminalBody = document.getElementById('terminalBody');
-        const terminalInput = document.getElementById('terminalInput');
-        const previewPanel = document.getElementById('previewPanel');
-        const previewFrame = document.getElementById('previewFrame');
-        const chatPanel = document.getElementById('chatPanel');
+        const sidebarRight = document.getElementById('sidebarRight');
         const toast = document.getElementById('toast');
         const fileDropZone = document.getElementById('fileDropZone');
         const inputWrapper = document.getElementById('inputWrapper');
@@ -2837,7 +2943,19 @@
         const upgradeBanner = document.getElementById('upgradeBanner');
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
+        const previewFrame = document.getElementById('previewFrame');
+        
+        // New agent DOM elements
+        const agentStatusIndicator = document.getElementById('agentStatusIndicator');
         const agentStatusText = document.getElementById('agentStatusText');
+        const agentStatusDetail = document.getElementById('agentStatusDetail');
+        const codeEditor = document.getElementById('codeEditor');
+        const languageSelector = document.getElementById('languageSelector');
+        const terminalContent = document.getElementById('terminalContent');
+        const terminalCommand = document.getElementById('terminalCommand');
+        const fileTree = document.getElementById('fileTree');
+        const memoryItems = document.getElementById('memoryItems');
+        const memoryInput = document.getElementById('memoryInput');
         
         // Login form elements
         const loginForm = document.getElementById('loginForm');
@@ -2872,8 +2990,6 @@
                 showMainApp();
                 updateUserProfile(user);
                 loadUserConversations();
-                initializeProject();
-                initializeMonacoEditor();
             } else {
                 // User is signed out
                 state.auth.user = null;
@@ -2912,8 +3028,8 @@
                 userPlan.textContent = 'Pro Plan';
                 upgradeBanner.style.display = 'none';
             } else {
-                userStatus.textContent = 'Developer Plan';
-                userPlan.textContent = 'Developer Plan';
+                userStatus.textContent = 'Free Plan';
+                userPlan.textContent = 'Free Plan';
                 upgradeBanner.style.display = 'flex';
             }
         }
@@ -2986,13 +3102,26 @@
                 });
         }
         
+        // Initialize Pyodide for Python execution
+        let pyodideReady = false;
+        async function initializePyodide() {
+            try {
+                await loadPyodide({
+                    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
+                });
+                pyodideReady = true;
+                addToTerminal("Pyodide initialized successfully. Python is now available.");
+            } catch (error) {
+                addToTerminal(`Error initializing Pyodide: ${error.message}`);
+            }
+        }
+        
         // Initialize app
         function initializeApp() {
             messageInput.focus();
             updateQuotaBar();
             setupDragAndDrop();
-            renderFileTree();
-            updatePreview();
+            initializePyodide();
             
             // Check if user is on free plan
             if (state.auth.user.plan === 'free') {
@@ -3000,731 +3129,595 @@
             } else {
                 upgradeBanner.style.display = 'none';
             }
-        }
-        
-        // Initialize Monaco Editor
-        function initializeMonacoEditor() {
-            require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' }});
-            require(['vs/editor/editor.main'], function () {
-                editor = monaco.editor.create(document.getElementById('monaco-editor'), {
-                    value: getActiveFileContent(),
-                    language: getLanguageFromFile(state.project.activeFile),
-                    theme: state.ui.theme === 'dark' ? 'vs-dark' : 'vs',
-                    automaticLayout: true,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                    fontSize: 14,
-                    fontFamily: 'JetBrains Mono, monospace'
-                });
-                
-                // Save content when it changes
-                editor.onDidChangeModelContent(() => {
-                    const content = editor.getValue();
-                    updateFileContent(state.project.activeFile, content);
-                    updatePreview();
-                });
-            });
-        }
-        
-        // Initialize project
-        function initializeProject() {
-            // Load project from localStorage or create default
-            const savedProject = localStorage.getItem('aj-studioz-project');
-            if (savedProject) {
-                state.project = JSON.parse(savedProject);
-            } else {
-                // Create default project
-                saveProject();
-            }
             
-            renderFileTree();
-            updatePreview();
+            // Initialize agent workspace
+            initializeAgentWorkspace();
         }
         
-        // Save project to localStorage
-        function saveProject() {
-            localStorage.setItem('aj-studioz-project', JSON.stringify(state.project));
+        // Initialize agent workspace
+        function initializeAgentWorkspace() {
+            // Set up code editor
+            codeEditor.addEventListener('input', function() {
+                state.agent.workspace.code = this.value;
+            });
+            
+            // Set up language selector
+            languageSelector.value = state.agent.workspace.language;
+            
+            // Set up file tree
+            setupFileTree();
         }
         
-        // Render file tree
-        function renderFileTree() {
+        // Setup file tree
+        function setupFileTree() {
+            // Clear existing file tree
             fileTree.innerHTML = '';
             
-            state.project.files.forEach(file => {
+            // Add default folders and files
+            const defaultFiles = [
+                { name: 'Projects', type: 'folder', icon: 'fas fa-folder' },
+                { name: 'Documents', type: 'folder', icon: 'fas fa-folder' },
+                { name: 'script.js', type: 'file', icon: 'fas fa-file-code' },
+                { name: 'chart.png', type: 'file', icon: 'fas fa-file-image' }
+            ];
+            
+            defaultFiles.forEach(file => {
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
-                if (file.name === state.project.activeFile) {
-                    fileItem.classList.add('active');
-                }
-                
-                const icon = getFileIcon(file.type, file.name);
                 fileItem.innerHTML = `
-                    <i class="${icon} file-icon"></i>
-                    <span class="file-name">${file.name}</span>
+                    <div class="file-icon"><i class="${file.icon}"></i></div>
+                    <div class="file-name">${file.name}</div>
                 `;
-                
-                fileItem.onclick = () => openFile(file.name);
                 fileTree.appendChild(fileItem);
             });
         }
         
-        // Get file icon based on type and name
-        function getFileIcon(type, name) {
-            if (type === 'folder') {
-                return 'fas fa-folder';
-            }
-            
-            const extension = name.split('.').pop().toLowerCase();
-            
-            switch (extension) {
-                case 'html':
-                case 'htm':
-                    return 'fab fa-html5';
-                case 'css':
-                    return 'fab fa-css3-alt';
-                case 'js':
-                case 'mjs':
-                    return 'fab fa-js';
-                case 'json':
-                    return 'fas fa-file-code';
-                case 'md':
-                    return 'fab fa-markdown';
-                case 'py':
-                    return 'fab fa-python';
-                case 'java':
-                    return 'fab fa-java';
-                case 'php':
-                    return 'fab fa-php';
-                case 'rb':
-                    return 'fas fa-gem';
-                case 'go':
-                    return 'fas fa-cube';
-                case 'rs':
-                    return 'fas fa-cube';
-                case 'ts':
-                    return 'fas fa-code';
-                case 'jsx':
-                case 'tsx':
-                    return 'fab fa-react';
-                case 'vue':
-                    return 'fab fa-vuejs';
-                case 'sql':
-                    return 'fas fa-database';
-                case 'sh':
-                case 'bash':
-                case 'zsh':
-                    return 'fas fa-terminal';
-                case 'xml':
-                case 'svg':
-                    return 'fas fa-file-code';
-                case 'png':
-                case 'jpg':
-                case 'jpeg':
-                case 'gif':
-                case 'svg':
-                case 'ico':
-                    return 'fas fa-file-image';
-                case 'mp3':
-                case 'wav':
-                case 'ogg':
-                    return 'fas fa-file-audio';
-                case 'mp4':
-                case 'mov':
-                case 'avi':
-                case 'mkv':
-                    return 'fas fa-file-video';
-                case 'pdf':
-                    return 'fas fa-file-pdf';
-                case 'zip':
-                case 'rar':
-                case 'tar':
-                case 'gz':
-                    return 'fas fa-file-archive';
-                default:
-                    return 'fas fa-file';
-            }
-        }
-        
-        // Open file in editor
-        function openFile(filename) {
-            // Update active file
-            state.project.activeFile = filename;
-            
-            // Update file tree
-            renderFileTree();
-            
-            // Update editor tabs
-            updateEditorTabs();
-            
-            // Update editor content
-            if (editor) {
-                const content = getActiveFileContent();
-                editor.setValue(content);
-                editor.setModel(monaco.editor.createModel(
-                    content,
-                    getLanguageFromFile(filename)
-                ));
-            }
-            
-            // Update preview if HTML file
-            if (filename.endsWith('.html') || filename.endsWith('.htm')) {
-                updatePreview();
-            }
-        }
-        
-        // Get active file content
-        function getActiveFileContent() {
-            const file = state.project.files.find(f => f.name === state.project.activeFile);
-            return file ? file.content : '';
-        }
-        
-        // Update file content
-        function updateFileContent(filename, content) {
-            const file = state.project.files.find(f => f.name === filename);
-            if (file) {
-                file.content = content;
-                saveProject();
-            }
-        }
-        
-        // Get language from filename
-        function getLanguageFromFile(filename) {
-            const extension = filename.split('.').pop().toLowerCase();
-            
-            switch (extension) {
-                case 'html':
-                case 'htm':
-                    return 'html';
-                case 'css':
-                    return 'css';
-                case 'js':
-                case 'mjs':
-                    return 'javascript';
-                case 'json':
-                    return 'json';
-                case 'md':
-                    return 'markdown';
-                case 'py':
-                    return 'python';
-                case 'java':
-                    return 'java';
-                case 'php':
-                    return 'php';
-                case 'rb':
-                    return 'ruby';
-                case 'go':
-                    return 'go';
-                case 'rs':
-                    return 'rust';
-                case 'ts':
-                    return 'typescript';
-                case 'jsx':
-                case 'tsx':
-                    return 'typescript';
-                case 'vue':
-                    return 'html';
-                case 'sql':
-                    return 'sql';
-                case 'sh':
-                case 'bash':
-                case 'zsh':
-                    return 'shell';
-                case 'xml':
-                case 'svg':
-                    return 'xml';
-                default:
-                    return 'plaintext';
-            }
-        }
-        
-        // Update editor tabs
-        function updateEditorTabs() {
-            editorTabs.innerHTML = '';
-            
-            state.project.files.forEach(file => {
-                const tab = document.createElement('div');
-                tab.className = 'editor-tab';
-                tab.dataset.file = file.name;
-                if (file.name === state.project.activeFile) {
-                    tab.classList.add('active');
-                }
-                
-                tab.innerHTML = `
-                    <span>${file.name}</span>
-                    <button class="editor-tab-close" onclick="closeEditorTab(this, '${file.name}')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                
-                tab.onclick = (e) => {
-                    if (!e.target.classList.contains('editor-tab-close')) {
-                        openFile(file.name);
-                    }
-                };
-                
-                editorTabs.appendChild(tab);
-            });
-        }
-        
-        // Close editor tab
-        function closeEditorTab(button, filename) {
-            event.stopPropagation();
-            
-            // Remove file from project
-            state.project.files = state.project.files.filter(f => f.name !== filename);
-            
-            // If closing active file, switch to another file
-            if (filename === state.project.activeFile && state.project.files.length > 0) {
-                state.project.activeFile = state.project.files[0].name;
-            }
-            
-            // Update UI
-            saveProject();
-            renderFileTree();
-            updateEditorTabs();
-            
-            // Update editor content
-            if (editor && state.project.files.length > 0) {
-                const content = getActiveFileContent();
-                editor.setValue(content);
-                editor.setModel(monaco.editor.createModel(
-                    content,
-                    getLanguageFromFile(state.project.activeFile)
-                ));
-            }
-            
-            // Update preview if HTML file
-            if (state.project.activeFile && (state.project.activeFile.endsWith('.html') || state.project.activeFile.endsWith('.htm'))) {
-                updatePreview();
-            }
-        }
-        
-        // Create new file
-        function createNewFile() {
-            const filename = prompt('Enter filename:');
-            if (filename) {
-                // Check if file already exists
-                if (state.project.files.find(f => f.name === filename)) {
-                    showToast('File already exists!', 'error');
-                    return;
-                }
-                
-                // Add new file
-                state.project.files.push({
-                    name: filename,
-                    type: 'file',
-                    content: ''
-                });
-                
-                // Open the new file
-                openFile(filename);
-                saveProject();
-                showToast('File created successfully!', 'success');
-            }
-        }
-        
-        // Create new folder
-        function createNewFolder() {
-            const foldername = prompt('Enter folder name:');
-            if (foldername) {
-                // Check if folder already exists
-                if (state.project.files.find(f => f.name === foldername)) {
-                    showToast('Folder already exists!', 'error');
-                    return;
-                }
-                
-                // Add new folder
-                state.project.files.push({
-                    name: foldername,
-                    type: 'folder',
-                    content: ''
-                });
-                
-                saveProject();
-                renderFileTree();
-                showToast('Folder created successfully!', 'success');
-            }
-        }
-        
-        // Refresh file explorer
-        function refreshFileExplorer() {
-            renderFileTree();
-            showToast('File explorer refreshed!', 'success');
-        }
-        
-        // Update preview
-        function updatePreview() {
-            const htmlFile = state.project.files.find(f => 
-                f.name.endsWith('.html') || f.name.endsWith('.htm')
-            );
-            
-            if (htmlFile) {
-                // Get CSS and JS files
-                const cssFiles = state.project.files.filter(f => f.name.endsWith('.css'));
-                const jsFiles = state.project.files.filter(f => f.name.endsWith('.js'));
-                
-                // Combine HTML with CSS and JS
-                let combinedContent = htmlFile.content;
-                
-                // Add CSS to head
-                if (cssFiles.length > 0) {
-                    const cssContent = cssFiles.map(f => f.content).join('\n');
-                    combinedContent = combinedContent.replace(
-                        '</head>',
-                        `<style>\n${cssContent}\n</style>\n</head>`
-                    );
-                }
-                
-                // Add JS to body
-                if (jsFiles.length > 0) {
-                    const jsContent = jsFiles.map(f => f.content).join('\n');
-                    combinedContent = combinedContent.replace(
-                        '</body>',
-                        `<script>\n${jsContent}\n</script>\n</body>`
-                    );
-                }
-                
-                previewFrame.srcdoc = combinedContent;
-                state.code.preview = combinedContent;
-            } else {
-                previewFrame.srcdoc = '<html><body><h1>No HTML file found</h1><p>Create an HTML file to see the preview.</p></body></html>';
-            }
-        }
-        
-        // Switch preview tab
-        function switchPreview(tab) {
-            // Update active tab
-            document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Update preview content based on tab
-            switch (tab) {
-                case 'preview':
-                    updatePreview();
-                    break;
-                case 'console':
-                    previewFrame.srcdoc = `
-                        <html>
-                        <head>
-                            <style>
-                                body { font-family: monospace; padding: 20px; }
-                                .log { margin-bottom: 10px; }
-                                .error { color: red; }
-                                .warn { color: orange; }
-                                .info { color: blue; }
-                            </style>
-                        </head>
-                        <body>
-                            <h3>Console Output</h3>
-                            <div id="console-output"></div>
-                            <script>
-                                const originalLog = console.log;
-                                const originalError = console.error;
-                                const originalWarn = console.warn;
-                                const originalInfo = console.info;
-                                
-                                console.log = function(...args) {
-                                    originalLog.apply(console, args);
-                                    const output = document.getElementById('console-output');
-                                    output.innerHTML += '<div class="log info">' + args.join(' ') + '</div>';
-                                };
-                                
-                                console.error = function(...args) {
-                                    originalError.apply(console, args);
-                                    const output = document.getElementById('console-output');
-                                    output.innerHTML += '<div class="log error">' + args.join(' ') + '</div>';
-                                };
-                                
-                                console.warn = function(...args) {
-                                    originalWarn.apply(console, args);
-                                    const output = document.getElementById('console-output');
-                                    output.innerHTML += '<div class="log warn">' + args.join(' ') + '</div>';
-                                };
-                                
-                                console.info = function(...args) {
-                                    originalInfo.apply(console, args);
-                                    const output = document.getElementById('console-output');
-                                    output.innerHTML += '<div class="log info">' + args.join(' ') + '</div>';
-                                };
-                            </script>
-                        </body>
-                        </html>
-                    `;
-                    break;
-                case 'network':
-                    previewFrame.srcdoc = `
-                        <html>
-                        <head>
-                            <style>
-                                body { font-family: monospace; padding: 20px; }
-                                table { width: 100%; border-collapse: collapse; }
-                                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                                th { background-color: #f2f2f2; }
-                            </style>
-                        </head>
-                        <body>
-                            <h3>Network Requests</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>URL</th>
-                                        <th>Method</th>
-                                        <th>Status</th>
-                                        <th>Type</th>
-                                        <th>Size</th>
-                                        <th>Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="6" style="text-align: center;">No network requests</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </body>
-                        </html>
-                    `;
-                    break;
-            }
-        }
-        
-        // Handle terminal input
-        function handleTerminalInput(event) {
-            if (event.key === 'Enter') {
-                const command = terminalInput.value.trim();
-                if (command) {
-                    executeTerminalCommand(command);
-                    terminalInput.value = '';
-                }
-            }
-        }
-        
-        // Execute terminal command
-        function executeTerminalCommand(command) {
-            // Add command to terminal history
-            state.terminal.history.push(command);
-            
-            // Add command to terminal display
-            const commandLine = document.createElement('div');
-            commandLine.className = 'terminal-line';
-            commandLine.innerHTML = `<span class="terminal-prompt">$</span><span>${escapeHtml(command)}</span>`;
-            terminalBody.insertBefore(commandLine, terminalBody.lastElementChild);
-            
-            // Execute command
-            let output = '';
-            
-            // Simulate command execution
-            switch (command.split(' ')[0]) {
-                case 'help':
-                    output = 'Available commands:<br>' +
-                              '  help - Show this help message<br>' +
-                              '  clear - Clear the terminal<br>' +
-                              '  ls - List files<br>' +
-                              '  pwd - Print working directory<br>' +
-                              '  echo [text] - Print text<br>' +
-                              '  npm [command] - Run npm command<br>' +
-                              '  node [file] - Run Node.js file';
-                    break;
-                case 'clear':
-                    terminalBody.innerHTML = `
-                        <div class="terminal-line">
-                            <span class="terminal-prompt">$</span>
-                            <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." onkeydown="handleTerminalInput(event)">
-                        </div>
-                    `;
-                    return;
-                case 'ls':
-                    output = state.project.files.map(f => f.name).join('<br>');
-                    break;
-                case 'pwd':
-                    output = '/home/user/project';
-                    break;
-                case 'echo':
-                    output = command.substring(5);
-                    break;
-                case 'npm':
-                    // Simulate npm command
-                    output = `npm ${command.substring(4)}<br>Command executed successfully.`;
-                    break;
-                case 'node':
-                    // Simulate node command
-                    const filename = command.substring(5);
-                    const jsFile = state.project.files.find(f => f.name === filename);
-                    if (jsFile && jsFile.name.endsWith('.js')) {
-                        try {
-                            // This is a simulation - in a real app, you'd need a secure way to execute JavaScript
-                            output = `Executing ${filename}...<br>Script executed successfully.`;
-                        } catch (error) {
-                            output = `Error executing ${filename}: ${error.message}`;
-                        }
-                    } else {
-                        output = `File ${filename} not found or not a JavaScript file.`;
-                    }
-                    break;
-                default:
-                    output = `Command not found: ${command.split(' ')[0]}. Type 'help' for available commands.`;
-            }
-            
-            // Add output to terminal
-            const outputLine = document.createElement('div');
-            outputLine.className = 'terminal-line';
-            outputLine.innerHTML = output;
-            terminalBody.insertBefore(outputLine, terminalBody.lastElementChild);
-            
-            // Scroll to bottom
-            terminalBody.scrollTop = terminalBody.scrollHeight;
-        }
-        
-        // Clear terminal
-        function clearTerminal() {
-            terminalBody.innerHTML = `
-                <div class="terminal-line">
-                    <span class="terminal-prompt">$</span>
-                    <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." onkeydown="handleTerminalInput(event)">
-                </div>
-            `;
-            showToast('Terminal cleared!', 'success');
-        }
-        
-        // Run command
-        function runCommand() {
-            const command = terminalInput.value.trim();
-            if (command) {
-                executeTerminalCommand(command);
-                terminalInput.value = '';
-            }
-        }
-        
-        // Activate tool
+        // Agent Functions
         function activateTool(toolName) {
             // Update active tool
-            state.ui.activeTool = toolName;
+            state.agent.activeTool = toolName;
             
-            // Update tool buttons
+            // Update UI
             document.querySelectorAll('.agent-tool').forEach(tool => {
                 tool.classList.remove('active');
             });
-            document.getElementById(`${toolName}Tool`).classList.add('active');
+            
+            document.querySelector(`.agent-tool.${toolName}`).classList.add('active');
             
             // Update agent status
-            agentStatusText.textContent = `Agent Ready - ${state.agent.tools[toolName].name}`;
+            updateAgentStatus('busy', `Activated ${state.agent.tools[toolName].name} tool`);
             
-            // Show/hide panels based on tool
-            switch (toolName) {
+            // Show tool-specific UI
+            showToolUI(toolName);
+            
+            // Add to terminal
+            addToTerminal(`Activated ${state.agent.tools[toolName].name} tool`);
+        }
+        
+        function showToolUI(toolName) {
+            switch(toolName) {
                 case 'code':
-                    // Show editor area
-                    document.querySelector('.editor-area').style.display = 'flex';
-                    // Hide terminal if not active
-                    if (!state.preferences.terminalAccess) {
-                        terminal.style.display = 'none';
-                    }
+                    // Focus on code editor
+                    codeEditor.focus();
                     break;
                 case 'web':
-                    // Show web browser panel (could be implemented in the future)
-                    showToast('Web browser tool activated', 'success');
+                    // Show web search UI
+                    addToTerminal('Web search tool activated. Enter your search query in the chat.');
                     break;
-                case 'terminal':
-                    // Show terminal
-                    terminal.style.display = 'flex';
-                    // Focus terminal input
-                    terminalInput.focus();
+                case 'file':
+                    // Focus on file explorer
+                    setupFileTree();
                     break;
-                case 'files':
-                    // Show file explorer
-                    fileExplorer.style.display = 'flex';
-                    showToast('File manager tool activated', 'success');
+                case 'calc':
+                    // Show calculator UI
+                    addToTerminal('Calculator activated. Enter your calculation in the chat.');
+                    break;
+                case 'image':
+                    // Show image generation UI
+                    addToTerminal('Image generation activated. Describe the image you want to create.');
                     break;
             }
         }
         
-        // Toggle auto execute
-        function toggleAutoExecute() {
-            const toggle = document.getElementById('autoExecuteToggle');
-            state.preferences.autoExecute = !state.preferences.autoExecute;
-            toggle.classList.toggle('active');
-            showToast(`Auto-execute ${state.preferences.autoExecute ? 'enabled' : 'disabled'}`, 'success');
-        }
-        
-        // Toggle web access
-        function toggleWebAccess() {
-            const toggle = document.getElementById('webAccessToggle');
-            state.preferences.webAccess = !state.preferences.webAccess;
-            toggle.classList.toggle('active');
-            showToast(`Web access ${state.preferences.webAccess ? 'enabled' : 'disabled'}`, 'success');
-        }
-        
-        // Toggle file management
-        function toggleFileMgmt() {
-            const toggle = document.getElementById('fileMgmtToggle');
-            state.preferences.fileMgmt = !state.preferences.fileMgmt;
-            toggle.classList.toggle('active');
-            showToast(`File management ${state.preferences.fileMgmt ? 'enabled' : 'disabled'}`, 'success');
-        }
-        
-        // Toggle terminal access
-        function toggleTerminalAccess() {
-            const toggle = document.getElementById('terminalAccessToggle');
-            state.preferences.terminalAccess = !state.preferences.terminalAccess;
-            toggle.classList.toggle('active');
+        function updateAgentStatus(status, text, detail = '') {
+            state.agent.status = status;
+            agentStatusText.textContent = text;
+            agentStatusDetail.textContent = detail;
             
-            // Show/hide terminal based on setting
-            if (state.preferences.terminalAccess) {
-                terminal.style.display = 'flex';
-            } else {
-                terminal.style.display = 'none';
+            // Update status indicator
+            agentStatusIndicator.className = 'status-indicator';
+            if (status === 'busy') {
+                agentStatusIndicator.classList.add('busy');
+            } else if (status === 'error') {
+                agentStatusIndicator.classList.add('error');
+            }
+        }
+        
+        function executeAgentAction() {
+            if (!state.agent.activeTool) {
+                showToast('Please select a tool first', 'error');
+                return;
             }
             
-            showToast(`Terminal access ${state.preferences.terminalAccess ? 'enabled' : 'disabled'}`, 'success');
+            updateAgentStatus('busy', 'Executing action', 'Processing...');
+            
+            // Execute based on active tool
+            switch(state.agent.activeTool) {
+                case 'code':
+                    runCode();
+                    break;
+                case 'web':
+                    performWebSearch();
+                    break;
+                case 'file':
+                    performFileOperation();
+                    break;
+                case 'calc':
+                    performCalculation();
+                    break;
+                case 'image':
+                    generateImage();
+                    break;
+            }
         }
         
-        // Setup event listeners
-        function setupEventListeners() {
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (e.key === '/' && document.activeElement !== messageInput) {
-                    e.preventDefault();
-                    messageInput.focus();
-                }
-                if (e.key === 'Escape') {
-                    closeSettings();
-                    if (state.ui.sidebarOpen) toggleSidebar();
-                }
-                // Ctrl/Cmd + S to save
-                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                    e.preventDefault();
-                    saveProject();
-                    showToast('Project saved!', 'success');
-                }
-                // Ctrl/Cmd + E to execute code
-                if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
-                    e.preventDefault();
-                    if (state.preferences.autoExecute) {
-                        executeCode();
-                    }
-                }
-            });
+        function runCode() {
+            const code = codeEditor.value;
+            const language = languageSelector.value;
             
-            // Window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) {
-                    sidebar.classList.remove('open');
+            if (!code.trim()) {
+                showToast('Please enter some code to run', 'error');
+                updateAgentStatus('ready', 'Ready');
+                return;
+            }
+            
+            addToTerminal(`Running ${language} code...`);
+            
+            try {
+                let result;
+                
+                switch(language) {
+                    case 'javascript':
+                        // Create a safe execution context
+                        const safeEval = new Function(code);
+                        result = safeEval();
+                        break;
+                        
+                    case 'python':
+                        if (pyodideReady) {
+                            result = pyodide.runPython(code);
+                        } else {
+                            throw new Error('Python environment not ready');
+                        }
+                        break;
+                        
+                    case 'html':
+                        // Update preview with HTML
+                        updatePreview(code);
+                        result = 'HTML rendered in preview pane';
+                        break;
+                        
+                    case 'css':
+                        // Apply CSS to preview
+                        const styleElement = document.createElement('style');
+                        styleElement.textContent = code;
+                        document.head.appendChild(styleElement);
+                        result = 'CSS applied to page';
+                        break;
+                        
+                    case 'sql':
+                        // Simulate SQL execution
+                        result = 'SQL execution would be implemented here';
+                        break;
+                        
+                    default:
+                        result = 'Language not supported';
                 }
                 
-                // Resize Monaco editor
-                if (editor) {
-                    editor.layout();
+                // Display result
+                if (result !== undefined) {
+                    addToTerminal(`Result: ${result}`);
+                } else {
+                    addToTerminal('Code executed successfully (no return value)');
                 }
+                
+                updateAgentStatus('ready', 'Ready');
+                showToast('Code executed successfully!', 'success');
+                
+            } catch (error) {
+                addToTerminal(`Error: ${error.message}`);
+                updateAgentStatus('error', 'Error', error.message);
+                showToast('Error executing code: ' + error.message, 'error');
+            }
+        }
+        
+        function performWebSearch() {
+            // Simulate web search
+            addToTerminal('Performing web search...');
+            
+            // In a real implementation, this would call a search API
+            setTimeout(() => {
+                addToTerminal('Search results would appear here');
+                addToTerminal('1. Result 1 - Example search result');
+                addToTerminal('2. Result 2 - Another search result');
+                updateAgentStatus('ready', 'Ready');
+                showToast('Web search completed!', 'success');
+            }, 1500);
+        }
+        
+        function performFileOperation() {
+            // Simulate file operation
+            addToTerminal('Performing file operation...');
+            
+            // In a real implementation, this would interact with the file system
+            setTimeout(() => {
+                addToTerminal('File operation completed');
+                updateAgentStatus('ready', 'Ready');
+                showToast('File operation completed!', 'success');
+            }, 1000);
+        }
+        
+        function performCalculation() {
+            // Simulate calculation
+            addToTerminal('Performing calculation...');
+            
+            // In a real implementation, this would evaluate mathematical expressions
+            setTimeout(() => {
+                addToTerminal('Calculation result: 42');
+                updateAgentStatus('ready', 'Ready');
+                showToast('Calculation completed!', 'success');
+            }, 800);
+        }
+        
+        function generateImage() {
+            // Simulate image generation
+            addToTerminal('Generating image...');
+            
+            // In a real implementation, this would call an image generation API
+            setTimeout(() => {
+                addToTerminal('Image generated successfully');
+                updateAgentStatus('ready', 'Ready');
+                showToast('Image generated!', 'success');
+            }, 2000);
+        }
+        
+        function resetAgent() {
+            // Reset agent state
+            state.agent.activeTool = null;
+            state.agent.executionPlan = [];
+            state.agent.currentStep = 0;
+            
+            // Clear UI
+            document.querySelectorAll('.agent-tool').forEach(tool => {
+                tool.classList.remove('active');
             });
             
-            // Close sidebar when clicking outside
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 768 && 
-                    sidebar.classList.contains('open') && 
-                    !sidebar.contains(event.target) && 
-                    !event.target.closest('.header-btn')) {
-                    sidebar.classList.remove('open');
+            // Update status
+            updateAgentStatus('ready', 'Ready');
+            
+            // Clear terminal
+            terminalContent.innerHTML = `
+                <div class="terminal-line">Agent Terminal v1.0</div>
+                <div class="terminal-line">Type 'help' for available commands.</div>
+            `;
+            
+            showToast('Agent reset successfully!', 'success');
+        }
+        
+        function addToTerminal(message) {
+            const terminalLine = document.createElement('div');
+            terminalLine.className = 'terminal-line';
+            terminalLine.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            terminalContent.appendChild(terminalLine);
+            terminalContent.scrollTop = terminalContent.scrollHeight;
+        }
+        
+        function handleTerminalCommand(event) {
+            if (event.key === 'Enter') {
+                const command = terminalCommand.value.trim();
+                if (!command) return;
+                
+                // Add command to terminal
+                addToTerminal(`$ ${command}`);
+                
+                // Process command
+                processTerminalCommand(command);
+                
+                // Clear input
+                terminalCommand.value = '';
+            }
+        }
+        
+        function processTerminalCommand(command) {
+            const parts = command.split(' ');
+            const cmd = parts[0].toLowerCase();
+            
+            switch(cmd) {
+                case 'help':
+                    addToTerminal('Available commands:');
+                    addToTerminal('  help - Show this help message');
+                    addToTerminal('  clear - Clear terminal');
+                    addToTerminal('  run - Run code in editor');
+                    addToTerminal('  reset - Reset agent');
+                    addToTerminal('  status - Show agent status');
+                    break;
+                    
+                case 'clear':
+                    terminalContent.innerHTML = `
+                        <div class="terminal-line">Agent Terminal v1.0</div>
+                        <div class="terminal-line">Type 'help' for available commands.</div>
+                    `;
+                    break;
+                    
+                case 'run':
+                    runCode();
+                    break;
+                    
+                case 'reset':
+                    resetAgent();
+                    break;
+                    
+                case 'status':
+                    addToTerminal(`Agent Status: ${state.agent.status}`);
+                    addToTerminal(`Active Tool: ${state.agent.activeTool || 'None'}`);
+                    addToTerminal(`Memory Items: ${state.agent.memory.length}`);
+                    break;
+                    
+                default:
+                    addToTerminal(`Unknown command: ${cmd}. Type 'help' for available commands.`);
+            }
+        }
+        
+        function clearTerminal() {
+            terminalContent.innerHTML = `
+                <div class="terminal-line">Agent Terminal v1.0</div>
+                <div class="terminal-line">Type 'help' for available commands.</div>
+            `;
+            showToast('Terminal cleared', 'success');
+        }
+        
+        function changeLanguage(language) {
+            state.agent.workspace.language = language;
+            showToast(`Language changed to ${language}`, 'success');
+        }
+        
+        function clearEditor() {
+            codeEditor.value = '';
+            state.agent.workspace.code = '';
+            showToast('Editor cleared', 'success');
+        }
+        
+        function createNewFile() {
+            const fileName = prompt('Enter file name:');
+            if (fileName) {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-icon"><i class="fas fa-file"></i></div>
+                    <div class="file-name">${fileName}</div>
+                `;
+                fileTree.appendChild(fileItem);
+                
+                // Add to agent workspace
+                state.agent.workspace.files.push({
+                    name: fileName,
+                    content: '',
+                    type: 'file'
+                });
+                
+                showToast(`File ${fileName} created`, 'success');
+            }
+        }
+        
+        function uploadFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.onchange = (e) => handleFiles(e.target.files);
+            input.click();
+        }
+        
+        function addToMemory() {
+            const memoryText = memoryInput.value.trim();
+            if (!memoryText) return;
+            
+            // Add to agent memory
+            state.agent.memory.push(memoryText);
+            
+            // Update UI
+            const memoryItem = document.createElement('div');
+            memoryItem.className = 'memory-item';
+            memoryItem.innerHTML = `
+                <span>${memoryText}</span>
+                <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
+            `;
+            memoryItems.appendChild(memoryItem);
+            
+            // Clear input
+            memoryInput.value = '';
+            
+            showToast('Added to memory', 'success');
+        }
+        
+        function removeMemoryItem(element) {
+            const memoryText = element.parentElement.textContent.trim();
+            
+            // Remove from agent memory
+            state.agent.memory = state.agent.memory.filter(item => item !== memoryText);
+            
+            // Remove from UI
+            element.parentElement.remove();
+            
+            showToast('Removed from memory', 'success');
+        }
+        
+        // Override existing functions to integrate with agent
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || state.chat.pendingMessages.length > 0) return;
+            
+            // Check quota
+            if (state.quota.messagesLeft <= 0) {
+                showToast('Message quota exceeded. Please upgrade your plan.', 'error');
+                return;
+            }
+            
+            // Check API status
+            if (state.api.status !== 'online') {
+                showToast('AI is currently offline. Please try again later.', 'error');
+                return;
+            }
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            
+            // Hide empty state
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            
+            // Add user message
+            addMessage('user', message);
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Enable two-column layout after first message
+            if (!state.chat.hasMessages) {
+                state.chat.hasMessages = true;
+                sidebarRight.classList.add('active');
+            }
+            
+            // Add to pending messages
+            state.chat.pendingMessages.push(message);
+            
+            // Prepare API request with agent context
+            const messages = [
+                ...state.chat.messages.map(msg => ({
+                    role: msg.type,
+                    content: msg.content
+                })),
+                { role: 'user', content: message }
+            ];
+            
+            // Add agent memory to context
+            if (state.agent.memory.length > 0) {
+                messages.push({
+                    role: 'system',
+                    content: `Agent Memory: ${state.agent.memory.join(', ')}`
+                });
+            }
+            
+            const options = {
+                length: 1024,
+                creativity: 70,
+                system: "You are an advanced agentic AI assistant. You can execute code, search the web, manage files, and perform complex tasks. When the user requests a task that requires one of these capabilities, indicate which tool you would use and what steps you would take."
+            };
+            
+            try {
+                // Make API request
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: API_CONFIG.headers,
+                    body: JSON.stringify({
+                        messages,
+                        options
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
                 }
-            });
+                
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add AI response to chat with typing effect
+                addMessageWithTypingEffect('ai', aiResponse);
+                
+                // Extract code from response if available
+                extractCodeFromResponse(aiResponse);
+                
+                // Update quota
+                state.quota.used += 1;
+                state.quota.messagesLeft -= 1;
+                updateQuotaBar();
+                
+                // Remove from pending messages
+                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
+                
+                // Save conversation to Firestore
+                saveConversation();
+                
+                showToast('Response generated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Show error message
+                addMessage('ai', 'I apologize, but I encountered an error while processing your request. Please try again.');
+                showToast('Failed to generate response: ' + error.message, 'error');
+                
+                // Remove from pending messages
+                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
+            }
+        }
+        
+        // Override extractCodeFromResponse to handle agent responses
+        function extractCodeFromResponse(response) {
+            // Regular expression to match code blocks
+            const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+            let match;
+            let codeFound = false;
+            
+            while ((match = codeBlockRegex.exec(response)) !== null) {
+                const language = match[1] || 'text';
+                const code = match[2];
+                
+                // Update the code in the state
+                state.code.current = code;
+                state.code.language = language;
+                state.agent.workspace.code = code;
+                state.agent.workspace.language = language;
+                
+                // Update the code editor
+                codeEditor.value = code;
+                languageSelector.value = language;
+                
+                // If it's HTML, also update the preview
+                if (language === 'html') {
+                    updatePreview(code);
+                }
+                
+                codeFound = true;
+            }
+            
+            // Check for agent actions in response
+            if (response.includes('I will use the') || response.includes('I can help you by')) {
+                // Extract agent action
+                const actionMatch = response.match(/I will use the (\w+) tool/);
+                if (actionMatch) {
+                    const toolName = actionMatch[1].toLowerCase();
+                    if (state.agent.tools[toolName]) {
+                        activateTool(toolName);
+                    }
+                }
+            }
+        }
+        
+        // Override sendSuggestion to handle agent suggestions
+        function sendSuggestion(suggestion) {
+            messageInput.value = suggestion;
+            autoResize(messageInput);
+            sendMessage();
         }
         
         // Load user conversations from Firestore
@@ -3817,6 +3810,12 @@
                     emptyState.style.display = 'none';
                 }
                 
+                // Enable two-column layout
+                if (!state.chat.hasMessages) {
+                    state.chat.hasMessages = true;
+                    sidebarRight.classList.add('active');
+                }
+                
                 // Load messages
                 chatContainer.innerHTML = '';
                 conversationData.messages.forEach(msg => {
@@ -3877,430 +3876,7 @@
             }
         }
         
-        // Send message
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message || state.chat.pendingMessages.length > 0) return;
-            
-            // Check quota
-            if (state.quota.messagesLeft <= 0) {
-                showToast('Message quota exceeded. Please upgrade your plan.', 'error');
-                return;
-            }
-            
-            // Check API status
-            if (state.api.status !== 'online') {
-                showToast('AI is currently offline. Please try again later.', 'error');
-                return;
-            }
-            
-            // Clear input
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            sendBtn.disabled = true;
-            
-            // Hide empty state
-            if (emptyState) {
-                emptyState.style.display = 'none';
-            }
-            
-            // Add user message
-            addMessage('user', message);
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            // Add to pending messages
-            state.chat.pendingMessages.push(message);
-            
-            // Prepare API request
-            const messages = [
-                ...state.chat.messages.map(msg => ({
-                    role: msg.type,
-                    content: msg.content
-                })),
-                { role: 'user', content: message }
-            ];
-            
-            // Add agent context
-            const agentContext = {
-                activeTool: state.ui.activeTool,
-                projectFiles: state.project.files.map(f => ({ name: f.name, type: f.type })),
-                preferences: state.preferences
-            };
-            
-            const options = {
-                length: 2048,
-                creativity: 70,
-                system: `You are an Agentic AI assistant for developers. You have access to tools for code editing, web browsing, terminal commands, and file management. 
-                Current active tool: ${state.ui.activeTool}
-                Project files: ${agentContext.projectFiles.map(f => f.name).join(', ')}
-                User preferences: ${JSON.stringify(agentContext.preferences)}
-                
-                When generating code, always provide complete, functional code snippets that can be directly executed.
-                If the user asks you to perform an action (like creating a file, running a command, etc.), explain what you're doing and then do it if you have the necessary permissions.
-                Be concise and helpful, focusing on providing practical solutions for developers.`
-            };
-            
-            try {
-                // Update agent status
-                agentStatusText.textContent = 'Agent Thinking...';
-                
-                // Make API request
-                const response = await fetch(API_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: API_CONFIG.headers,
-                    body: JSON.stringify({
-                        messages,
-                        options
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-                
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-                
-                // Remove typing indicator
-                removeTypingIndicator();
-                
-                // Add AI response to chat with typing effect
-                addMessageWithTypingEffect('ai', aiResponse);
-                
-                // Process agent actions
-                processAgentActions(aiResponse);
-                
-                // Extract code from response if available
-                extractCodeFromResponse(aiResponse);
-                
-                // Update quota
-                state.quota.used += 1;
-                state.quota.messagesLeft -= 1;
-                updateQuotaBar();
-                
-                // Remove from pending messages
-                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
-                
-                // Save conversation to Firestore
-                saveConversation();
-                
-                // Update agent status
-                agentStatusText.textContent = 'Agent Ready';
-                
-                showToast('Response generated successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Error sending message:', error);
-                
-                // Remove typing indicator
-                removeTypingIndicator();
-                
-                // Show error message
-                addMessage('ai', 'I apologize, but I encountered an error while processing your request. Please try again.');
-                showToast('Failed to generate response: ' + error.message, 'error');
-                
-                // Remove from pending messages
-                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
-                
-                // Update agent status
-                agentStatusText.textContent = 'Agent Ready';
-            }
-        }
-        
-        // Process agent actions from AI response
-        function processAgentActions(response) {
-            // Check if the AI wants to create a file
-            const createFileMatch = response.match(/I'll create a file named `([^`]+)`/i);
-            if (createFileMatch && state.preferences.fileMgmt) {
-                const filename = createFileMatch[1];
-                
-                // Extract code block after the mention
-                const codeBlockMatch = response.match(/```(?:\w+)?\n([\s\S]*?)```/);
-                if (codeBlockMatch) {
-                    const content = codeBlockMatch[1];
-                    
-                    // Create the file
-                    state.project.files.push({
-                        name: filename,
-                        type: 'file',
-                        content: content
-                    });
-                    
-                    // Open the file
-                    openFile(filename);
-                    saveProject();
-                    
-                    showToast(`Created file: ${filename}`, 'success');
-                }
-            }
-            
-            // Check if the AI wants to run a terminal command
-            const runCommandMatch = response.match(/I'll run the command `([^`]+)`/i);
-            if (runCommandMatch && state.preferences.terminalAccess) {
-                const command = runCommandMatch[1];
-                
-                // Execute the command
-                executeTerminalCommand(command);
-                
-                showToast(`Executed command: ${command}`, 'success');
-            }
-            
-            // Check if the AI wants to execute code
-            const executeCodeMatch = response.match(/I'll execute this code/i);
-            if (executeCodeMatch && state.preferences.autoExecute) {
-                executeCode();
-            }
-        }
-        
-        // Execute code
-        function executeCode() {
-            const activeFile = state.project.files.find(f => f.name === state.project.activeFile);
-            if (!activeFile) return;
-            
-            // If it's JavaScript, try to execute it
-            if (activeFile.name.endsWith('.js')) {
-                try {
-                    // This is a simulation - in a real app, you'd need a secure way to execute JavaScript
-                    showToast('JavaScript code executed successfully!', 'success');
-                } catch (error) {
-                    showToast(`Error executing JavaScript: ${error.message}`, 'error');
-                }
-            }
-            
-            // If it's HTML, update the preview
-            if (activeFile.name.endsWith('.html') || activeFile.name.endsWith('.htm')) {
-                updatePreview();
-                showToast('HTML preview updated!', 'success');
-            }
-        }
-        
-        // Add message with typing effect - NEW
-        function addMessageWithTypingEffect(type, content) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.style.opacity = '0';
-            messageDiv.style.transition = 'opacity 0.5s ease-in-out';
-            
-            const timestamp = new Date().toLocaleTimeString('en-US', { 
-                hour12: true, 
-                hour: 'numeric', 
-                minute: '2-digit' 
-            });
-            
-            const messageActions = type === 'ai' ? `
-                <div class="message-actions">
-                    <button class="message-action" onclick="copyMessage(this)">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                    <button class="message-action" onclick="regenerateMessage(this)">
-                        <i class="fas fa-redo"></i> Regenerate
-                    </button>
-                    <button class="message-action" onclick="likeMessage(this)">
-                        <i class="fas fa-thumbs-up"></i>
-                    </button>
-                </div>
-            ` : '';
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar">
-                    ${type === 'user' ? userAvatar.textContent : ''}
-                </div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        <div class="formatted-content" id="typing-content-${Date.now()}"></div>
-                        ${messageActions}
-                    </div>
-                    <div class="message-timestamp">${timestamp}</div>
-                </div>
-            `;
-            
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            // Get the content element
-            const contentElement = messageDiv.querySelector('.formatted-content');
-            const contentId = contentElement.id;
-            
-            // Start typing effect
-            typeWriter(content, contentElement, 0);
-            
-            // Add to message history
-            state.chat.messages.push({ type, content, timestamp });
-        }
-        
-        // Typewriter effect - NEW
-        function typeWriter(text, element, index) {
-            if (index < text.length) {
-                // Check if we're at a code block start
-                if (text.substr(index, 3) === '```') {
-                    // Find the end of the code block
-                    const codeEnd = text.indexOf('```', index + 3);
-                    if (codeEnd !== -1) {
-                        // Extract the code block
-                        const codeBlock = text.substring(index, codeEnd + 3);
-                        // Add the entire code block at once
-                        element.innerHTML += formatContent(codeBlock);
-                        
-                        // Highlight code blocks
-                        element.querySelectorAll('pre code').forEach(block => {
-                            hljs.highlightElement(block);
-                        });
-                        
-                        // Continue after the code block
-                        setTimeout(() => {
-                            typeWriter(text, element, codeEnd + 3);
-                        }, 50);
-                        return;
-                    }
-                }
-                
-                // Add character by character for regular text
-                element.innerHTML += text.charAt(index);
-                index++;
-                
-                // Calculate typing speed (random between 10-30ms per character)
-                const typingSpeed = Math.random() * 20 + 10;
-                
-                setTimeout(() => {
-                    typeWriter(text, element, index);
-                }, typingSpeed);
-            } else {
-                // Final formatting after typing is complete
-                const formattedContent = formatContent(element.innerHTML);
-                element.innerHTML = formattedContent;
-                
-                // Highlight code blocks
-                element.querySelectorAll('pre code').forEach(block => {
-                    hljs.highlightElement(block);
-                });
-                
-                // Show the message with fade-in effect
-                const messageDiv = element.closest('.message');
-                messageDiv.style.opacity = '1';
-            }
-        }
-        
-        // Extract code from AI response - IMPROVED
-        function extractCodeFromResponse(response) {
-            // Regular expression to match code blocks
-            const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-            let match;
-            let codeFound = false;
-            
-            while ((match = codeBlockRegex.exec(response)) !== null) {
-                const language = match[1] || 'text';
-                const code = match[2];
-                
-                // Update the code in the state
-                state.code.current = code;
-                state.code.language = language;
-                
-                // If it's HTML, also update the preview
-                if (language === 'html') {
-                    updatePreview(code);
-                }
-                
-                codeFound = true;
-            }
-        }
-        
-        // Check API status
-        async function checkApiStatus() {
-            try {
-                // Send a ping message to check if the API is working
-                const response = await fetch(API_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: API_CONFIG.headers,
-                    body: JSON.stringify({
-                        messages: [{ role: 'user', content: 'ping' }],
-                        options: { length: 10 }
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.choices && data.choices[0].message.content === 'pong') {
-                        state.api.status = 'online';
-                        statusDot.className = 'status-dot online';
-                        statusText.textContent = 'Online';
-                    } else {
-                        throw new Error('Invalid ping response');
-                    }
-                } else {
-                    throw new Error(`API returned status ${response.status}`);
-                }
-                
-                state.api.lastCheck = new Date();
-            } catch (error) {
-                console.error('Error checking API status:', error);
-                state.api.status = 'offline';
-                statusDot.className = 'status-dot offline';
-                statusText.textContent = 'Offline';
-            }
-        }
-        
-        // Copy code to clipboard - IMPROVED
-        function copyCode() {
-            if (!state.code.current) {
-                showToast('No code to copy', 'error');
-                return;
-            }
-            
-            navigator.clipboard.writeText(state.code.current).then(() => {
-                showToast('Code copied to clipboard!', 'success');
-            }).catch(err => {
-                showToast('Failed to copy code', 'error');
-            });
-        }
-        
-        // Download code - IMPROVED
-        function downloadCode() {
-            if (!state.code.current) {
-                showToast('No code to download', 'error');
-                return;
-            }
-            
-            const extension = state.code.language === 'html' ? 'html' : 
-                             state.code.language === 'css' ? 'css' : 
-                             state.code.language === 'javascript' ? 'js' : 'txt';
-            
-            const blob = new Blob([state.code.current], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `aj-studioz-code.${extension}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast('Code downloaded!', 'success');
-        }
-        
-        // Refresh preview - IMPROVED
-        function refreshPreview() {
-            if (state.code.language === 'html' && state.code.current) {
-                updatePreview(state.code.current);
-                showToast('Preview refreshed!', 'success');
-            } else {
-                showToast('No HTML code to preview', 'error');
-            }
-        }
-        
-        // Open preview in new tab - IMPROVED
-        function openInNewTab() {
-            if (state.code.language === 'html' && state.code.current) {
-                const newWindow = window.open();
-                newWindow.document.write(state.code.current);
-                newWindow.document.close();
-            } else {
-                showToast('No HTML code to preview', 'error');
-            }
-        }
-        
-        // Add message to chat - IMPROVED
+        // Add message to chat
         function addMessage(type, content, shouldSave = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -4370,7 +3946,113 @@
             }
         }
         
-        // Format message content - Copilot Style - IMPROVED
+        // Add message with typing effect
+        function addMessageWithTypingEffect(type, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transition = 'opacity 0.5s ease-in-out';
+            
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+                hour12: true, 
+                hour: 'numeric', 
+                minute: '2-digit' 
+            });
+            
+            const messageActions = type === 'ai' ? `
+                <div class="message-actions">
+                    <button class="message-action" onclick="copyMessage(this)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="message-action" onclick="regenerateMessage(this)">
+                        <i class="fas fa-redo"></i> Regenerate
+                    </button>
+                    <button class="message-action" onclick="likeMessage(this)">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                </div>
+            ` : '';
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    ${type === 'user' ? userAvatar.textContent : ''}
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="formatted-content" id="typing-content-${Date.now()}"></div>
+                        ${messageActions}
+                    </div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Get the content element
+            const contentElement = messageDiv.querySelector('.formatted-content');
+            const contentId = contentElement.id;
+            
+            // Start typing effect
+            typeWriter(content, contentElement, 0);
+            
+            // Add to message history
+            state.chat.messages.push({ type, content, timestamp });
+        }
+        
+        // Typewriter effect
+        function typeWriter(text, element, index) {
+            if (index < text.length) {
+                // Check if we're at a code block start
+                if (text.substr(index, 3) === '```') {
+                    // Find the end of the code block
+                    const codeEnd = text.indexOf('```', index + 3);
+                    if (codeEnd !== -1) {
+                        // Extract the code block
+                        const codeBlock = text.substring(index, codeEnd + 3);
+                        // Add the entire code block at once
+                        element.innerHTML += formatContent(codeBlock);
+                        
+                        // Highlight code blocks
+                        element.querySelectorAll('pre code').forEach(block => {
+                            hljs.highlightElement(block);
+                        });
+                        
+                        // Continue after the code block
+                        setTimeout(() => {
+                            typeWriter(text, element, codeEnd + 3);
+                        }, 50);
+                        return;
+                    }
+                }
+                
+                // Add character by character for regular text
+                element.innerHTML += text.charAt(index);
+                index++;
+                
+                // Calculate typing speed (random between 10-30ms per character)
+                const typingSpeed = Math.random() * 20 + 10;
+                
+                setTimeout(() => {
+                    typeWriter(text, element, index);
+                }, typingSpeed);
+            } else {
+                // Final formatting after typing is complete
+                const formattedContent = formatContent(element.innerHTML);
+                element.innerHTML = formattedContent;
+                
+                // Highlight code blocks
+                element.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Show the message with fade-in effect
+                const messageDiv = element.closest('.message');
+                messageDiv.style.opacity = '1';
+            }
+        }
+        
+        // Format message content - Copilot Style
         function formatContent(content) {
             // Create a temporary div to hold the formatted content
             const tempDiv = document.createElement('div');
@@ -4389,7 +4071,7 @@
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Handle code blocks with Copilot style - IMPROVED
+            // Handle code blocks with Copilot style
             formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
@@ -4499,7 +4181,7 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
         
-        // Copy code from a specific code block - IMPROVED
+        // Copy code from a specific code block
         function copyCodeFromBlock(codeId) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -4511,7 +4193,7 @@
             });
         }
         
-        // Run code from a specific code block - NEW
+        // Run code from a specific code block
         function runCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -4536,7 +4218,7 @@
             }
         }
         
-        // Download code from a specific code block - NEW
+        // Download code from a specific code block
         function downloadCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -4626,37 +4308,30 @@
             }
         }
         
-        // Send suggestion
-        function sendSuggestion(suggestion) {
-            messageInput.value = suggestion;
-            autoResize(messageInput);
-            sendMessage();
-        }
-        
         // Start new chat
         function startNewChat() {
             chatContainer.innerHTML = `
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon"></div>
-                    <h2>Hello! I'm your Agentic AI Assistant</h2>
-                    <p>I can help you with coding, web development, file management, and more. How can I assist you today?</p>
+                    <h2>Hello! I'm your AJ STUDIOZ Agentic AI</h2>
+                    <p>I can perform complex tasks, execute code, search the web, and manage files. How can I assist you today?</p>
                     
                     <div class="suggestion-cards">
-                        <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
+                        <div class="suggestion-card" onclick="sendSuggestion('Create a Python script to analyze stock market data')">
+                            <h3>🐍 Python Analysis</h3>
+                            <p>Analyze data with Python and pandas</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Search for the latest AI research papers and summarize them')">
+                            <h3>🔍 Web Research</h3>
+                            <p>Find and summarize online information</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Create a complete HTML/CSS/JS project with interactive elements')">
                             <h3>🎨 Web Development</h3>
-                            <p>Create a modern landing page with animations</p>
+                            <p>Build a complete web application</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Debug this JavaScript code that is not working correctly')">
-                            <h3>🐛 Code Debugging</h3>
-                            <p>Debug and fix code issues</p>
-                        </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Search for the latest React documentation and summarize it')">
-                            <h3>🌐 Web Research</h3>
-                            <p>Research and summarize web content</p>
-                        </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Set up a new Node.js project with Express')">
-                            <h3>⚙️ Project Setup</h3>
-                            <p>Initialize and configure projects</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Analyze this dataset and create visualizations')">
+                            <h3>📊 Data Visualization</h3>
+                            <p>Create charts and graphs from data</p>
                         </div>
                     </div>
                 </div>
@@ -4664,6 +4339,7 @@
             state.chat.messages = [];
             state.chat.hasMessages = false;
             state.chat.currentChatId = null;
+            sidebarRight.classList.remove('active');
             messageInput.focus();
             
             // Remove active state from chat history
@@ -4678,36 +4354,6 @@
                 startNewChat();
                 showToast('Chat cleared successfully!', 'success');
             }
-        }
-        
-        // Export chat
-        function exportChat() {
-            if (state.chat.messages.length === 0) {
-                showToast('No messages to export', 'error');
-                return;
-            }
-            
-            // Create export content
-            let exportContent = 'AJ STUDIOZ Chat Export\n';
-            exportContent += '========================\n\n';
-            
-            state.chat.messages.forEach(msg => {
-                const timestamp = new Date(msg.timestamp).toLocaleString();
-                exportContent += `[${timestamp}] ${msg.type.toUpperCase()}:\n${msg.content}\n\n`;
-            });
-            
-            // Create blob and download
-            const blob = new Blob([exportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `aj-studioz-chat-${new Date().toISOString().slice(0, 10)}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast('Chat exported successfully!', 'success');
         }
         
         // Toggle sidebar (mobile)
@@ -4733,32 +4379,14 @@
         function createNewProject() {
             const projectName = prompt('Enter project name:');
             if (projectName) {
-                // Reset project
-                state.project = {
-                    name: projectName,
-                    files: [
-                        { name: 'index.html', type: 'file', content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>' + projectName + '</title>\n</head>\n<body>\n  <h1>Welcome to ' + projectName + '</h1>\n</body>\n</html>' },
-                        { name: 'styles.css', type: 'file', content: 'body {\n  font-family: Arial, sans-serif;\n  margin: 0;\n  padding: 20px;\n}' },
-                        { name: 'scripts.js', type: 'file', content: 'console.log("Welcome to ' + projectName + '");' }
-                    ],
-                    activeFile: 'index.html'
-                };
-                
-                // Update UI
-                saveProject();
-                renderFileTree();
-                updateEditorTabs();
-                updatePreview();
-                
-                if (editor) {
-                    const content = getActiveFileContent();
-                    editor.setValue(content);
-                    editor.setModel(monaco.editor.createModel(
-                        content,
-                        getLanguageFromFile(state.project.activeFile)
-                    ));
-                }
-                
+                const projectList = document.getElementById('projectList');
+                const projectItem = document.createElement('div');
+                projectItem.className = 'project-item';
+                projectItem.innerHTML = `
+                    <i class="fas fa-folder"></i>
+                    <span>${projectName}</span>
+                `;
+                projectList.appendChild(projectItem);
                 showToast('Project created successfully!', 'success');
             }
         }
@@ -4804,20 +4432,10 @@
                 body.removeAttribute('data-theme');
                 state.ui.theme = 'light';
                 themeToggle.classList.remove('active');
-                
-                // Update Monaco editor theme
-                if (editor) {
-                    monaco.editor.setTheme('vs');
-                }
             } else {
                 body.setAttribute('data-theme', 'dark');
                 state.ui.theme = 'dark';
                 themeToggle.classList.add('active');
-                
-                // Update Monaco editor theme
-                if (editor) {
-                    monaco.editor.setTheme('vs-dark');
-                }
             }
             
             showToast(`Theme changed to ${state.ui.theme} mode`, 'success');
@@ -4866,7 +4484,7 @@
             showToast('Redirecting to upgrade page...', 'success');
         }
         
-        // Settings modal - IMPROVED
+        // Settings modal
         function openSettings() {
             settingsModal.classList.add('active');
             state.ui.modals.settings = true;
@@ -4875,6 +4493,80 @@
         function closeSettings() {
             settingsModal.classList.remove('active');
             state.ui.modals.settings = false;
+        }
+        
+        // Update preview in the sidebar
+        function updatePreview(html) {
+            previewFrame.srcdoc = html;
+            state.code.preview = html;
+            
+            // Add a small delay to ensure the iframe loads properly
+            setTimeout(() => {
+                try {
+                    // Check if the iframe loaded correctly
+                    if (previewFrame.contentDocument && previewFrame.contentDocument.body) {
+                        console.log('Preview updated successfully');
+                    }
+                } catch (e) {
+                    console.log('Preview update error:', e);
+                }
+            }, 100);
+        }
+        
+        // Refresh preview
+        function refreshPreview() {
+            if (state.code.language === 'html' && state.code.current) {
+                updatePreview(state.code.current);
+                showToast('Preview refreshed!', 'success');
+            } else {
+                showToast('No HTML code to preview', 'error');
+            }
+        }
+        
+        // Open preview in new tab
+        function openInNewTab() {
+            if (state.code.language === 'html' && state.code.current) {
+                const newWindow = window.open();
+                newWindow.document.write(state.code.current);
+                newWindow.document.close();
+            } else {
+                showToast('No HTML code to preview', 'error');
+            }
+        }
+        
+        // Check API status
+        async function checkApiStatus() {
+            try {
+                // Send a ping message to check if the API is working
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: API_CONFIG.headers,
+                    body: JSON.stringify({
+                        messages: [{ role: 'user', content: 'ping' }],
+                        options: { length: 10 }
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.choices && data.choices[0].message.content === 'pong') {
+                        state.api.status = 'online';
+                        statusDot.className = 'status-dot online';
+                        statusText.textContent = 'Online';
+                    } else {
+                        throw new Error('Invalid ping response');
+                    }
+                } else {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+                
+                state.api.lastCheck = new Date();
+            } catch (error) {
+                console.error('Error checking API status:', error);
+                state.api.status = 'offline';
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Offline';
+            }
         }
         
         // File handling
@@ -5015,6 +4707,38 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement !== messageInput) {
+                    e.preventDefault();
+                    messageInput.focus();
+                }
+                if (e.key === 'Escape') {
+                    closeSettings();
+                    if (state.ui.sidebarOpen) toggleSidebar();
+                }
+            });
+            
+            // Window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('open');
+                }
+            });
+            
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && 
+                    sidebar.classList.contains('open') && 
+                    !sidebar.contains(event.target) && 
+                    !event.target.closest('.header-btn')) {
+                    sidebar.classList.remove('open');
+                }
+            });
         }
         
         // Initialize app when DOM is loaded
