@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJ STUDIOZ - Agentic AI</title>
+    <title>AJ STUDIOZ - AI Assistant</title>
     
     <!-- Professional Favicon -->
     <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0" type="image/png">
@@ -20,11 +20,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
     
-    <!-- Pyodide for Python execution -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
-    
     <style>
-        /* CSS Variables */
+        /* Existing styles remain the same */
         :root {
             --primary-bg: #ffffff;
             --secondary-bg: #f7f7f8;
@@ -45,6 +42,7 @@
             --aj-gold-glow: rgba(251, 191, 36, 0.6);
             --aj-green: #34D399;
             --aj-green-glow: rgba(52, 211, 153, 0.7);
+            /* Code block styling - updated for pure black background and white text */
             --code-bg: #000000;
             --code-text: #ffffff;
             --copilot-text: #1e1e1e;
@@ -54,6 +52,7 @@
             --modal-bg: rgba(0, 0, 0, 0.7);
             --modal-content-bg: #ffffff;
             --modal-border-radius: 16px;
+            /* New color variables for enhanced code blocks */
             --javascript-color: #f7df1e;
             --python-color: #3776ab;
             --html-color: #e34c26;
@@ -71,37 +70,14 @@
             --code-header-border: #30363d;
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
+            /* Corporate colors */
             --corporate-blue: #1e40af;
             --corporate-gray: #f8fafc;
             --corporate-dark: #1e293b;
+            
+            /* Professional embedded logo as data URL - replaced with favicon.png */
             --logo-url: url("https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0");
             --logo-glow: 0 0 10px rgba(0, 0, 0, 0.2);
-            
-            /* Agent-specific colors */
-            --agent-primary: #6366f1;
-            --agent-secondary: #8b5cf6;
-            --agent-accent: #ec4899;
-            --agent-bg: #f8fafc;
-            --agent-border: #e2e8f0;
-            --agent-code-bg: #0f172a;
-            --agent-terminal-bg: #1e293b;
-            --agent-terminal-text: #e2e8f0;
-            --agent-success: #10b981;
-            --agent-warning: #f59e0b;
-            --agent-error: #ef4444;
-            
-            /* Agent panel colors */
-            --panel-bg: #ffffff;
-            --panel-border: #e5e7eb;
-            --panel-header: #f9fafb;
-            --panel-active: #f3f4f6;
-            
-            /* Tool colors */
-            --tool-code: #3b82f6;
-            --tool-web: #10b981;
-            --tool-file: #8b5cf6;
-            --tool-calc: #f59e0b;
-            --tool-image: #ec4899;
         }
 
         [data-theme="dark"] {
@@ -116,8 +92,8 @@
             --message-user-bg: #2a4f3a;
             --message-ai-bg: #1e1e1e;
             --border-color: #404040;
-            --code-bg: #000000;
-            --code-text: #ffffff;
+            --code-bg: #000000; /* Pure black in dark mode too */
+            --code-text: #ffffff; /* Pure white in dark mode too */
             --copilot-text: #e6edf3;
             --copilot-bg: #161b22;
             --copilot-border: #30363d;
@@ -129,20 +105,9 @@
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
             --logo-glow: 0 0 15px rgba(255, 255, 255, 0.1);
-            
-            /* Agent dark mode */
-            --agent-bg: #1e293b;
-            --agent-border: #334155;
-            --agent-code-bg: #0f172a;
-            --agent-terminal-bg: #0f172a;
-            --agent-terminal-text: #e2e8f0;
-            --panel-bg: #1e293b;
-            --panel-border: #334155;
-            --panel-header: #334155;
-            --panel-active: #475569;
         }
 
-        /* Login Page Styles */
+        /* Login Page Styles - unchanged */
         .login-page {
             position: fixed;
             top: 0;
@@ -278,11 +243,12 @@
             transition: all 0.5s ease;
             animation: pulse-gold 2.5s infinite;
             z-index: 10;
+            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000;
+            background-color: #000; /* Black background to match favicon */
             box-shadow: var(--logo-glow);
         }
 
@@ -437,7 +403,7 @@
             height: 100vh;
         }
 
-        /* Sidebar */
+        /* Sidebar - unchanged */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -468,11 +434,12 @@
             align-items: center;
             justify-content: center;
             box-shadow: var(--logo-glow);
+            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000;
+            background-color: #000; /* Black background to match favicon */
             transition: transform 0.3s ease;
         }
 
@@ -688,11 +655,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000;
+            background-color: #000; /* Black background to match favicon */
             box-shadow: var(--logo-glow);
             transition: transform 0.3s ease;
         }
@@ -812,434 +780,54 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        /* Agent Chat Layout */
-        .agent-chat-layout {
-            display: flex;
-            height: 100%;
-            gap: 16px;
-            padding: 16px;
-        }
-
-        .agent-chat-panel {
+        /* Chat Layout */
+        .chat-layout {
             flex: 1;
             display: flex;
-            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
 
-        .agent-sidebar {
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: calc(100vh - 200px);
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        .sidebar-right {
             width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Agent Panel Styles */
-        .agent-panel {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .agent-panel:hover {
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .panel-header {
-            background-color: var(--panel-header);
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--panel-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .panel-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .panel-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .panel-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .panel-btn:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
-
-        .panel-content {
-            flex: 1;
+            background-color: var(--sidebar-bg);
+            border-left: 1px solid var(--border-color);
             overflow-y: auto;
-            padding: 16px;
-        }
-
-        /* Agent Tools */
-        .agent-tools {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .agent-tool {
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-        }
-
-        .agent-tool:hover {
-            background-color: var(--hover-bg);
-            transform: translateY(-2px);
-        }
-
-        .agent-tool.active {
-            background-color: var(--agent-primary);
-            color: white;
-            border-color: var(--agent-primary);
-        }
-
-        .agent-tool.code {
-            border-left: 3px solid var(--tool-code);
-        }
-
-        .agent-tool.web {
-            border-left: 3px solid var(--tool-web);
-        }
-
-        .agent-tool.file {
-            border-left: 3px solid var(--tool-file);
-        }
-
-        .agent-tool.calc {
-            border-left: 3px solid var(--tool-calc);
-        }
-
-        .agent-tool.image {
-            border-left: 3px solid var(--tool-image);
-        }
-
-        /* Agent Status */
-        .agent-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background-color: var(--panel-header);
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: var(--agent-success);
-        }
-
-        .status-indicator.busy {
-            background-color: var(--agent-warning);
-            animation: pulse 1.5s infinite;
-        }
-
-        .status-indicator.error {
-            background-color: var(--agent-error);
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
-
-        /* Agent Actions */
-        .agent-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .agent-action-btn {
-            background-color: var(--agent-primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .agent-action-btn:hover {
-            background-color: var(--agent-secondary);
-            transform: translateY(-2px);
-        }
-
-        .agent-action-btn.secondary {
-            background-color: var(--secondary-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .agent-action-btn.secondary:hover {
-            background-color: var(--hover-bg);
-        }
-
-        /* Agent Memory */
-        .agent-memory {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .memory-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .memory-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .memory-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .memory-item {
-            background-color: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .memory-item .remove-memory {
-            cursor: pointer;
-            color: var(--text-tertiary);
-        }
-
-        .memory-item .remove-memory:hover {
-            color: var(--agent-error);
-        }
-
-        /* Agent Workspace */
-        .agent-workspace {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 16px;
-            height: calc(100vh - 300px);
-        }
-
-        .workspace-panel {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
+            display: none;
             flex-direction: column;
         }
 
-        /* Code Editor */
-        .code-editor {
-            flex: 1;
+        .sidebar-right.active {
             display: flex;
-            flex-direction: column;
         }
 
-        .editor-toolbar {
-            background-color: var(--panel-header);
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--panel-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .language-selector {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            outline: none;
-        }
-
-        .editor-content {
-            flex: 1;
-            overflow: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background-color: var(--agent-code-bg);
-            color: var(--code-text);
-            padding: 16px;
-        }
-
-        #codeEditor {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            border: none;
-            color: var(--code-text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            resize: none;
-            outline: none;
-        }
-
-        /* Terminal */
-        .terminal {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--agent-terminal-bg);
-        }
-
-        .terminal-header {
-            background-color: var(--panel-header);
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--panel-border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .terminal-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--agent-terminal-text);
-        }
-
-        .terminal-line {
-            margin-bottom: 4px;
-            white-space: pre-wrap;
-        }
-
-        .terminal-input {
-            display: flex;
-            align-items: center;
-            margin-top: 8px;
-            padding: 0 12px 12px;
-        }
-
-        .terminal-prompt {
-            color: var(--agent-accent);
-            margin-right: 8px;
-        }
-
-        .terminal-command {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--agent-terminal-text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            outline: none;
-        }
-
-        /* File Explorer */
-        .file-explorer {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .file-tree {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s ease;
-        }
-
-        .file-item:hover {
-            background-color: var(--hover-bg);
-        }
-
-        .file-item.active {
-            background-color: var(--panel-active);
-        }
-
-        .file-icon {
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-        }
-
-        .file-name {
-            flex: 1;
-            color: var(--text-primary);
-        }
-
-        /* Preview Panel */
         .preview-container {
             flex: 1;
             border: 1px solid var(--border-color);
@@ -1271,35 +859,7 @@
             background-color: white;
         }
 
-        /* Chat Layout */
-        .chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            max-height: calc(100vh - 200px);
-        }
-
-        .chat-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb:hover {
-            background: var(--text-tertiary);
-        }
-
-        /* Messages - Copilot Style */
+        /* Messages - Copilot Style - IMPROVED */
         .message {
             display: flex;
             gap: 12px;
@@ -1350,11 +910,12 @@
         }
 
         .message.ai .message-avatar {
+            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000;
+            background-color: #000; /* Black background to match favicon */
         }
 
         .message-content {
@@ -1412,7 +973,7 @@
             color: var(--text-primary);
         }
 
-        /* Copilot Style Formatted Content */
+        /* Copilot Style Formatted Content - IMPROVED */
         .formatted-content {
             font-size: 14px;
             line-height: 1.6;
@@ -1487,7 +1048,7 @@
             color: var(--accent-color);
         }
 
-        /* Code blocks - Copilot Style */
+        /* Code blocks - Copilot Style - IMPROVED */
         .code-block {
             margin: 16px 0;
             border-radius: 8px;
@@ -1560,8 +1121,8 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 14px;
             line-height: 1.5;
-            color: var(--code-text);
-            background-color: var(--code-bg);
+            color: var(--code-text); /* White text in black box */
+            background-color: var(--code-bg); /* Pure black background */
             max-height: 400px;
             overflow-y: auto;
         }
@@ -1814,11 +1375,12 @@
             margin-bottom: 20px;
             font-size: 24px;
             color: white;
+            /* Using professional embedded logo - replaced with favicon.png */
             background-image: var(--logo-url);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-color: #000;
+            background-color: #000; /* Black background to match favicon */
             box-shadow: var(--logo-glow);
             transition: transform 0.3s ease;
         }
@@ -1875,7 +1437,7 @@
             line-height: 1.4;
         }
 
-        /* Settings Modal */
+        /* Settings Modal - IMPROVED */
         .modal {
             position: fixed;
             top: 0;
@@ -2134,7 +1696,7 @@
             margin-left: 8px;
         }
 
-        /* Mobile Responsive */
+        /* Mobile Responsive - IMPROVED */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -2224,20 +1786,49 @@
                 bottom: 16px;
             }
             
-            /* Agent workspace mobile adjustments */
-            .agent-workspace {
-                grid-template-columns: 1fr;
-                grid-template-rows: repeat(4, 1fr);
+            /* Improved code block styling for mobile */
+            .code-block {
+                margin: 12px 0;
+                border-radius: 6px;
             }
             
-            .agent-sidebar {
-                width: 100%;
-                flex-direction: row;
-                overflow-x: auto;
+            .code-header {
+                padding: 8px 12px;
             }
             
-            .agent-panel {
-                min-width: 250px;
+            .code-content {
+                padding: 12px;
+                font-size: 13px;
+            }
+            
+            .code-language {
+                font-size: 11px;
+            }
+            
+            .code-btn {
+                padding: 3px 8px;
+                font-size: 10px;
+            }
+            
+            /* Mobile improvements for settings modal */
+            .modal-header {
+                padding: 16px;
+            }
+            
+            .modal-title {
+                font-size: 18px;
+            }
+            
+            .modal-body {
+                padding: 16px;
+            }
+            
+            .settings-section {
+                margin-bottom: 24px;
+            }
+            
+            .setting-item {
+                padding: 12px 0;
             }
         }
 
@@ -2402,7 +1993,7 @@
                 <div class="header-title">
                     <div class="ai-avatar"></div>
                     <div>
-                        <h1>AJ STUDIOZ Agentic AI</h1>
+                        <h1>AJ STUDIOZ AI Assistant</h1>
                         <div class="header-subtitle">Powered by Claude Sonnet-4</div>
                     </div>
                     <div class="status-indicator">
@@ -2453,278 +2044,89 @@
                 <button onclick="upgradePlan()">Upgrade Now</button>
             </div>
 
-            <!-- Agent Chat Layout -->
-            <div class="agent-chat-layout">
-                <!-- Agent Chat Panel -->
-                <div class="agent-chat-panel">
-                    <div class="chat-container" id="chatContainer">
-                        <!-- Empty state -->
-                        <div class="empty-state" id="emptyState">
-                            <div class="empty-state-icon"></div>
-                            <h2>Hello! I'm your AJ STUDIOZ Agentic AI</h2>
-                            <p>I can perform complex tasks, execute code, search the web, and manage files. How can I assist you today?</p>
-                            
-                            <div class="suggestion-cards">
-                                <div class="suggestion-card" onclick="sendSuggestion('Create a Python script to analyze stock market data')">
-                                    <h3>🐍 Python Analysis</h3>
-                                    <p>Analyze data with Python and pandas</p>
-                                </div>
-                                <div class="suggestion-card" onclick="sendSuggestion('Search for the latest AI research papers and summarize them')">
-                                    <h3>🔍 Web Research</h3>
-                                    <p>Find and summarize online information</p>
-                                </div>
-                                <div class="suggestion-card" onclick="sendSuggestion('Create a complete HTML/CSS/JS project with interactive elements')">
-                                    <h3>🎨 Web Development</h3>
-                                    <p>Build a complete web application</p>
-                                </div>
-                                <div class="suggestion-card" onclick="sendSuggestion('Analyze this dataset and create visualizations')">
-                                    <h3>📊 Data Visualization</h3>
-                                    <p>Create charts and graphs from data</p>
-                                </div>
+            <div class="chat-layout">
+                <div class="chat-container" id="chatContainer">
+                    <!-- Empty state -->
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-state-icon"></div>
+                        <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
+                        <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
+                        
+                        <div class="suggestion-cards">
+                            <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
+                                <h3>🎨 Web Development</h3>
+                                <p>Create a modern landing page with animations</p>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Input Area -->
-                    <div class="input-area">
-                        <div class="input-container">
-                            <div class="input-wrapper" id="inputWrapper">
-                                <textarea 
-                                    class="message-input" 
-                                    id="messageInput" 
-                                    placeholder="Message AJ STUDIOZ AI..."
-                                    rows="1"
-                                    onkeydown="handleKeyDown(event)"
-                                    oninput="autoResize(this)"
-                                ></textarea>
-                                <div class="input-actions">
-                                    <button class="attach-btn" onclick="attachFile()" title="Attach file">
-                                        <i class="fas fa-paperclip"></i>
-                                    </button>
-                                    <button class="voice-btn" onclick="startVoiceInput()" title="Voice input">
-                                        <i class="fas fa-microphone"></i>
-                                    </button>
-                                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled title="Send message">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
+                            <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
+                                <h3>🐛 Code Debugging</h3>
+                                <p>Debug and fix code issues</p>
                             </div>
-                            
-                            <!-- File Drop Zone -->
-                            <div class="file-drop-zone" id="fileDropZone">
-                                <i class="fas fa-cloud-upload-alt file-drop-icon"></i>
-                                <div class="file-drop-text">Drop files here to upload</div>
+                            <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
+                                <h3>✍️ Creative Writing</h3>
+                                <p>Generate stories and creative content</p>
+                            </div>
+                            <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
+                                <h3>🧠 Explanations</h3>
+                                <p>Explain complex topics simply</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Agent Sidebar -->
-                <div class="agent-sidebar">
-                    <!-- Agent Status Panel -->
-                    <div class="agent-panel">
-                        <div class="panel-header">
-                            <div class="panel-title">
-                                <i class="fas fa-robot"></i>
-                                Agent Status
-                            </div>
-                        </div>
-                        <div class="panel-content">
-                            <div class="agent-status">
-                                <div class="status-indicator" id="agentStatusIndicator"></div>
-                                <div>
-                                    <div id="agentStatusText">Ready</div>
-                                    <div style="font-size: 12px; color: var(--text-tertiary);" id="agentStatusDetail">Waiting for input</div>
-                                </div>
-                            </div>
-                            
-                            <div class="agent-tools">
-                                <div class="agent-tool code" onclick="activateTool('code')">
-                                    <i class="fas fa-code"></i>
-                                    <span>Code</span>
-                                </div>
-                                <div class="agent-tool web" onclick="activateTool('web')">
-                                    <i class="fas fa-globe"></i>
-                                    <span>Web</span>
-                                </div>
-                                <div class="agent-tool file" onclick="activateTool('file')">
-                                    <i class="fas fa-folder"></i>
-                                    <span>Files</span>
-                                </div>
-                                <div class="agent-tool calc" onclick="activateTool('calc')">
-                                    <i class="fas fa-calculator"></i>
-                                    <span>Calculate</span>
-                                </div>
-                                <div class="agent-tool image" onclick="activateTool('image')">
-                                    <i class="fas fa-image"></i>
-                                    <span>Image</span>
-                                </div>
-                            </div>
-                            
-                            <div class="agent-actions">
-                                <button class="agent-action-btn" onclick="executeAgentAction()">
-                                    <i class="fas fa-play"></i>
-                                    Execute
+                <!-- Right Sidebar - Preview Only -->
+                <div class="sidebar-right" id="sidebarRight">
+                    <div class="preview-container">
+                        <div class="preview-header">
+                            <span>Preview</span>
+                            <div class="preview-actions">
+                                <button class="code-btn" onclick="refreshPreview()">
+                                    <i class="fas fa-sync-alt"></i> Refresh
                                 </button>
-                                <button class="agent-action-btn secondary" onclick="resetAgent()">
-                                    <i class="fas fa-redo"></i>
-                                    Reset
+                                <button class="code-btn" onclick="openInNewTab()">
+                                    <i class="fas fa-external-link-alt"></i> Open
                                 </button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Agent Memory Panel -->
-                    <div class="agent-panel">
-                        <div class="panel-header">
-                            <div class="panel-title">
-                                <i class="fas fa-brain"></i>
-                                Agent Memory
-                            </div>
-                        </div>
-                        <div class="panel-content">
-                            <div class="memory-items" id="memoryItems">
-                                <div class="memory-item">
-                                    <span>Project: Web App</span>
-                                    <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
-                                </div>
-                                <div class="memory-item">
-                                    <span>Language: Python</span>
-                                    <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
-                                </div>
-                                <div class="memory-item">
-                                    <span>Dataset: Stocks</span>
-                                    <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
-                                </div>
-                            </div>
-                            
-                            <div style="margin-top: 12px;">
-                                <input type="text" placeholder="Add to memory..." style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;" id="memoryInput">
-                                <button onclick="addToMemory()" style="margin-top: 8px; width: 100%; padding: 6px; background-color: var(--agent-primary); color: white; border: none; border-radius: 4px; font-size: 13px; cursor: pointer;">Add</button>
-                            </div>
-                        </div>
+                        <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
                     </div>
                 </div>
             </div>
 
-            <!-- Agent Workspace -->
-            <div class="agent-workspace">
-                <!-- Code Editor Panel -->
-                <div class="workspace-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <i class="fas fa-code"></i>
-                            Code Editor
-                        </div>
-                        <div class="panel-actions">
-                            <select class="language-selector" id="languageSelector" onchange="changeLanguage(this.value)">
-                                <option value="javascript">JavaScript</option>
-                                <option value="python">Python</option>
-                                <option value="html">HTML</option>
-                                <option value="css">CSS</option>
-                                <option value="sql">SQL</option>
-                            </select>
-                            <button class="panel-btn" onclick="runCode()">
-                                <i class="fas fa-play"></i> Run
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-wrapper" id="inputWrapper">
+                        <textarea 
+                            class="message-input" 
+                            id="messageInput" 
+                            placeholder="Message AJ STUDIOZ AI..."
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                            oninput="autoResize(this)"
+                        ></textarea>
+                        <div class="input-actions">
+                            <button class="attach-btn" onclick="attachFile()" title="Attach file">
+                                <i class="fas fa-paperclip"></i>
                             </button>
-                            <button class="panel-btn" onclick="clearEditor()">
-                                <i class="fas fa-trash"></i> Clear
+                            <button class="voice-btn" onclick="startVoiceInput()" title="Voice input">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled title="Send message">
+                                <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="editor-content">
-                        <textarea id="codeEditor" placeholder="// Write your code here..."></textarea>
-                    </div>
-                </div>
-
-                <!-- Terminal Panel -->
-                <div class="workspace-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <i class="fas fa-terminal"></i>
-                            Terminal
-                        </div>
-                        <div class="panel-actions">
-                            <button class="panel-btn" onclick="clearTerminal()">
-                                <i class="fas fa-trash"></i> Clear
-                            </button>
-                        </div>
-                    </div>
-                    <div class="terminal">
-                        <div class="terminal-content" id="terminalContent">
-                            <div class="terminal-line">Agent Terminal v1.0</div>
-                            <div class="terminal-line">Type 'help' for available commands.</div>
-                        </div>
-                        <div class="terminal-input">
-                            <span class="terminal-prompt">$</span>
-                            <input type="text" class="terminal-command" id="terminalCommand" onkeydown="handleTerminalCommand(event)">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- File Explorer Panel -->
-                <div class="workspace-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <i class="fas fa-folder"></i>
-                            File Explorer
-                        </div>
-                        <div class="panel-actions">
-                            <button class="panel-btn" onclick="createNewFile()">
-                                <i class="fas fa-plus"></i> New
-                            </button>
-                            <button class="panel-btn" onclick="uploadFile()">
-                                <i class="fas fa-upload"></i> Upload
-                            </button>
-                        </div>
-                    </div>
-                    <div class="file-explorer">
-                        <div class="file-tree" id="fileTree">
-                            <div class="file-item">
-                                <div class="file-icon"><i class="fas fa-folder"></i></div>
-                                <div class="file-name">Projects</div>
-                            </div>
-                            <div class="file-item">
-                                <div class="file-icon"><i class="fas fa-folder"></i></div>
-                                <div class="file-name">Documents</div>
-                            </div>
-                            <div class="file-item">
-                                <div class="file-icon"><i class="fas fa-file-code"></i></div>
-                                <div class="file-name">script.js</div>
-                            </div>
-                            <div class="file-item">
-                                <div class="file-icon"><i class="fas fa-file-image"></i></div>
-                                <div class="file-name">chart.png</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Preview Panel -->
-                <div class="workspace-panel">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <i class="fas fa-eye"></i>
-                            Preview
-                        </div>
-                        <div class="panel-actions">
-                            <button class="panel-btn" onclick="refreshPreview()">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                            <button class="panel-btn" onclick="openInNewTab()">
-                                <i class="fas fa-external-link-alt"></i> Open
-                            </button>
-                        </div>
-                    </div>
-                    <div class="preview-container">
-                        <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
+                    
+                    <!-- File Drop Zone -->
+                    <div class="file-drop-zone" id="fileDropZone">
+                        <i class="fas fa-cloud-upload-alt file-drop-icon"></i>
+                        <div class="file-drop-text">Drop files here to upload</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Settings Modal - IMPROVED -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -2835,7 +2237,7 @@
             }
         };
         
-        // Global State Management - Enhanced for Agent
+        // Global State Management
         const state = {
             auth: {
                 user: null,
@@ -2880,50 +2282,8 @@
             },
             code: {
                 current: '',
-                language: 'javascript',
+                language: 'html',
                 preview: ''
-            },
-            // New agent state
-            agent: {
-                status: 'ready', // ready, busy, error
-                activeTool: null,
-                memory: [],
-                executionPlan: [],
-                currentStep: 0,
-                tools: {
-                    code: {
-                        name: 'Code Execution',
-                        description: 'Execute code in various languages',
-                        enabled: true
-                    },
-                    web: {
-                        name: 'Web Search',
-                        description: 'Search the internet for information',
-                        enabled: true
-                    },
-                    file: {
-                        name: 'File Operations',
-                        description: 'Read, write, and manage files',
-                        enabled: true
-                    },
-                    calc: {
-                        name: 'Calculator',
-                        description: 'Perform mathematical calculations',
-                        enabled: true
-                    },
-                    image: {
-                        name: 'Image Generation',
-                        description: 'Generate and analyze images',
-                        enabled: true
-                    }
-                },
-                workspace: {
-                    code: '',
-                    language: 'javascript',
-                    terminalOutput: [],
-                    files: [],
-                    preview: ''
-                }
             }
         };
         
@@ -2944,18 +2304,6 @@
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
         const previewFrame = document.getElementById('previewFrame');
-        
-        // New agent DOM elements
-        const agentStatusIndicator = document.getElementById('agentStatusIndicator');
-        const agentStatusText = document.getElementById('agentStatusText');
-        const agentStatusDetail = document.getElementById('agentStatusDetail');
-        const codeEditor = document.getElementById('codeEditor');
-        const languageSelector = document.getElementById('languageSelector');
-        const terminalContent = document.getElementById('terminalContent');
-        const terminalCommand = document.getElementById('terminalCommand');
-        const fileTree = document.getElementById('fileTree');
-        const memoryItems = document.getElementById('memoryItems');
-        const memoryInput = document.getElementById('memoryInput');
         
         // Login form elements
         const loginForm = document.getElementById('loginForm');
@@ -3102,26 +2450,11 @@
                 });
         }
         
-        // Initialize Pyodide for Python execution
-        let pyodideReady = false;
-        async function initializePyodide() {
-            try {
-                await loadPyodide({
-                    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
-                });
-                pyodideReady = true;
-                addToTerminal("Pyodide initialized successfully. Python is now available.");
-            } catch (error) {
-                addToTerminal(`Error initializing Pyodide: ${error.message}`);
-            }
-        }
-        
         // Initialize app
         function initializeApp() {
             messageInput.focus();
             updateQuotaBar();
             setupDragAndDrop();
-            initializePyodide();
             
             // Check if user is on free plan
             if (state.auth.user.plan === 'free') {
@@ -3129,595 +2462,37 @@
             } else {
                 upgradeBanner.style.display = 'none';
             }
-            
-            // Initialize agent workspace
-            initializeAgentWorkspace();
         }
         
-        // Initialize agent workspace
-        function initializeAgentWorkspace() {
-            // Set up code editor
-            codeEditor.addEventListener('input', function() {
-                state.agent.workspace.code = this.value;
+        function setupEventListeners() {
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement !== messageInput) {
+                    e.preventDefault();
+                    messageInput.focus();
+                }
+                if (e.key === 'Escape') {
+                    closeSettings();
+                    if (state.ui.sidebarOpen) toggleSidebar();
+                }
             });
             
-            // Set up language selector
-            languageSelector.value = state.agent.workspace.language;
-            
-            // Set up file tree
-            setupFileTree();
-        }
-        
-        // Setup file tree
-        function setupFileTree() {
-            // Clear existing file tree
-            fileTree.innerHTML = '';
-            
-            // Add default folders and files
-            const defaultFiles = [
-                { name: 'Projects', type: 'folder', icon: 'fas fa-folder' },
-                { name: 'Documents', type: 'folder', icon: 'fas fa-folder' },
-                { name: 'script.js', type: 'file', icon: 'fas fa-file-code' },
-                { name: 'chart.png', type: 'file', icon: 'fas fa-file-image' }
-            ];
-            
-            defaultFiles.forEach(file => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <div class="file-icon"><i class="${file.icon}"></i></div>
-                    <div class="file-name">${file.name}</div>
-                `;
-                fileTree.appendChild(fileItem);
-            });
-        }
-        
-        // Agent Functions
-        function activateTool(toolName) {
-            // Update active tool
-            state.agent.activeTool = toolName;
-            
-            // Update UI
-            document.querySelectorAll('.agent-tool').forEach(tool => {
-                tool.classList.remove('active');
+            // Window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('open');
+                }
             });
             
-            document.querySelector(`.agent-tool.${toolName}`).classList.add('active');
-            
-            // Update agent status
-            updateAgentStatus('busy', `Activated ${state.agent.tools[toolName].name} tool`);
-            
-            // Show tool-specific UI
-            showToolUI(toolName);
-            
-            // Add to terminal
-            addToTerminal(`Activated ${state.agent.tools[toolName].name} tool`);
-        }
-        
-        function showToolUI(toolName) {
-            switch(toolName) {
-                case 'code':
-                    // Focus on code editor
-                    codeEditor.focus();
-                    break;
-                case 'web':
-                    // Show web search UI
-                    addToTerminal('Web search tool activated. Enter your search query in the chat.');
-                    break;
-                case 'file':
-                    // Focus on file explorer
-                    setupFileTree();
-                    break;
-                case 'calc':
-                    // Show calculator UI
-                    addToTerminal('Calculator activated. Enter your calculation in the chat.');
-                    break;
-                case 'image':
-                    // Show image generation UI
-                    addToTerminal('Image generation activated. Describe the image you want to create.');
-                    break;
-            }
-        }
-        
-        function updateAgentStatus(status, text, detail = '') {
-            state.agent.status = status;
-            agentStatusText.textContent = text;
-            agentStatusDetail.textContent = detail;
-            
-            // Update status indicator
-            agentStatusIndicator.className = 'status-indicator';
-            if (status === 'busy') {
-                agentStatusIndicator.classList.add('busy');
-            } else if (status === 'error') {
-                agentStatusIndicator.classList.add('error');
-            }
-        }
-        
-        function executeAgentAction() {
-            if (!state.agent.activeTool) {
-                showToast('Please select a tool first', 'error');
-                return;
-            }
-            
-            updateAgentStatus('busy', 'Executing action', 'Processing...');
-            
-            // Execute based on active tool
-            switch(state.agent.activeTool) {
-                case 'code':
-                    runCode();
-                    break;
-                case 'web':
-                    performWebSearch();
-                    break;
-                case 'file':
-                    performFileOperation();
-                    break;
-                case 'calc':
-                    performCalculation();
-                    break;
-                case 'image':
-                    generateImage();
-                    break;
-            }
-        }
-        
-        function runCode() {
-            const code = codeEditor.value;
-            const language = languageSelector.value;
-            
-            if (!code.trim()) {
-                showToast('Please enter some code to run', 'error');
-                updateAgentStatus('ready', 'Ready');
-                return;
-            }
-            
-            addToTerminal(`Running ${language} code...`);
-            
-            try {
-                let result;
-                
-                switch(language) {
-                    case 'javascript':
-                        // Create a safe execution context
-                        const safeEval = new Function(code);
-                        result = safeEval();
-                        break;
-                        
-                    case 'python':
-                        if (pyodideReady) {
-                            result = pyodide.runPython(code);
-                        } else {
-                            throw new Error('Python environment not ready');
-                        }
-                        break;
-                        
-                    case 'html':
-                        // Update preview with HTML
-                        updatePreview(code);
-                        result = 'HTML rendered in preview pane';
-                        break;
-                        
-                    case 'css':
-                        // Apply CSS to preview
-                        const styleElement = document.createElement('style');
-                        styleElement.textContent = code;
-                        document.head.appendChild(styleElement);
-                        result = 'CSS applied to page';
-                        break;
-                        
-                    case 'sql':
-                        // Simulate SQL execution
-                        result = 'SQL execution would be implemented here';
-                        break;
-                        
-                    default:
-                        result = 'Language not supported';
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && 
+                    sidebar.classList.contains('open') && 
+                    !sidebar.contains(event.target) && 
+                    !event.target.closest('.header-btn')) {
+                    sidebar.classList.remove('open');
                 }
-                
-                // Display result
-                if (result !== undefined) {
-                    addToTerminal(`Result: ${result}`);
-                } else {
-                    addToTerminal('Code executed successfully (no return value)');
-                }
-                
-                updateAgentStatus('ready', 'Ready');
-                showToast('Code executed successfully!', 'success');
-                
-            } catch (error) {
-                addToTerminal(`Error: ${error.message}`);
-                updateAgentStatus('error', 'Error', error.message);
-                showToast('Error executing code: ' + error.message, 'error');
-            }
-        }
-        
-        function performWebSearch() {
-            // Simulate web search
-            addToTerminal('Performing web search...');
-            
-            // In a real implementation, this would call a search API
-            setTimeout(() => {
-                addToTerminal('Search results would appear here');
-                addToTerminal('1. Result 1 - Example search result');
-                addToTerminal('2. Result 2 - Another search result');
-                updateAgentStatus('ready', 'Ready');
-                showToast('Web search completed!', 'success');
-            }, 1500);
-        }
-        
-        function performFileOperation() {
-            // Simulate file operation
-            addToTerminal('Performing file operation...');
-            
-            // In a real implementation, this would interact with the file system
-            setTimeout(() => {
-                addToTerminal('File operation completed');
-                updateAgentStatus('ready', 'Ready');
-                showToast('File operation completed!', 'success');
-            }, 1000);
-        }
-        
-        function performCalculation() {
-            // Simulate calculation
-            addToTerminal('Performing calculation...');
-            
-            // In a real implementation, this would evaluate mathematical expressions
-            setTimeout(() => {
-                addToTerminal('Calculation result: 42');
-                updateAgentStatus('ready', 'Ready');
-                showToast('Calculation completed!', 'success');
-            }, 800);
-        }
-        
-        function generateImage() {
-            // Simulate image generation
-            addToTerminal('Generating image...');
-            
-            // In a real implementation, this would call an image generation API
-            setTimeout(() => {
-                addToTerminal('Image generated successfully');
-                updateAgentStatus('ready', 'Ready');
-                showToast('Image generated!', 'success');
-            }, 2000);
-        }
-        
-        function resetAgent() {
-            // Reset agent state
-            state.agent.activeTool = null;
-            state.agent.executionPlan = [];
-            state.agent.currentStep = 0;
-            
-            // Clear UI
-            document.querySelectorAll('.agent-tool').forEach(tool => {
-                tool.classList.remove('active');
             });
-            
-            // Update status
-            updateAgentStatus('ready', 'Ready');
-            
-            // Clear terminal
-            terminalContent.innerHTML = `
-                <div class="terminal-line">Agent Terminal v1.0</div>
-                <div class="terminal-line">Type 'help' for available commands.</div>
-            `;
-            
-            showToast('Agent reset successfully!', 'success');
-        }
-        
-        function addToTerminal(message) {
-            const terminalLine = document.createElement('div');
-            terminalLine.className = 'terminal-line';
-            terminalLine.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-            terminalContent.appendChild(terminalLine);
-            terminalContent.scrollTop = terminalContent.scrollHeight;
-        }
-        
-        function handleTerminalCommand(event) {
-            if (event.key === 'Enter') {
-                const command = terminalCommand.value.trim();
-                if (!command) return;
-                
-                // Add command to terminal
-                addToTerminal(`$ ${command}`);
-                
-                // Process command
-                processTerminalCommand(command);
-                
-                // Clear input
-                terminalCommand.value = '';
-            }
-        }
-        
-        function processTerminalCommand(command) {
-            const parts = command.split(' ');
-            const cmd = parts[0].toLowerCase();
-            
-            switch(cmd) {
-                case 'help':
-                    addToTerminal('Available commands:');
-                    addToTerminal('  help - Show this help message');
-                    addToTerminal('  clear - Clear terminal');
-                    addToTerminal('  run - Run code in editor');
-                    addToTerminal('  reset - Reset agent');
-                    addToTerminal('  status - Show agent status');
-                    break;
-                    
-                case 'clear':
-                    terminalContent.innerHTML = `
-                        <div class="terminal-line">Agent Terminal v1.0</div>
-                        <div class="terminal-line">Type 'help' for available commands.</div>
-                    `;
-                    break;
-                    
-                case 'run':
-                    runCode();
-                    break;
-                    
-                case 'reset':
-                    resetAgent();
-                    break;
-                    
-                case 'status':
-                    addToTerminal(`Agent Status: ${state.agent.status}`);
-                    addToTerminal(`Active Tool: ${state.agent.activeTool || 'None'}`);
-                    addToTerminal(`Memory Items: ${state.agent.memory.length}`);
-                    break;
-                    
-                default:
-                    addToTerminal(`Unknown command: ${cmd}. Type 'help' for available commands.`);
-            }
-        }
-        
-        function clearTerminal() {
-            terminalContent.innerHTML = `
-                <div class="terminal-line">Agent Terminal v1.0</div>
-                <div class="terminal-line">Type 'help' for available commands.</div>
-            `;
-            showToast('Terminal cleared', 'success');
-        }
-        
-        function changeLanguage(language) {
-            state.agent.workspace.language = language;
-            showToast(`Language changed to ${language}`, 'success');
-        }
-        
-        function clearEditor() {
-            codeEditor.value = '';
-            state.agent.workspace.code = '';
-            showToast('Editor cleared', 'success');
-        }
-        
-        function createNewFile() {
-            const fileName = prompt('Enter file name:');
-            if (fileName) {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-file"></i></div>
-                    <div class="file-name">${fileName}</div>
-                `;
-                fileTree.appendChild(fileItem);
-                
-                // Add to agent workspace
-                state.agent.workspace.files.push({
-                    name: fileName,
-                    content: '',
-                    type: 'file'
-                });
-                
-                showToast(`File ${fileName} created`, 'success');
-            }
-        }
-        
-        function uploadFile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.multiple = true;
-            input.onchange = (e) => handleFiles(e.target.files);
-            input.click();
-        }
-        
-        function addToMemory() {
-            const memoryText = memoryInput.value.trim();
-            if (!memoryText) return;
-            
-            // Add to agent memory
-            state.agent.memory.push(memoryText);
-            
-            // Update UI
-            const memoryItem = document.createElement('div');
-            memoryItem.className = 'memory-item';
-            memoryItem.innerHTML = `
-                <span>${memoryText}</span>
-                <i class="fas fa-times remove-memory" onclick="removeMemoryItem(this)"></i>
-            `;
-            memoryItems.appendChild(memoryItem);
-            
-            // Clear input
-            memoryInput.value = '';
-            
-            showToast('Added to memory', 'success');
-        }
-        
-        function removeMemoryItem(element) {
-            const memoryText = element.parentElement.textContent.trim();
-            
-            // Remove from agent memory
-            state.agent.memory = state.agent.memory.filter(item => item !== memoryText);
-            
-            // Remove from UI
-            element.parentElement.remove();
-            
-            showToast('Removed from memory', 'success');
-        }
-        
-        // Override existing functions to integrate with agent
-        function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message || state.chat.pendingMessages.length > 0) return;
-            
-            // Check quota
-            if (state.quota.messagesLeft <= 0) {
-                showToast('Message quota exceeded. Please upgrade your plan.', 'error');
-                return;
-            }
-            
-            // Check API status
-            if (state.api.status !== 'online') {
-                showToast('AI is currently offline. Please try again later.', 'error');
-                return;
-            }
-            
-            // Clear input
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            sendBtn.disabled = true;
-            
-            // Hide empty state
-            if (emptyState) {
-                emptyState.style.display = 'none';
-            }
-            
-            // Add user message
-            addMessage('user', message);
-            
-            // Show typing indicator
-            showTypingIndicator();
-            
-            // Enable two-column layout after first message
-            if (!state.chat.hasMessages) {
-                state.chat.hasMessages = true;
-                sidebarRight.classList.add('active');
-            }
-            
-            // Add to pending messages
-            state.chat.pendingMessages.push(message);
-            
-            // Prepare API request with agent context
-            const messages = [
-                ...state.chat.messages.map(msg => ({
-                    role: msg.type,
-                    content: msg.content
-                })),
-                { role: 'user', content: message }
-            ];
-            
-            // Add agent memory to context
-            if (state.agent.memory.length > 0) {
-                messages.push({
-                    role: 'system',
-                    content: `Agent Memory: ${state.agent.memory.join(', ')}`
-                });
-            }
-            
-            const options = {
-                length: 1024,
-                creativity: 70,
-                system: "You are an advanced agentic AI assistant. You can execute code, search the web, manage files, and perform complex tasks. When the user requests a task that requires one of these capabilities, indicate which tool you would use and what steps you would take."
-            };
-            
-            try {
-                // Make API request
-                const response = await fetch(API_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: API_CONFIG.headers,
-                    body: JSON.stringify({
-                        messages,
-                        options
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-                
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-                
-                // Remove typing indicator
-                removeTypingIndicator();
-                
-                // Add AI response to chat with typing effect
-                addMessageWithTypingEffect('ai', aiResponse);
-                
-                // Extract code from response if available
-                extractCodeFromResponse(aiResponse);
-                
-                // Update quota
-                state.quota.used += 1;
-                state.quota.messagesLeft -= 1;
-                updateQuotaBar();
-                
-                // Remove from pending messages
-                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
-                
-                // Save conversation to Firestore
-                saveConversation();
-                
-                showToast('Response generated successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Error sending message:', error);
-                
-                // Remove typing indicator
-                removeTypingIndicator();
-                
-                // Show error message
-                addMessage('ai', 'I apologize, but I encountered an error while processing your request. Please try again.');
-                showToast('Failed to generate response: ' + error.message, 'error');
-                
-                // Remove from pending messages
-                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
-            }
-        }
-        
-        // Override extractCodeFromResponse to handle agent responses
-        function extractCodeFromResponse(response) {
-            // Regular expression to match code blocks
-            const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-            let match;
-            let codeFound = false;
-            
-            while ((match = codeBlockRegex.exec(response)) !== null) {
-                const language = match[1] || 'text';
-                const code = match[2];
-                
-                // Update the code in the state
-                state.code.current = code;
-                state.code.language = language;
-                state.agent.workspace.code = code;
-                state.agent.workspace.language = language;
-                
-                // Update the code editor
-                codeEditor.value = code;
-                languageSelector.value = language;
-                
-                // If it's HTML, also update the preview
-                if (language === 'html') {
-                    updatePreview(code);
-                }
-                
-                codeFound = true;
-            }
-            
-            // Check for agent actions in response
-            if (response.includes('I will use the') || response.includes('I can help you by')) {
-                // Extract agent action
-                const actionMatch = response.match(/I will use the (\w+) tool/);
-                if (actionMatch) {
-                    const toolName = actionMatch[1].toLowerCase();
-                    if (state.agent.tools[toolName]) {
-                        activateTool(toolName);
-                    }
-                }
-            }
-        }
-        
-        // Override sendSuggestion to handle agent suggestions
-        function sendSuggestion(suggestion) {
-            messageInput.value = suggestion;
-            autoResize(messageInput);
-            sendMessage();
         }
         
         // Load user conversations from Firestore
@@ -3876,7 +2651,361 @@
             }
         }
         
-        // Add message to chat
+        // Send message
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || state.chat.pendingMessages.length > 0) return;
+            
+            // Check quota
+            if (state.quota.messagesLeft <= 0) {
+                showToast('Message quota exceeded. Please upgrade your plan.', 'error');
+                return;
+            }
+            
+            // Check API status
+            if (state.api.status !== 'online') {
+                showToast('AI is currently offline. Please try again later.', 'error');
+                return;
+            }
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            
+            // Hide empty state
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            
+            // Add user message
+            addMessage('user', message);
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Enable two-column layout after first message
+            if (!state.chat.hasMessages) {
+                state.chat.hasMessages = true;
+                sidebarRight.classList.add('active');
+            }
+            
+            // Add to pending messages
+            state.chat.pendingMessages.push(message);
+            
+            // Prepare API request
+            const messages = [
+                ...state.chat.messages.map(msg => ({
+                    role: msg.type,
+                    content: msg.content
+                })),
+                { role: 'user', content: message }
+            ];
+            
+            const options = {
+                length: 1024,
+                creativity: 70,
+                system: "You are a helpful AI assistant. Be concise and helpful."
+            };
+            
+            try {
+                // Make API request
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: API_CONFIG.headers,
+                    body: JSON.stringify({
+                        messages,
+                        options
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add AI response to chat with typing effect
+                addMessageWithTypingEffect('ai', aiResponse);
+                
+                // Extract code from response if available
+                extractCodeFromResponse(aiResponse);
+                
+                // Update quota
+                state.quota.used += 1;
+                state.quota.messagesLeft -= 1;
+                updateQuotaBar();
+                
+                // Remove from pending messages
+                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
+                
+                // Save conversation to Firestore
+                saveConversation();
+                
+                showToast('Response generated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Show error message
+                addMessage('ai', 'I apologize, but I encountered an error while processing your request. Please try again.');
+                showToast('Failed to generate response: ' + error.message, 'error');
+                
+                // Remove from pending messages
+                state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
+            }
+        }
+        
+        // Add message with typing effect - NEW
+        function addMessageWithTypingEffect(type, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transition = 'opacity 0.5s ease-in-out';
+            
+            const timestamp = new Date().toLocaleTimeString('en-US', { 
+                hour12: true, 
+                hour: 'numeric', 
+                minute: '2-digit' 
+            });
+            
+            const messageActions = type === 'ai' ? `
+                <div class="message-actions">
+                    <button class="message-action" onclick="copyMessage(this)">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="message-action" onclick="regenerateMessage(this)">
+                        <i class="fas fa-redo"></i> Regenerate
+                    </button>
+                    <button class="message-action" onclick="likeMessage(this)">
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                </div>
+            ` : '';
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    ${type === 'user' ? userAvatar.textContent : ''}
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        <div class="formatted-content" id="typing-content-${Date.now()}"></div>
+                        ${messageActions}
+                    </div>
+                    <div class="message-timestamp">${timestamp}</div>
+                </div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Get the content element
+            const contentElement = messageDiv.querySelector('.formatted-content');
+            const contentId = contentElement.id;
+            
+            // Start typing effect
+            typeWriter(content, contentElement, 0);
+            
+            // Add to message history
+            state.chat.messages.push({ type, content, timestamp });
+        }
+        
+        // Typewriter effect - NEW
+        function typeWriter(text, element, index) {
+            if (index < text.length) {
+                // Check if we're at a code block start
+                if (text.substr(index, 3) === '```') {
+                    // Find the end of the code block
+                    const codeEnd = text.indexOf('```', index + 3);
+                    if (codeEnd !== -1) {
+                        // Extract the code block
+                        const codeBlock = text.substring(index, codeEnd + 3);
+                        // Add the entire code block at once
+                        element.innerHTML += formatContent(codeBlock);
+                        
+                        // Highlight code blocks
+                        element.querySelectorAll('pre code').forEach(block => {
+                            hljs.highlightElement(block);
+                        });
+                        
+                        // Continue after the code block
+                        setTimeout(() => {
+                            typeWriter(text, element, codeEnd + 3);
+                        }, 50);
+                        return;
+                    }
+                }
+                
+                // Add character by character for regular text
+                element.innerHTML += text.charAt(index);
+                index++;
+                
+                // Calculate typing speed (random between 10-30ms per character)
+                const typingSpeed = Math.random() * 20 + 10;
+                
+                setTimeout(() => {
+                    typeWriter(text, element, index);
+                }, typingSpeed);
+            } else {
+                // Final formatting after typing is complete
+                const formattedContent = formatContent(element.innerHTML);
+                element.innerHTML = formattedContent;
+                
+                // Highlight code blocks
+                element.querySelectorAll('pre code').forEach(block => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Show the message with fade-in effect
+                const messageDiv = element.closest('.message');
+                messageDiv.style.opacity = '1';
+            }
+        }
+        
+        // Extract code from AI response - IMPROVED
+        function extractCodeFromResponse(response) {
+            // Regular expression to match code blocks
+            const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+            let match;
+            let codeFound = false;
+            
+            while ((match = codeBlockRegex.exec(response)) !== null) {
+                const language = match[1] || 'text';
+                const code = match[2];
+                
+                // Update the code in the state
+                state.code.current = code;
+                state.code.language = language;
+                
+                // If it's HTML, also update the preview
+                if (language === 'html') {
+                    updatePreview(code);
+                }
+                
+                codeFound = true;
+            }
+        }
+        
+        // Update preview in the sidebar - IMPROVED
+        function updatePreview(html) {
+            previewFrame.srcdoc = html;
+            state.code.preview = html;
+            
+            // Add a small delay to ensure the iframe loads properly
+            setTimeout(() => {
+                try {
+                    // Check if the iframe loaded correctly
+                    if (previewFrame.contentDocument && previewFrame.contentDocument.body) {
+                        console.log('Preview updated successfully');
+                    }
+                } catch (e) {
+                    console.log('Preview update error:', e);
+                }
+            }, 100);
+        }
+        
+        // Check API status
+        async function checkApiStatus() {
+            try {
+                // Send a ping message to check if the API is working
+                const response = await fetch(API_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: API_CONFIG.headers,
+                    body: JSON.stringify({
+                        messages: [{ role: 'user', content: 'ping' }],
+                        options: { length: 10 }
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.choices && data.choices[0].message.content === 'pong') {
+                        state.api.status = 'online';
+                        statusDot.className = 'status-dot online';
+                        statusText.textContent = 'Online';
+                    } else {
+                        throw new Error('Invalid ping response');
+                    }
+                } else {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+                
+                state.api.lastCheck = new Date();
+            } catch (error) {
+                console.error('Error checking API status:', error);
+                state.api.status = 'offline';
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = 'Offline';
+            }
+        }
+        
+        // Copy code to clipboard - IMPROVED
+        function copyCode() {
+            if (!state.code.current) {
+                showToast('No code to copy', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(state.code.current).then(() => {
+                showToast('Code copied to clipboard!', 'success');
+            }).catch(err => {
+                showToast('Failed to copy code', 'error');
+            });
+        }
+        
+        // Download code - IMPROVED
+        function downloadCode() {
+            if (!state.code.current) {
+                showToast('No code to download', 'error');
+                return;
+            }
+            
+            const extension = state.code.language === 'html' ? 'html' : 
+                             state.code.language === 'css' ? 'css' : 
+                             state.code.language === 'javascript' ? 'js' : 'txt';
+            
+            const blob = new Blob([state.code.current], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aj-studioz-code.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Code downloaded!', 'success');
+        }
+        
+        // Refresh preview - IMPROVED
+        function refreshPreview() {
+            if (state.code.language === 'html' && state.code.current) {
+                updatePreview(state.code.current);
+                showToast('Preview refreshed!', 'success');
+            } else {
+                showToast('No HTML code to preview', 'error');
+            }
+        }
+        
+        // Open preview in new tab - IMPROVED
+        function openInNewTab() {
+            if (state.code.language === 'html' && state.code.current) {
+                const newWindow = window.open();
+                newWindow.document.write(state.code.current);
+                newWindow.document.close();
+            } else {
+                showToast('No HTML code to preview', 'error');
+            }
+        }
+        
+        // Add message to chat - IMPROVED
         function addMessage(type, content, shouldSave = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -3946,113 +3075,7 @@
             }
         }
         
-        // Add message with typing effect
-        function addMessageWithTypingEffect(type, content) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.style.opacity = '0';
-            messageDiv.style.transition = 'opacity 0.5s ease-in-out';
-            
-            const timestamp = new Date().toLocaleTimeString('en-US', { 
-                hour12: true, 
-                hour: 'numeric', 
-                minute: '2-digit' 
-            });
-            
-            const messageActions = type === 'ai' ? `
-                <div class="message-actions">
-                    <button class="message-action" onclick="copyMessage(this)">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                    <button class="message-action" onclick="regenerateMessage(this)">
-                        <i class="fas fa-redo"></i> Regenerate
-                    </button>
-                    <button class="message-action" onclick="likeMessage(this)">
-                        <i class="fas fa-thumbs-up"></i>
-                    </button>
-                </div>
-            ` : '';
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar">
-                    ${type === 'user' ? userAvatar.textContent : ''}
-                </div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        <div class="formatted-content" id="typing-content-${Date.now()}"></div>
-                        ${messageActions}
-                    </div>
-                    <div class="message-timestamp">${timestamp}</div>
-                </div>
-            `;
-            
-            chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            
-            // Get the content element
-            const contentElement = messageDiv.querySelector('.formatted-content');
-            const contentId = contentElement.id;
-            
-            // Start typing effect
-            typeWriter(content, contentElement, 0);
-            
-            // Add to message history
-            state.chat.messages.push({ type, content, timestamp });
-        }
-        
-        // Typewriter effect
-        function typeWriter(text, element, index) {
-            if (index < text.length) {
-                // Check if we're at a code block start
-                if (text.substr(index, 3) === '```') {
-                    // Find the end of the code block
-                    const codeEnd = text.indexOf('```', index + 3);
-                    if (codeEnd !== -1) {
-                        // Extract the code block
-                        const codeBlock = text.substring(index, codeEnd + 3);
-                        // Add the entire code block at once
-                        element.innerHTML += formatContent(codeBlock);
-                        
-                        // Highlight code blocks
-                        element.querySelectorAll('pre code').forEach(block => {
-                            hljs.highlightElement(block);
-                        });
-                        
-                        // Continue after the code block
-                        setTimeout(() => {
-                            typeWriter(text, element, codeEnd + 3);
-                        }, 50);
-                        return;
-                    }
-                }
-                
-                // Add character by character for regular text
-                element.innerHTML += text.charAt(index);
-                index++;
-                
-                // Calculate typing speed (random between 10-30ms per character)
-                const typingSpeed = Math.random() * 20 + 10;
-                
-                setTimeout(() => {
-                    typeWriter(text, element, index);
-                }, typingSpeed);
-            } else {
-                // Final formatting after typing is complete
-                const formattedContent = formatContent(element.innerHTML);
-                element.innerHTML = formattedContent;
-                
-                // Highlight code blocks
-                element.querySelectorAll('pre code').forEach(block => {
-                    hljs.highlightElement(block);
-                });
-                
-                // Show the message with fade-in effect
-                const messageDiv = element.closest('.message');
-                messageDiv.style.opacity = '1';
-            }
-        }
-        
-        // Format message content - Copilot Style
+        // Format message content - Copilot Style - IMPROVED
         function formatContent(content) {
             // Create a temporary div to hold the formatted content
             const tempDiv = document.createElement('div');
@@ -4071,7 +3094,7 @@
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Handle code blocks with Copilot style
+            // Handle code blocks with Copilot style - IMPROVED
             formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
@@ -4181,7 +3204,7 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
         
-        // Copy code from a specific code block
+        // Copy code from a specific code block - IMPROVED
         function copyCodeFromBlock(codeId) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -4193,7 +3216,7 @@
             });
         }
         
-        // Run code from a specific code block
+        // Run code from a specific code block - NEW
         function runCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -4218,7 +3241,7 @@
             }
         }
         
-        // Download code from a specific code block
+        // Download code from a specific code block - NEW
         function downloadCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -4308,30 +3331,37 @@
             }
         }
         
+        // Send suggestion
+        function sendSuggestion(suggestion) {
+            messageInput.value = suggestion;
+            autoResize(messageInput);
+            sendMessage();
+        }
+        
         // Start new chat
         function startNewChat() {
             chatContainer.innerHTML = `
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon"></div>
-                    <h2>Hello! I'm your AJ STUDIOZ Agentic AI</h2>
-                    <p>I can perform complex tasks, execute code, search the web, and manage files. How can I assist you today?</p>
+                    <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
+                    <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
                     
                     <div class="suggestion-cards">
-                        <div class="suggestion-card" onclick="sendSuggestion('Create a Python script to analyze stock market data')">
-                            <h3>🐍 Python Analysis</h3>
-                            <p>Analyze data with Python and pandas</p>
-                        </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Search for the latest AI research papers and summarize them')">
-                            <h3>🔍 Web Research</h3>
-                            <p>Find and summarize online information</p>
-                        </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Create a complete HTML/CSS/JS project with interactive elements')">
+                        <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
                             <h3>🎨 Web Development</h3>
-                            <p>Build a complete web application</p>
+                            <p>Create a modern landing page with animations</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Analyze this dataset and create visualizations')">
-                            <h3>📊 Data Visualization</h3>
-                            <p>Create charts and graphs from data</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
+                            <h3>🐛 Code Debugging</h3>
+                            <p>Debug and fix code issues</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
+                            <h3>✍️ Creative Writing</h3>
+                            <p>Generate stories and creative content</p>
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
+                            <h3>🧠 Explanations</h3>
+                            <p>Explain complex topics simply</p>
                         </div>
                     </div>
                 </div>
@@ -4484,7 +3514,7 @@
             showToast('Redirecting to upgrade page...', 'success');
         }
         
-        // Settings modal
+        // Settings modal - IMPROVED
         function openSettings() {
             settingsModal.classList.add('active');
             state.ui.modals.settings = true;
@@ -4493,80 +3523,6 @@
         function closeSettings() {
             settingsModal.classList.remove('active');
             state.ui.modals.settings = false;
-        }
-        
-        // Update preview in the sidebar
-        function updatePreview(html) {
-            previewFrame.srcdoc = html;
-            state.code.preview = html;
-            
-            // Add a small delay to ensure the iframe loads properly
-            setTimeout(() => {
-                try {
-                    // Check if the iframe loaded correctly
-                    if (previewFrame.contentDocument && previewFrame.contentDocument.body) {
-                        console.log('Preview updated successfully');
-                    }
-                } catch (e) {
-                    console.log('Preview update error:', e);
-                }
-            }, 100);
-        }
-        
-        // Refresh preview
-        function refreshPreview() {
-            if (state.code.language === 'html' && state.code.current) {
-                updatePreview(state.code.current);
-                showToast('Preview refreshed!', 'success');
-            } else {
-                showToast('No HTML code to preview', 'error');
-            }
-        }
-        
-        // Open preview in new tab
-        function openInNewTab() {
-            if (state.code.language === 'html' && state.code.current) {
-                const newWindow = window.open();
-                newWindow.document.write(state.code.current);
-                newWindow.document.close();
-            } else {
-                showToast('No HTML code to preview', 'error');
-            }
-        }
-        
-        // Check API status
-        async function checkApiStatus() {
-            try {
-                // Send a ping message to check if the API is working
-                const response = await fetch(API_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: API_CONFIG.headers,
-                    body: JSON.stringify({
-                        messages: [{ role: 'user', content: 'ping' }],
-                        options: { length: 10 }
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.choices && data.choices[0].message.content === 'pong') {
-                        state.api.status = 'online';
-                        statusDot.className = 'status-dot online';
-                        statusText.textContent = 'Online';
-                    } else {
-                        throw new Error('Invalid ping response');
-                    }
-                } else {
-                    throw new Error(`API returned status ${response.status}`);
-                }
-                
-                state.api.lastCheck = new Date();
-            } catch (error) {
-                console.error('Error checking API status:', error);
-                state.api.status = 'offline';
-                statusDot.className = 'status-dot offline';
-                statusText.textContent = 'Offline';
-            }
         }
         
         // File handling
@@ -4707,38 +3663,6 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
-        }
-        
-        // Setup event listeners
-        function setupEventListeners() {
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (e.key === '/' && document.activeElement !== messageInput) {
-                    e.preventDefault();
-                    messageInput.focus();
-                }
-                if (e.key === 'Escape') {
-                    closeSettings();
-                    if (state.ui.sidebarOpen) toggleSidebar();
-                }
-            });
-            
-            // Window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) {
-                    sidebar.classList.remove('open');
-                }
-            });
-            
-            // Close sidebar when clicking outside
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 768 && 
-                    sidebar.classList.contains('open') && 
-                    !sidebar.contains(event.target) && 
-                    !event.target.closest('.header-btn')) {
-                    sidebar.classList.remove('open');
-                }
-            });
         }
         
         // Initialize app when DOM is loaded
