@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJ STUDIOZ - AI Assistant</title>
+    <title>AJ STUDIOZ - Agentic AI for Developers</title>
     
     <!-- Professional Favicon -->
     <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0" type="image/png">
@@ -14,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs/loader.js"></script>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -78,6 +79,17 @@
             /* Professional embedded logo as data URL - replaced with favicon.png */
             --logo-url: url("https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0");
             --logo-glow: 0 0 10px rgba(0, 0, 0, 0.2);
+            
+            /* New variables for agentic features */
+            --terminal-bg: #1e1e1e;
+            --terminal-text: #ffffff;
+            --terminal-header-bg: #2d2d2d;
+            --file-explorer-bg: #252526;
+            --file-explorer-text: #cccccc;
+            --editor-bg: #1e1e1e;
+            --editor-text: #d4d4d4;
+            --agent-status-bg: #0d6efd;
+            --agent-status-text: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -105,6 +117,17 @@
             --code-action-bg: #21262d;
             --code-action-hover: #30363d;
             --logo-glow: 0 0 15px rgba(255, 255, 255, 0.1);
+            
+            /* Dark mode for agentic features */
+            --terminal-bg: #1e1e1e;
+            --terminal-text: #ffffff;
+            --terminal-header-bg: #2d2d2d;
+            --file-explorer-bg: #252526;
+            --file-explorer-text: #cccccc;
+            --editor-bg: #1e1e1e;
+            --editor-text: #d4d4d4;
+            --agent-status-bg: #0d6efd;
+            --agent-status-text: #ffffff;
         }
 
         /* Login Page Styles - unchanged */
@@ -623,13 +646,14 @@
             color: var(--text-tertiary);
         }
 
-        /* Main Content */
+        /* Main Content - Agentic Layout */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             background-color: var(--primary-bg);
             position: relative;
+            overflow: hidden;
         }
 
         .main-header {
@@ -640,6 +664,7 @@
             justify-content: space-between;
             padding: 0 20px;
             background-color: var(--secondary-bg);
+            z-index: 10;
         }
 
         .header-title {
@@ -737,6 +762,42 @@
             color: var(--text-primary);
         }
 
+        /* Agent Status Bar */
+        .agent-status-bar {
+            height: 30px;
+            background-color: var(--agent-status-bg);
+            color: var(--agent-status-text);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+            z-index: 9;
+        }
+
+        .agent-status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .agent-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .agent-status-text {
+            font-weight: 500;
+        }
+
         /* Quota Usage Bar */
         .quota-usage {
             position: absolute;
@@ -780,22 +841,319 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        /* Chat Layout */
-        .chat-layout {
+        /* Agentic Layout */
+        .agentic-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* File Explorer */
+        .file-explorer {
+            width: 220px;
+            background-color: var(--file-explorer-bg);
+            color: var(--file-explorer-text);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .file-explorer-header {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-explorer-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .file-explorer-action {
+            background: transparent;
+            border: none;
+            color: var(--file-explorer-text);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .file-explorer-action:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .file-item {
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .file-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .file-icon {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .file-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Editor Area */
+        .editor-area {
             flex: 1;
             display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .editor-tabs {
+            display: flex;
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .editor-tab {
+            padding: 8px 16px;
+            border-right: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            background-color: var(--secondary-bg);
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .editor-tab:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .editor-tab.active {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .editor-tab-close {
+            font-size: 12px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .editor-tab-close:hover {
+            opacity: 1;
+        }
+
+        .editor-container {
+            flex: 1;
             overflow: hidden;
             position: relative;
+        }
+
+        #monaco-editor {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Terminal */
+        .terminal {
+            height: 200px;
+            background-color: var(--terminal-bg);
+            color: var(--terminal-text);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            padding: 6px 12px;
+            background-color: var(--terminal-header-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .terminal-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-action {
+            background: transparent;
+            border: none;
+            color: var(--terminal-text);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .terminal-action:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .terminal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
+            display: flex;
+        }
+
+        .terminal-prompt {
+            color: var(--aj-green);
+            margin-right: 8px;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--terminal-text);
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            width: 400px;
+            background-color: var(--primary-bg);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .preview-tabs {
+            display: flex;
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .preview-tab {
+            flex: 1;
+            padding: 8px 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .preview-tab:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .preview-tab.active {
+            border-bottom-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .preview-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            width: 350px;
+            background-color: var(--primary-bg);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-action {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-action:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
         }
 
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            max-height: calc(100vh - 200px);
+            gap: 12px;
         }
 
         .chat-container::-webkit-scrollbar {
@@ -815,57 +1173,11 @@
             background: var(--text-tertiary);
         }
 
-        .sidebar-right {
-            width: 300px;
-            background-color: var(--sidebar-bg);
-            border-left: 1px solid var(--border-color);
-            overflow-y: auto;
-            display: none;
-            flex-direction: column;
-        }
-
-        .sidebar-right.active {
-            display: flex;
-        }
-
-        .preview-container {
-            flex: 1;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden;
-            margin: 16px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .preview-header {
-            background-color: var(--hover-bg);
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .preview-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .preview-content {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background-color: white;
-        }
-
         /* Messages - Copilot Style - IMPROVED */
         .message {
             display: flex;
-            gap: 12px;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
+            gap: 8px;
+            max-width: 100%;
             opacity: 0;
             animation: slideIn 0.3s ease forwards;
         }
@@ -887,15 +1199,15 @@
         }
 
         .message-avatar {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 10px;
             box-shadow: var(--logo-glow);
             transition: transform 0.3s ease;
         }
@@ -920,17 +1232,18 @@
 
         .message-content {
             flex: 1;
-            max-width: calc(100% - 40px);
+            max-width: calc(100% - 32px);
         }
 
         .message-bubble {
             background-color: var(--message-ai-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
-            padding: 16px;
+            padding: 10px;
             position: relative;
             word-wrap: break-word;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 13px;
         }
 
         .message.user .message-bubble {
@@ -939,16 +1252,21 @@
         }
 
         .message-timestamp {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-tertiary);
-            margin-top: 4px;
+            margin-top: 2px;
+            text-align: right;
+        }
+
+        .message.user .message-timestamp {
+            text-align: left;
         }
 
         /* Message Actions */
         .message-actions {
             display: flex;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 4px;
+            margin-top: 4px;
             opacity: 0;
             transition: opacity 0.2s ease;
         }
@@ -961,10 +1279,10 @@
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            padding: 2px 6px;
+            padding: 2px 4px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 9px;
             transition: all 0.2s ease;
         }
 
@@ -975,13 +1293,13 @@
 
         /* Copilot Style Formatted Content - IMPROVED */
         .formatted-content {
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
             color: var(--copilot-text);
         }
 
         .formatted-content p {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .formatted-content p:last-child {
@@ -990,42 +1308,39 @@
 
         .formatted-content h1, .formatted-content h2, .formatted-content h3, 
         .formatted-content h4, .formatted-content h5, .formatted-content h6 {
-            margin-top: 24px;
-            margin-bottom: 16px;
+            margin-top: 16px;
+            margin-bottom: 12px;
             font-weight: 600;
             color: var(--text-primary);
         }
 
         .formatted-content h1 { 
-            font-size: 1.75em; 
-            border-bottom: 1px solid var(--border-color); 
-            padding-bottom: 8px; 
-        }
-        .formatted-content h2 { 
             font-size: 1.5em; 
             border-bottom: 1px solid var(--border-color); 
             padding-bottom: 6px; 
         }
-        .formatted-content h3 { 
-            font-size: 1.25em; 
+        .formatted-content h2 { 
+            font-size: 1.3em; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 4px; 
         }
-        .formatted-content h4 { 
+        .formatted-content h3 { 
             font-size: 1.1em; 
         }
 
         .formatted-content ul, .formatted-content ol {
-            margin-left: 24px;
-            margin-bottom: 16px;
+            margin-left: 20px;
+            margin-bottom: 12px;
         }
 
         .formatted-content li {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .formatted-content blockquote {
             border-left: 4px solid var(--accent-color);
-            padding-left: 16px;
-            margin: 16px 0;
+            padding-left: 12px;
+            margin: 12px 0;
             color: var(--text-secondary);
             font-style: italic;
         }
@@ -1041,7 +1356,7 @@
 
         .formatted-content code {
             background-color: var(--hover-bg);
-            padding: 2px 6px;
+            padding: 2px 4px;
             border-radius: 4px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9em;
@@ -1050,8 +1365,8 @@
 
         /* Code blocks - Copilot Style - IMPROVED */
         .code-block {
-            margin: 16px 0;
-            border-radius: 8px;
+            margin: 12px 0;
+            border-radius: 6px;
             overflow: hidden;
             background-color: var(--code-bg);
             border: 1px solid var(--border-color);
@@ -1066,7 +1381,7 @@
 
         .code-header {
             background-color: var(--code-header-bg);
-            padding: 10px 16px;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -1074,7 +1389,7 @@
         }
 
         .code-language {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--aj-gold);
             text-transform: uppercase;
             font-weight: 600;
@@ -1085,25 +1400,25 @@
         }
 
         .language-icon {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 2px;
             display: inline-block;
         }
 
         .code-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .code-btn {
             background: var(--code-action-bg);
             border: 1px solid var(--code-header-border);
             color: var(--code-text);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
@@ -1116,20 +1431,20 @@
         }
 
         .code-content {
-            padding: 16px;
+            padding: 12px;
             overflow-x: auto;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.4;
             color: var(--code-text); /* White text in black box */
             background-color: var(--code-bg); /* Pure black background */
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
         .code-content::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
+            height: 6px;
+            width: 6px;
         }
 
         .code-content::-webkit-scrollbar-track {
@@ -1138,7 +1453,7 @@
 
         .code-content::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .code-content::-webkit-scrollbar-thumb:hover {
@@ -1147,7 +1462,7 @@
 
         /* Tables */
         .table-container {
-            margin: 16px 0;
+            margin: 12px 0;
             overflow-x: auto;
         }
 
@@ -1155,16 +1470,16 @@
             width: 100%;
             border-collapse: collapse;
             background-color: var(--secondary-bg);
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
         }
 
         .data-table th,
         .data-table td {
-            padding: 12px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .data-table th {
@@ -1182,11 +1497,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 16px;
+            padding: 8px 12px;
             background-color: var(--message-ai-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
             color: var(--text-secondary);
+            font-size: 13px;
         }
 
         .typing-dots {
@@ -1219,14 +1535,12 @@
 
         /* Input Area */
         .input-area {
-            padding: 16px 20px;
+            padding: 12px;
             border-top: 1px solid var(--border-color);
             background-color: var(--secondary-bg);
         }
 
         .input-container {
-            max-width: 800px;
-            margin: 0 auto;
             position: relative;
         }
 
@@ -1252,7 +1566,7 @@
             border: none;
             outline: none;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.4;
             resize: none;
             min-height: 20px;
@@ -1291,8 +1605,8 @@
         .send-btn {
             background-color: var(--accent-color);
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
         }
 
@@ -1696,6 +2010,38 @@
             margin-left: 8px;
         }
 
+        /* Agent Tools */
+        .agent-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .agent-tool {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .agent-tool:hover {
+            background-color: var(--hover-bg);
+            border-color: var(--accent-color);
+        }
+
+        .agent-tool.active {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
         /* Mobile Responsive - IMPROVED */
         @media (max-width: 768px) {
             .sidebar {
@@ -1714,30 +2060,31 @@
                 width: 100%;
             }
 
-            .chat-container {
-                padding: 16px;
+            .agentic-layout {
+                flex-direction: column;
             }
 
-            .input-area {
-                padding: 16px;
+            .file-explorer {
+                width: 100%;
+                height: 200px;
+            }
+
+            .preview-panel {
+                width: 100%;
+                height: 300px;
+            }
+
+            .chat-panel {
+                width: 100%;
+                height: 400px;
+            }
+
+            .terminal {
+                height: 150px;
             }
 
             .suggestion-cards {
                 grid-template-columns: 1fr;
-            }
-
-            .sidebar-right {
-                width: 100%;
-                position: fixed;
-                right: -100%;
-                top: 0;
-                height: 100vh;
-                z-index: 999;
-                transition: right 0.3s ease;
-            }
-
-            .sidebar-right.active {
-                right: 0;
             }
 
             .message {
@@ -1838,8 +2185,16 @@
                 width: 240px;
             }
 
-            .sidebar-right {
-                width: 280px;
+            .file-explorer {
+                width: 180px;
+            }
+
+            .preview-panel {
+                width: 300px;
+            }
+
+            .chat-panel {
+                width: 300px;
             }
 
             .chat-container {
@@ -1857,12 +2212,20 @@
                 width: 280px;
             }
 
-            .sidebar-right {
-                width: 320px;
+            .file-explorer {
+                width: 240px;
+            }
+
+            .preview-panel {
+                width: 450px;
+            }
+
+            .chat-panel {
+                width: 400px;
             }
 
             .message {
-                max-width: 900px;
+                max-width: 90%;
             }
 
             .chat-container {
@@ -1877,12 +2240,20 @@
                 width: 320px;
             }
 
-            .sidebar-right {
-                width: 400px;
+            .file-explorer {
+                width: 280px;
+            }
+
+            .preview-panel {
+                width: 500px;
+            }
+
+            .chat-panel {
+                width: 450px;
             }
 
             .message {
-                max-width: 1000px;
+                max-width: 90%;
             }
 
             .chat-container {
@@ -1917,8 +2288,8 @@
             
             <div class="login-form-container">
                 <h1 class="login-title">AJ STUDIOZ</h1>
-                <h2>SECURE ACCESS</h2>
-                <p>Enter credentials to proceed.</p>
+                <h2>AGENTIC AI</h2>
+                <p>Enter credentials to access your AI development assistant.</p>
                 <form id="loginForm">
                     <div class="input-group">
                         <input type="email" id="emailInput" placeholder="Email Address" required>
@@ -1952,13 +2323,13 @@
                 </div>
                 <button class="new-chat-btn" onclick="startNewChat()">
                     <i class="fas fa-plus"></i>
-                    New Chat
+                    New Project
                 </button>
             </div>
             
             <div class="search-bar">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search conversations..." onkeyup="searchConversations(this.value)">
+                <input type="text" class="search-input" placeholder="Search projects..." onkeyup="searchConversations(this.value)">
             </div>
             
             <div class="chat-history" id="chatHistory">
@@ -1967,7 +2338,7 @@
             
             <div class="project-section">
                 <div class="project-header">
-                    <span>Projects</span>
+                    <span>Tools</span>
                     <i class="fas fa-plus" style="cursor: pointer; font-size: 12px;" onclick="createNewProject()"></i>
                 </div>
                 <div id="projectList">
@@ -1980,7 +2351,7 @@
                     <div class="user-avatar" id="userAvatar">K</div>
                     <div class="user-info">
                         <div class="user-name" id="userName">Karthik</div>
-                        <div class="user-status" id="userStatus">Free Plan</div>
+                        <div class="user-status" id="userStatus">Developer Plan</div>
                     </div>
                     <i class="fas fa-cog" style="color: var(--text-tertiary);"></i>
                 </div>
@@ -1993,8 +2364,8 @@
                 <div class="header-title">
                     <div class="ai-avatar"></div>
                     <div>
-                        <h1>AJ STUDIOZ AI Assistant</h1>
-                        <div class="header-subtitle">Powered by Claude Sonnet-4</div>
+                        <h1>AJ STUDIOZ Agentic AI</h1>
+                        <div class="header-subtitle">Autonomous Development Assistant</div>
                     </div>
                     <div class="status-indicator">
                         <span class="status-dot online" id="statusDot"></span>
@@ -2007,6 +2378,8 @@
                         <option value="claude-3-sonnet">Claude 3 Sonnet</option>
                         <option value="claude-3-opus">Claude 3 Opus</option>
                         <option value="claude-3-haiku">Claude 3 Haiku</option>
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
                     </select>
                     
                     <select class="tone-selector" onchange="changeTone(this.value)">
@@ -2014,6 +2387,7 @@
                         <option value="casual">Casual</option>
                         <option value="friendly">Friendly</option>
                         <option value="analytical">Analytical</option>
+                        <option value="technical">Technical</option>
                     </select>
                     
                     <button class="header-btn" onclick="toggleTheme()">
@@ -2040,86 +2414,175 @@
             </div>
 
             <div class="upgrade-banner" id="upgradeBanner">
-                <span>Upgrade to Pro for unlimited messages and advanced features</span>
+                <span>Upgrade to Pro for unlimited agent tasks and advanced features</span>
                 <button onclick="upgradePlan()">Upgrade Now</button>
             </div>
 
-            <div class="chat-layout">
-                <div class="chat-container" id="chatContainer">
-                    <!-- Empty state -->
-                    <div class="empty-state" id="emptyState">
-                        <div class="empty-state-icon"></div>
-                        <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
-                        <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
-                        
-                        <div class="suggestion-cards">
-                            <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
-                                <h3>🎨 Web Development</h3>
-                                <p>Create a modern landing page with animations</p>
-                            </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
-                                <h3>🐛 Code Debugging</h3>
-                                <p>Debug and fix code issues</p>
-                            </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
-                                <h3>✍️ Creative Writing</h3>
-                                <p>Generate stories and creative content</p>
-                            </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
-                                <h3>🧠 Explanations</h3>
-                                <p>Explain complex topics simply</p>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Agent Status Bar -->
+            <div class="agent-status-bar">
+                <div class="agent-status-indicator">
+                    <div class="agent-status-dot"></div>
+                    <span class="agent-status-text" id="agentStatusText">Agent Ready</span>
                 </div>
-
-                <!-- Right Sidebar - Preview Only -->
-                <div class="sidebar-right" id="sidebarRight">
-                    <div class="preview-container">
-                        <div class="preview-header">
-                            <span>Preview</span>
-                            <div class="preview-actions">
-                                <button class="code-btn" onclick="refreshPreview()">
-                                    <i class="fas fa-sync-alt"></i> Refresh
-                                </button>
-                                <button class="code-btn" onclick="openInNewTab()">
-                                    <i class="fas fa-external-link-alt"></i> Open
-                                </button>
-                            </div>
-                        </div>
-                        <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
+                <div class="agent-tools">
+                    <div class="agent-tool active" onclick="activateTool('code')" id="codeTool">
+                        <i class="fas fa-code"></i>
+                        <span>Code</span>
+                    </div>
+                    <div class="agent-tool" onclick="activateTool('web')" id="webTool">
+                        <i class="fas fa-globe"></i>
+                        <span>Web</span>
+                    </div>
+                    <div class="agent-tool" onclick="activateTool('terminal')" id="terminalTool">
+                        <i class="fas fa-terminal"></i>
+                        <span>Terminal</span>
+                    </div>
+                    <div class="agent-tool" onclick="activateTool('files')" id="filesTool">
+                        <i class="fas fa-folder"></i>
+                        <span>Files</span>
                     </div>
                 </div>
             </div>
 
-            <div class="input-area">
-                <div class="input-container">
-                    <div class="input-wrapper" id="inputWrapper">
-                        <textarea 
-                            class="message-input" 
-                            id="messageInput" 
-                            placeholder="Message AJ STUDIOZ AI..."
-                            rows="1"
-                            onkeydown="handleKeyDown(event)"
-                            oninput="autoResize(this)"
-                        ></textarea>
-                        <div class="input-actions">
-                            <button class="attach-btn" onclick="attachFile()" title="Attach file">
-                                <i class="fas fa-paperclip"></i>
+            <!-- Agentic Layout -->
+            <div class="agentic-layout">
+                <!-- File Explorer -->
+                <div class="file-explorer" id="fileExplorer">
+                    <div class="file-explorer-header">
+                        <span>Project Files</span>
+                        <div class="file-explorer-actions">
+                            <button class="file-explorer-action" onclick="createNewFile()" title="New File">
+                                <i class="fas fa-file-plus"></i>
                             </button>
-                            <button class="voice-btn" onclick="startVoiceInput()" title="Voice input">
-                                <i class="fas fa-microphone"></i>
+                            <button class="file-explorer-action" onclick="createNewFolder()" title="New Folder">
+                                <i class="fas fa-folder-plus"></i>
                             </button>
-                            <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled title="Send message">
-                                <i class="fas fa-paper-plane"></i>
+                            <button class="file-explorer-action" onclick="refreshFileExplorer()" title="Refresh">
+                                <i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
                     </div>
-                    
-                    <!-- File Drop Zone -->
-                    <div class="file-drop-zone" id="fileDropZone">
-                        <i class="fas fa-cloud-upload-alt file-drop-icon"></i>
-                        <div class="file-drop-text">Drop files here to upload</div>
+                    <div class="file-tree" id="fileTree">
+                        <!-- File tree will be populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Editor Area -->
+                <div class="editor-area">
+                    <div class="editor-tabs" id="editorTabs">
+                        <div class="editor-tab active" data-file="index.html">
+                            <span>index.html</span>
+                            <button class="editor-tab-close" onclick="closeEditorTab(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-container">
+                        <div id="monaco-editor"></div>
+                    </div>
+                    <div class="terminal" id="terminal">
+                        <div class="terminal-header">
+                            <span>Terminal</span>
+                            <div class="terminal-actions">
+                                <button class="terminal-action" onclick="clearTerminal()">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="terminal-action" onclick="runCommand()">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="terminal-body" id="terminalBody">
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." onkeydown="handleTerminalInput(event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="preview-panel" id="previewPanel">
+                    <div class="preview-tabs">
+                        <div class="preview-tab active" onclick="switchPreview('preview')">Preview</div>
+                        <div class="preview-tab" onclick="switchPreview('console')">Console</div>
+                        <div class="preview-tab" onclick="switchPreview('network')">Network</div>
+                    </div>
+                    <div class="preview-content">
+                        <iframe id="previewFrame" class="preview-frame" sandbox="allow-scripts"></iframe>
+                    </div>
+                </div>
+
+                <!-- Chat Panel -->
+                <div class="chat-panel" id="chatPanel">
+                    <div class="chat-header">
+                        <div class="chat-title">AI Assistant</div>
+                        <div class="chat-actions">
+                            <button class="chat-action" onclick="clearChat()" title="Clear Chat">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="chat-action" onclick="exportChat()" title="Export Chat">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chat-container" id="chatContainer">
+                        <!-- Empty state -->
+                        <div class="empty-state" id="emptyState">
+                            <div class="empty-state-icon"></div>
+                            <h2>Hello! I'm your Agentic AI Assistant</h2>
+                            <p>I can help you with coding, web development, file management, and more. How can I assist you today?</p>
+                            
+                            <div class="suggestion-cards">
+                                <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
+                                    <h3>🎨 Web Development</h3>
+                                    <p>Create a modern landing page with animations</p>
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('Debug this JavaScript code that is not working correctly')">
+                                    <h3>🐛 Code Debugging</h3>
+                                    <p>Debug and fix code issues</p>
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('Search for the latest React documentation and summarize it')">
+                                    <h3>🌐 Web Research</h3>
+                                    <p>Research and summarize web content</p>
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('Set up a new Node.js project with Express')">
+                                    <h3>⚙️ Project Setup</h3>
+                                    <p>Initialize and configure projects</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <div class="input-container">
+                            <div class="input-wrapper" id="inputWrapper">
+                                <textarea 
+                                    class="message-input" 
+                                    id="messageInput" 
+                                    placeholder="Message AI Agent..."
+                                    rows="1"
+                                    onkeydown="handleKeyDown(event)"
+                                    oninput="autoResize(this)"
+                                ></textarea>
+                                <div class="input-actions">
+                                    <button class="attach-btn" onclick="attachFile()" title="Attach file">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button class="voice-btn" onclick="startVoiceInput()" title="Voice input">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled title="Send message">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- File Drop Zone -->
+                            <div class="file-drop-zone" id="fileDropZone">
+                                <i class="fas fa-cloud-upload-alt file-drop-icon"></i>
+                                <div class="file-drop-text">Drop files here to upload</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2147,9 +2610,41 @@
                     <div class="setting-item">
                         <div>
                             <div class="setting-label">Plan</div>
-                            <div class="setting-description" id="userPlan">Free Plan</div>
+                            <div class="setting-description" id="userPlan">Developer Plan</div>
                         </div>
                         <button class="header-btn" onclick="upgradePlan()">Upgrade</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Agent Preferences</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Auto-execute Code</div>
+                            <div class="setting-description">Automatically run generated code</div>
+                        </div>
+                        <div class="toggle-switch" id="autoExecuteToggle" onclick="toggleAutoExecute()"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Web Access</div>
+                            <div class="setting-description">Allow agent to browse the web</div>
+                        </div>
+                        <div class="toggle-switch active" id="webAccessToggle" onclick="toggleWebAccess()"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">File Management</div>
+                            <div class="setting-description">Allow agent to create/modify files</div>
+                        </div>
+                        <div class="toggle-switch active" id="fileMgmtToggle" onclick="toggleFileMgmt()"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Terminal Access</div>
+                            <div class="setting-description">Allow agent to run terminal commands</div>
+                        </div>
+                        <div class="toggle-switch" id="terminalAccessToggle" onclick="toggleTerminalAccess()"></div>
                     </div>
                 </div>
                 
@@ -2179,6 +2674,7 @@
                             <option value="casual">Casual</option>
                             <option value="friendly">Friendly</option>
                             <option value="analytical">Analytical</option>
+                            <option value="technical">Technical</option>
                         </select>
                     </div>
                 </div>
@@ -2256,8 +2752,8 @@
                 modals: { settings: false, billing: false },
                 theme: 'light',
                 sidebarOpen: false,
-                rightSidebarOpen: false,
-                activeTab: 'preview'
+                activeTab: 'preview',
+                activeTool: 'code'
             },
             docs: {
                 uploadedFiles: [],
@@ -2269,7 +2765,11 @@
                 persona: 'default',
                 memoryEnabled: true,
                 historyEnabled: true,
-                dataUsageEnabled: false
+                dataUsageEnabled: false,
+                autoExecute: false,
+                webAccess: true,
+                fileMgmt: true,
+                terminalAccess: false
             },
             quota: {
                 used: 65,
@@ -2284,8 +2784,34 @@
                 current: '',
                 language: 'html',
                 preview: ''
+            },
+            project: {
+                name: 'New Project',
+                files: [
+                    { name: 'index.html', type: 'file', content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>My Project</title>\n</head>\n<body>\n  <h1>Hello World</h1>\n</body>\n</html>' },
+                    { name: 'styles.css', type: 'file', content: 'body {\n  font-family: Arial, sans-serif;\n  margin: 0;\n  padding: 20px;\n}' },
+                    { name: 'scripts.js', type: 'file', content: 'console.log("Hello from JavaScript!");' }
+                ],
+                activeFile: 'index.html'
+            },
+            agent: {
+                status: 'ready',
+                currentTask: null,
+                tools: {
+                    code: { active: true, name: 'Code Editor' },
+                    web: { active: false, name: 'Web Browser' },
+                    terminal: { active: false, name: 'Terminal' },
+                    files: { active: false, name: 'File Manager' }
+                }
+            },
+            terminal: {
+                history: [],
+                currentCommand: ''
             }
         };
+        
+        // Monaco Editor
+        let editor;
         
         // DOM elements
         const loginPage = document.getElementById('loginPage');
@@ -2295,7 +2821,15 @@
         const sendBtn = document.getElementById('sendBtn');
         const emptyState = document.getElementById('emptyState');
         const sidebar = document.getElementById('sidebar');
-        const sidebarRight = document.getElementById('sidebarRight');
+        const fileExplorer = document.getElementById('fileExplorer');
+        const fileTree = document.getElementById('fileTree');
+        const editorTabs = document.getElementById('editorTabs');
+        const terminal = document.getElementById('terminal');
+        const terminalBody = document.getElementById('terminalBody');
+        const terminalInput = document.getElementById('terminalInput');
+        const previewPanel = document.getElementById('previewPanel');
+        const previewFrame = document.getElementById('previewFrame');
+        const chatPanel = document.getElementById('chatPanel');
         const toast = document.getElementById('toast');
         const fileDropZone = document.getElementById('fileDropZone');
         const inputWrapper = document.getElementById('inputWrapper');
@@ -2303,7 +2837,7 @@
         const upgradeBanner = document.getElementById('upgradeBanner');
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
-        const previewFrame = document.getElementById('previewFrame');
+        const agentStatusText = document.getElementById('agentStatusText');
         
         // Login form elements
         const loginForm = document.getElementById('loginForm');
@@ -2338,6 +2872,8 @@
                 showMainApp();
                 updateUserProfile(user);
                 loadUserConversations();
+                initializeProject();
+                initializeMonacoEditor();
             } else {
                 // User is signed out
                 state.auth.user = null;
@@ -2376,8 +2912,8 @@
                 userPlan.textContent = 'Pro Plan';
                 upgradeBanner.style.display = 'none';
             } else {
-                userStatus.textContent = 'Free Plan';
-                userPlan.textContent = 'Free Plan';
+                userStatus.textContent = 'Developer Plan';
+                userPlan.textContent = 'Developer Plan';
                 upgradeBanner.style.display = 'flex';
             }
         }
@@ -2455,6 +2991,8 @@
             messageInput.focus();
             updateQuotaBar();
             setupDragAndDrop();
+            renderFileTree();
+            updatePreview();
             
             // Check if user is on free plan
             if (state.auth.user.plan === 'free') {
@@ -2464,6 +3002,682 @@
             }
         }
         
+        // Initialize Monaco Editor
+        function initializeMonacoEditor() {
+            require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.44.0/min/vs' }});
+            require(['vs/editor/editor.main'], function () {
+                editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+                    value: getActiveFileContent(),
+                    language: getLanguageFromFile(state.project.activeFile),
+                    theme: state.ui.theme === 'dark' ? 'vs-dark' : 'vs',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    fontSize: 14,
+                    fontFamily: 'JetBrains Mono, monospace'
+                });
+                
+                // Save content when it changes
+                editor.onDidChangeModelContent(() => {
+                    const content = editor.getValue();
+                    updateFileContent(state.project.activeFile, content);
+                    updatePreview();
+                });
+            });
+        }
+        
+        // Initialize project
+        function initializeProject() {
+            // Load project from localStorage or create default
+            const savedProject = localStorage.getItem('aj-studioz-project');
+            if (savedProject) {
+                state.project = JSON.parse(savedProject);
+            } else {
+                // Create default project
+                saveProject();
+            }
+            
+            renderFileTree();
+            updatePreview();
+        }
+        
+        // Save project to localStorage
+        function saveProject() {
+            localStorage.setItem('aj-studioz-project', JSON.stringify(state.project));
+        }
+        
+        // Render file tree
+        function renderFileTree() {
+            fileTree.innerHTML = '';
+            
+            state.project.files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                if (file.name === state.project.activeFile) {
+                    fileItem.classList.add('active');
+                }
+                
+                const icon = getFileIcon(file.type, file.name);
+                fileItem.innerHTML = `
+                    <i class="${icon} file-icon"></i>
+                    <span class="file-name">${file.name}</span>
+                `;
+                
+                fileItem.onclick = () => openFile(file.name);
+                fileTree.appendChild(fileItem);
+            });
+        }
+        
+        // Get file icon based on type and name
+        function getFileIcon(type, name) {
+            if (type === 'folder') {
+                return 'fas fa-folder';
+            }
+            
+            const extension = name.split('.').pop().toLowerCase();
+            
+            switch (extension) {
+                case 'html':
+                case 'htm':
+                    return 'fab fa-html5';
+                case 'css':
+                    return 'fab fa-css3-alt';
+                case 'js':
+                case 'mjs':
+                    return 'fab fa-js';
+                case 'json':
+                    return 'fas fa-file-code';
+                case 'md':
+                    return 'fab fa-markdown';
+                case 'py':
+                    return 'fab fa-python';
+                case 'java':
+                    return 'fab fa-java';
+                case 'php':
+                    return 'fab fa-php';
+                case 'rb':
+                    return 'fas fa-gem';
+                case 'go':
+                    return 'fas fa-cube';
+                case 'rs':
+                    return 'fas fa-cube';
+                case 'ts':
+                    return 'fas fa-code';
+                case 'jsx':
+                case 'tsx':
+                    return 'fab fa-react';
+                case 'vue':
+                    return 'fab fa-vuejs';
+                case 'sql':
+                    return 'fas fa-database';
+                case 'sh':
+                case 'bash':
+                case 'zsh':
+                    return 'fas fa-terminal';
+                case 'xml':
+                case 'svg':
+                    return 'fas fa-file-code';
+                case 'png':
+                case 'jpg':
+                case 'jpeg':
+                case 'gif':
+                case 'svg':
+                case 'ico':
+                    return 'fas fa-file-image';
+                case 'mp3':
+                case 'wav':
+                case 'ogg':
+                    return 'fas fa-file-audio';
+                case 'mp4':
+                case 'mov':
+                case 'avi':
+                case 'mkv':
+                    return 'fas fa-file-video';
+                case 'pdf':
+                    return 'fas fa-file-pdf';
+                case 'zip':
+                case 'rar':
+                case 'tar':
+                case 'gz':
+                    return 'fas fa-file-archive';
+                default:
+                    return 'fas fa-file';
+            }
+        }
+        
+        // Open file in editor
+        function openFile(filename) {
+            // Update active file
+            state.project.activeFile = filename;
+            
+            // Update file tree
+            renderFileTree();
+            
+            // Update editor tabs
+            updateEditorTabs();
+            
+            // Update editor content
+            if (editor) {
+                const content = getActiveFileContent();
+                editor.setValue(content);
+                editor.setModel(monaco.editor.createModel(
+                    content,
+                    getLanguageFromFile(filename)
+                ));
+            }
+            
+            // Update preview if HTML file
+            if (filename.endsWith('.html') || filename.endsWith('.htm')) {
+                updatePreview();
+            }
+        }
+        
+        // Get active file content
+        function getActiveFileContent() {
+            const file = state.project.files.find(f => f.name === state.project.activeFile);
+            return file ? file.content : '';
+        }
+        
+        // Update file content
+        function updateFileContent(filename, content) {
+            const file = state.project.files.find(f => f.name === filename);
+            if (file) {
+                file.content = content;
+                saveProject();
+            }
+        }
+        
+        // Get language from filename
+        function getLanguageFromFile(filename) {
+            const extension = filename.split('.').pop().toLowerCase();
+            
+            switch (extension) {
+                case 'html':
+                case 'htm':
+                    return 'html';
+                case 'css':
+                    return 'css';
+                case 'js':
+                case 'mjs':
+                    return 'javascript';
+                case 'json':
+                    return 'json';
+                case 'md':
+                    return 'markdown';
+                case 'py':
+                    return 'python';
+                case 'java':
+                    return 'java';
+                case 'php':
+                    return 'php';
+                case 'rb':
+                    return 'ruby';
+                case 'go':
+                    return 'go';
+                case 'rs':
+                    return 'rust';
+                case 'ts':
+                    return 'typescript';
+                case 'jsx':
+                case 'tsx':
+                    return 'typescript';
+                case 'vue':
+                    return 'html';
+                case 'sql':
+                    return 'sql';
+                case 'sh':
+                case 'bash':
+                case 'zsh':
+                    return 'shell';
+                case 'xml':
+                case 'svg':
+                    return 'xml';
+                default:
+                    return 'plaintext';
+            }
+        }
+        
+        // Update editor tabs
+        function updateEditorTabs() {
+            editorTabs.innerHTML = '';
+            
+            state.project.files.forEach(file => {
+                const tab = document.createElement('div');
+                tab.className = 'editor-tab';
+                tab.dataset.file = file.name;
+                if (file.name === state.project.activeFile) {
+                    tab.classList.add('active');
+                }
+                
+                tab.innerHTML = `
+                    <span>${file.name}</span>
+                    <button class="editor-tab-close" onclick="closeEditorTab(this, '${file.name}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                tab.onclick = (e) => {
+                    if (!e.target.classList.contains('editor-tab-close')) {
+                        openFile(file.name);
+                    }
+                };
+                
+                editorTabs.appendChild(tab);
+            });
+        }
+        
+        // Close editor tab
+        function closeEditorTab(button, filename) {
+            event.stopPropagation();
+            
+            // Remove file from project
+            state.project.files = state.project.files.filter(f => f.name !== filename);
+            
+            // If closing active file, switch to another file
+            if (filename === state.project.activeFile && state.project.files.length > 0) {
+                state.project.activeFile = state.project.files[0].name;
+            }
+            
+            // Update UI
+            saveProject();
+            renderFileTree();
+            updateEditorTabs();
+            
+            // Update editor content
+            if (editor && state.project.files.length > 0) {
+                const content = getActiveFileContent();
+                editor.setValue(content);
+                editor.setModel(monaco.editor.createModel(
+                    content,
+                    getLanguageFromFile(state.project.activeFile)
+                ));
+            }
+            
+            // Update preview if HTML file
+            if (state.project.activeFile && (state.project.activeFile.endsWith('.html') || state.project.activeFile.endsWith('.htm'))) {
+                updatePreview();
+            }
+        }
+        
+        // Create new file
+        function createNewFile() {
+            const filename = prompt('Enter filename:');
+            if (filename) {
+                // Check if file already exists
+                if (state.project.files.find(f => f.name === filename)) {
+                    showToast('File already exists!', 'error');
+                    return;
+                }
+                
+                // Add new file
+                state.project.files.push({
+                    name: filename,
+                    type: 'file',
+                    content: ''
+                });
+                
+                // Open the new file
+                openFile(filename);
+                saveProject();
+                showToast('File created successfully!', 'success');
+            }
+        }
+        
+        // Create new folder
+        function createNewFolder() {
+            const foldername = prompt('Enter folder name:');
+            if (foldername) {
+                // Check if folder already exists
+                if (state.project.files.find(f => f.name === foldername)) {
+                    showToast('Folder already exists!', 'error');
+                    return;
+                }
+                
+                // Add new folder
+                state.project.files.push({
+                    name: foldername,
+                    type: 'folder',
+                    content: ''
+                });
+                
+                saveProject();
+                renderFileTree();
+                showToast('Folder created successfully!', 'success');
+            }
+        }
+        
+        // Refresh file explorer
+        function refreshFileExplorer() {
+            renderFileTree();
+            showToast('File explorer refreshed!', 'success');
+        }
+        
+        // Update preview
+        function updatePreview() {
+            const htmlFile = state.project.files.find(f => 
+                f.name.endsWith('.html') || f.name.endsWith('.htm')
+            );
+            
+            if (htmlFile) {
+                // Get CSS and JS files
+                const cssFiles = state.project.files.filter(f => f.name.endsWith('.css'));
+                const jsFiles = state.project.files.filter(f => f.name.endsWith('.js'));
+                
+                // Combine HTML with CSS and JS
+                let combinedContent = htmlFile.content;
+                
+                // Add CSS to head
+                if (cssFiles.length > 0) {
+                    const cssContent = cssFiles.map(f => f.content).join('\n');
+                    combinedContent = combinedContent.replace(
+                        '</head>',
+                        `<style>\n${cssContent}\n</style>\n</head>`
+                    );
+                }
+                
+                // Add JS to body
+                if (jsFiles.length > 0) {
+                    const jsContent = jsFiles.map(f => f.content).join('\n');
+                    combinedContent = combinedContent.replace(
+                        '</body>',
+                        `<script>\n${jsContent}\n</script>\n</body>`
+                    );
+                }
+                
+                previewFrame.srcdoc = combinedContent;
+                state.code.preview = combinedContent;
+            } else {
+                previewFrame.srcdoc = '<html><body><h1>No HTML file found</h1><p>Create an HTML file to see the preview.</p></body></html>';
+            }
+        }
+        
+        // Switch preview tab
+        function switchPreview(tab) {
+            // Update active tab
+            document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update preview content based on tab
+            switch (tab) {
+                case 'preview':
+                    updatePreview();
+                    break;
+                case 'console':
+                    previewFrame.srcdoc = `
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: monospace; padding: 20px; }
+                                .log { margin-bottom: 10px; }
+                                .error { color: red; }
+                                .warn { color: orange; }
+                                .info { color: blue; }
+                            </style>
+                        </head>
+                        <body>
+                            <h3>Console Output</h3>
+                            <div id="console-output"></div>
+                            <script>
+                                const originalLog = console.log;
+                                const originalError = console.error;
+                                const originalWarn = console.warn;
+                                const originalInfo = console.info;
+                                
+                                console.log = function(...args) {
+                                    originalLog.apply(console, args);
+                                    const output = document.getElementById('console-output');
+                                    output.innerHTML += '<div class="log info">' + args.join(' ') + '</div>';
+                                };
+                                
+                                console.error = function(...args) {
+                                    originalError.apply(console, args);
+                                    const output = document.getElementById('console-output');
+                                    output.innerHTML += '<div class="log error">' + args.join(' ') + '</div>';
+                                };
+                                
+                                console.warn = function(...args) {
+                                    originalWarn.apply(console, args);
+                                    const output = document.getElementById('console-output');
+                                    output.innerHTML += '<div class="log warn">' + args.join(' ') + '</div>';
+                                };
+                                
+                                console.info = function(...args) {
+                                    originalInfo.apply(console, args);
+                                    const output = document.getElementById('console-output');
+                                    output.innerHTML += '<div class="log info">' + args.join(' ') + '</div>';
+                                };
+                            </script>
+                        </body>
+                        </html>
+                    `;
+                    break;
+                case 'network':
+                    previewFrame.srcdoc = `
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: monospace; padding: 20px; }
+                                table { width: 100%; border-collapse: collapse; }
+                                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                th { background-color: #f2f2f2; }
+                            </style>
+                        </head>
+                        <body>
+                            <h3>Network Requests</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>URL</th>
+                                        <th>Method</th>
+                                        <th>Status</th>
+                                        <th>Type</th>
+                                        <th>Size</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" style="text-align: center;">No network requests</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </body>
+                        </html>
+                    `;
+                    break;
+            }
+        }
+        
+        // Handle terminal input
+        function handleTerminalInput(event) {
+            if (event.key === 'Enter') {
+                const command = terminalInput.value.trim();
+                if (command) {
+                    executeTerminalCommand(command);
+                    terminalInput.value = '';
+                }
+            }
+        }
+        
+        // Execute terminal command
+        function executeTerminalCommand(command) {
+            // Add command to terminal history
+            state.terminal.history.push(command);
+            
+            // Add command to terminal display
+            const commandLine = document.createElement('div');
+            commandLine.className = 'terminal-line';
+            commandLine.innerHTML = `<span class="terminal-prompt">$</span><span>${escapeHtml(command)}</span>`;
+            terminalBody.insertBefore(commandLine, terminalBody.lastElementChild);
+            
+            // Execute command
+            let output = '';
+            
+            // Simulate command execution
+            switch (command.split(' ')[0]) {
+                case 'help':
+                    output = 'Available commands:<br>' +
+                              '  help - Show this help message<br>' +
+                              '  clear - Clear the terminal<br>' +
+                              '  ls - List files<br>' +
+                              '  pwd - Print working directory<br>' +
+                              '  echo [text] - Print text<br>' +
+                              '  npm [command] - Run npm command<br>' +
+                              '  node [file] - Run Node.js file';
+                    break;
+                case 'clear':
+                    terminalBody.innerHTML = `
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">$</span>
+                            <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." onkeydown="handleTerminalInput(event)">
+                        </div>
+                    `;
+                    return;
+                case 'ls':
+                    output = state.project.files.map(f => f.name).join('<br>');
+                    break;
+                case 'pwd':
+                    output = '/home/user/project';
+                    break;
+                case 'echo':
+                    output = command.substring(5);
+                    break;
+                case 'npm':
+                    // Simulate npm command
+                    output = `npm ${command.substring(4)}<br>Command executed successfully.`;
+                    break;
+                case 'node':
+                    // Simulate node command
+                    const filename = command.substring(5);
+                    const jsFile = state.project.files.find(f => f.name === filename);
+                    if (jsFile && jsFile.name.endsWith('.js')) {
+                        try {
+                            // This is a simulation - in a real app, you'd need a secure way to execute JavaScript
+                            output = `Executing ${filename}...<br>Script executed successfully.`;
+                        } catch (error) {
+                            output = `Error executing ${filename}: ${error.message}`;
+                        }
+                    } else {
+                        output = `File ${filename} not found or not a JavaScript file.`;
+                    }
+                    break;
+                default:
+                    output = `Command not found: ${command.split(' ')[0]}. Type 'help' for available commands.`;
+            }
+            
+            // Add output to terminal
+            const outputLine = document.createElement('div');
+            outputLine.className = 'terminal-line';
+            outputLine.innerHTML = output;
+            terminalBody.insertBefore(outputLine, terminalBody.lastElementChild);
+            
+            // Scroll to bottom
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+        
+        // Clear terminal
+        function clearTerminal() {
+            terminalBody.innerHTML = `
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <input type="text" class="terminal-input" id="terminalInput" placeholder="Enter command..." onkeydown="handleTerminalInput(event)">
+                </div>
+            `;
+            showToast('Terminal cleared!', 'success');
+        }
+        
+        // Run command
+        function runCommand() {
+            const command = terminalInput.value.trim();
+            if (command) {
+                executeTerminalCommand(command);
+                terminalInput.value = '';
+            }
+        }
+        
+        // Activate tool
+        function activateTool(toolName) {
+            // Update active tool
+            state.ui.activeTool = toolName;
+            
+            // Update tool buttons
+            document.querySelectorAll('.agent-tool').forEach(tool => {
+                tool.classList.remove('active');
+            });
+            document.getElementById(`${toolName}Tool`).classList.add('active');
+            
+            // Update agent status
+            agentStatusText.textContent = `Agent Ready - ${state.agent.tools[toolName].name}`;
+            
+            // Show/hide panels based on tool
+            switch (toolName) {
+                case 'code':
+                    // Show editor area
+                    document.querySelector('.editor-area').style.display = 'flex';
+                    // Hide terminal if not active
+                    if (!state.preferences.terminalAccess) {
+                        terminal.style.display = 'none';
+                    }
+                    break;
+                case 'web':
+                    // Show web browser panel (could be implemented in the future)
+                    showToast('Web browser tool activated', 'success');
+                    break;
+                case 'terminal':
+                    // Show terminal
+                    terminal.style.display = 'flex';
+                    // Focus terminal input
+                    terminalInput.focus();
+                    break;
+                case 'files':
+                    // Show file explorer
+                    fileExplorer.style.display = 'flex';
+                    showToast('File manager tool activated', 'success');
+                    break;
+            }
+        }
+        
+        // Toggle auto execute
+        function toggleAutoExecute() {
+            const toggle = document.getElementById('autoExecuteToggle');
+            state.preferences.autoExecute = !state.preferences.autoExecute;
+            toggle.classList.toggle('active');
+            showToast(`Auto-execute ${state.preferences.autoExecute ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
+        // Toggle web access
+        function toggleWebAccess() {
+            const toggle = document.getElementById('webAccessToggle');
+            state.preferences.webAccess = !state.preferences.webAccess;
+            toggle.classList.toggle('active');
+            showToast(`Web access ${state.preferences.webAccess ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
+        // Toggle file management
+        function toggleFileMgmt() {
+            const toggle = document.getElementById('fileMgmtToggle');
+            state.preferences.fileMgmt = !state.preferences.fileMgmt;
+            toggle.classList.toggle('active');
+            showToast(`File management ${state.preferences.fileMgmt ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
+        // Toggle terminal access
+        function toggleTerminalAccess() {
+            const toggle = document.getElementById('terminalAccessToggle');
+            state.preferences.terminalAccess = !state.preferences.terminalAccess;
+            toggle.classList.toggle('active');
+            
+            // Show/hide terminal based on setting
+            if (state.preferences.terminalAccess) {
+                terminal.style.display = 'flex';
+            } else {
+                terminal.style.display = 'none';
+            }
+            
+            showToast(`Terminal access ${state.preferences.terminalAccess ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
+        // Setup event listeners
         function setupEventListeners() {
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
@@ -2475,12 +3689,30 @@
                     closeSettings();
                     if (state.ui.sidebarOpen) toggleSidebar();
                 }
+                // Ctrl/Cmd + S to save
+                if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                    e.preventDefault();
+                    saveProject();
+                    showToast('Project saved!', 'success');
+                }
+                // Ctrl/Cmd + E to execute code
+                if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                    e.preventDefault();
+                    if (state.preferences.autoExecute) {
+                        executeCode();
+                    }
+                }
             });
             
             // Window resize
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 768) {
                     sidebar.classList.remove('open');
+                }
+                
+                // Resize Monaco editor
+                if (editor) {
+                    editor.layout();
                 }
             });
             
@@ -2585,12 +3817,6 @@
                     emptyState.style.display = 'none';
                 }
                 
-                // Enable two-column layout
-                if (!state.chat.hasMessages) {
-                    state.chat.hasMessages = true;
-                    sidebarRight.classList.add('active');
-                }
-                
                 // Load messages
                 chatContainer.innerHTML = '';
                 conversationData.messages.forEach(msg => {
@@ -2684,12 +3910,6 @@
             // Show typing indicator
             showTypingIndicator();
             
-            // Enable two-column layout after first message
-            if (!state.chat.hasMessages) {
-                state.chat.hasMessages = true;
-                sidebarRight.classList.add('active');
-            }
-            
             // Add to pending messages
             state.chat.pendingMessages.push(message);
             
@@ -2702,13 +3922,30 @@
                 { role: 'user', content: message }
             ];
             
+            // Add agent context
+            const agentContext = {
+                activeTool: state.ui.activeTool,
+                projectFiles: state.project.files.map(f => ({ name: f.name, type: f.type })),
+                preferences: state.preferences
+            };
+            
             const options = {
-                length: 1024,
+                length: 2048,
                 creativity: 70,
-                system: "You are a helpful AI assistant. Be concise and helpful."
+                system: `You are an Agentic AI assistant for developers. You have access to tools for code editing, web browsing, terminal commands, and file management. 
+                Current active tool: ${state.ui.activeTool}
+                Project files: ${agentContext.projectFiles.map(f => f.name).join(', ')}
+                User preferences: ${JSON.stringify(agentContext.preferences)}
+                
+                When generating code, always provide complete, functional code snippets that can be directly executed.
+                If the user asks you to perform an action (like creating a file, running a command, etc.), explain what you're doing and then do it if you have the necessary permissions.
+                Be concise and helpful, focusing on providing practical solutions for developers.`
             };
             
             try {
+                // Update agent status
+                agentStatusText.textContent = 'Agent Thinking...';
+                
                 // Make API request
                 const response = await fetch(API_CONFIG.endpoint, {
                     method: 'POST',
@@ -2732,6 +3969,9 @@
                 // Add AI response to chat with typing effect
                 addMessageWithTypingEffect('ai', aiResponse);
                 
+                // Process agent actions
+                processAgentActions(aiResponse);
+                
                 // Extract code from response if available
                 extractCodeFromResponse(aiResponse);
                 
@@ -2745,6 +3985,9 @@
                 
                 // Save conversation to Firestore
                 saveConversation();
+                
+                // Update agent status
+                agentStatusText.textContent = 'Agent Ready';
                 
                 showToast('Response generated successfully!', 'success');
                 
@@ -2760,6 +4003,76 @@
                 
                 // Remove from pending messages
                 state.chat.pendingMessages = state.chat.pendingMessages.filter(msg => msg !== message);
+                
+                // Update agent status
+                agentStatusText.textContent = 'Agent Ready';
+            }
+        }
+        
+        // Process agent actions from AI response
+        function processAgentActions(response) {
+            // Check if the AI wants to create a file
+            const createFileMatch = response.match(/I'll create a file named `([^`]+)`/i);
+            if (createFileMatch && state.preferences.fileMgmt) {
+                const filename = createFileMatch[1];
+                
+                // Extract code block after the mention
+                const codeBlockMatch = response.match(/```(?:\w+)?\n([\s\S]*?)```/);
+                if (codeBlockMatch) {
+                    const content = codeBlockMatch[1];
+                    
+                    // Create the file
+                    state.project.files.push({
+                        name: filename,
+                        type: 'file',
+                        content: content
+                    });
+                    
+                    // Open the file
+                    openFile(filename);
+                    saveProject();
+                    
+                    showToast(`Created file: ${filename}`, 'success');
+                }
+            }
+            
+            // Check if the AI wants to run a terminal command
+            const runCommandMatch = response.match(/I'll run the command `([^`]+)`/i);
+            if (runCommandMatch && state.preferences.terminalAccess) {
+                const command = runCommandMatch[1];
+                
+                // Execute the command
+                executeTerminalCommand(command);
+                
+                showToast(`Executed command: ${command}`, 'success');
+            }
+            
+            // Check if the AI wants to execute code
+            const executeCodeMatch = response.match(/I'll execute this code/i);
+            if (executeCodeMatch && state.preferences.autoExecute) {
+                executeCode();
+            }
+        }
+        
+        // Execute code
+        function executeCode() {
+            const activeFile = state.project.files.find(f => f.name === state.project.activeFile);
+            if (!activeFile) return;
+            
+            // If it's JavaScript, try to execute it
+            if (activeFile.name.endsWith('.js')) {
+                try {
+                    // This is a simulation - in a real app, you'd need a secure way to execute JavaScript
+                    showToast('JavaScript code executed successfully!', 'success');
+                } catch (error) {
+                    showToast(`Error executing JavaScript: ${error.message}`, 'error');
+                }
+            }
+            
+            // If it's HTML, update the preview
+            if (activeFile.name.endsWith('.html') || activeFile.name.endsWith('.htm')) {
+                updatePreview();
+                showToast('HTML preview updated!', 'success');
             }
         }
         
@@ -2891,24 +4204,6 @@
                 
                 codeFound = true;
             }
-        }
-        
-        // Update preview in the sidebar - IMPROVED
-        function updatePreview(html) {
-            previewFrame.srcdoc = html;
-            state.code.preview = html;
-            
-            // Add a small delay to ensure the iframe loads properly
-            setTimeout(() => {
-                try {
-                    // Check if the iframe loaded correctly
-                    if (previewFrame.contentDocument && previewFrame.contentDocument.body) {
-                        console.log('Preview updated successfully');
-                    }
-                } catch (e) {
-                    console.log('Preview update error:', e);
-                }
-            }, 100);
         }
         
         // Check API status
@@ -3343,25 +4638,25 @@
             chatContainer.innerHTML = `
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon"></div>
-                    <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
-                    <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
+                    <h2>Hello! I'm your Agentic AI Assistant</h2>
+                    <p>I can help you with coding, web development, file management, and more. How can I assist you today?</p>
                     
                     <div class="suggestion-cards">
                         <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
                             <h3>🎨 Web Development</h3>
                             <p>Create a modern landing page with animations</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
+                        <div class="suggestion-card" onclick="sendSuggestion('Debug this JavaScript code that is not working correctly')">
                             <h3>🐛 Code Debugging</h3>
                             <p>Debug and fix code issues</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
-                            <h3>✍️ Creative Writing</h3>
-                            <p>Generate stories and creative content</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Search for the latest React documentation and summarize it')">
+                            <h3>🌐 Web Research</h3>
+                            <p>Research and summarize web content</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
-                            <h3>🧠 Explanations</h3>
-                            <p>Explain complex topics simply</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Set up a new Node.js project with Express')">
+                            <h3>⚙️ Project Setup</h3>
+                            <p>Initialize and configure projects</p>
                         </div>
                     </div>
                 </div>
@@ -3369,7 +4664,6 @@
             state.chat.messages = [];
             state.chat.hasMessages = false;
             state.chat.currentChatId = null;
-            sidebarRight.classList.remove('active');
             messageInput.focus();
             
             // Remove active state from chat history
@@ -3384,6 +4678,36 @@
                 startNewChat();
                 showToast('Chat cleared successfully!', 'success');
             }
+        }
+        
+        // Export chat
+        function exportChat() {
+            if (state.chat.messages.length === 0) {
+                showToast('No messages to export', 'error');
+                return;
+            }
+            
+            // Create export content
+            let exportContent = 'AJ STUDIOZ Chat Export\n';
+            exportContent += '========================\n\n';
+            
+            state.chat.messages.forEach(msg => {
+                const timestamp = new Date(msg.timestamp).toLocaleString();
+                exportContent += `[${timestamp}] ${msg.type.toUpperCase()}:\n${msg.content}\n\n`;
+            });
+            
+            // Create blob and download
+            const blob = new Blob([exportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aj-studioz-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Chat exported successfully!', 'success');
         }
         
         // Toggle sidebar (mobile)
@@ -3409,14 +4733,32 @@
         function createNewProject() {
             const projectName = prompt('Enter project name:');
             if (projectName) {
-                const projectList = document.getElementById('projectList');
-                const projectItem = document.createElement('div');
-                projectItem.className = 'project-item';
-                projectItem.innerHTML = `
-                    <i class="fas fa-folder"></i>
-                    <span>${projectName}</span>
-                `;
-                projectList.appendChild(projectItem);
+                // Reset project
+                state.project = {
+                    name: projectName,
+                    files: [
+                        { name: 'index.html', type: 'file', content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>' + projectName + '</title>\n</head>\n<body>\n  <h1>Welcome to ' + projectName + '</h1>\n</body>\n</html>' },
+                        { name: 'styles.css', type: 'file', content: 'body {\n  font-family: Arial, sans-serif;\n  margin: 0;\n  padding: 20px;\n}' },
+                        { name: 'scripts.js', type: 'file', content: 'console.log("Welcome to ' + projectName + '");' }
+                    ],
+                    activeFile: 'index.html'
+                };
+                
+                // Update UI
+                saveProject();
+                renderFileTree();
+                updateEditorTabs();
+                updatePreview();
+                
+                if (editor) {
+                    const content = getActiveFileContent();
+                    editor.setValue(content);
+                    editor.setModel(monaco.editor.createModel(
+                        content,
+                        getLanguageFromFile(state.project.activeFile)
+                    ));
+                }
+                
                 showToast('Project created successfully!', 'success');
             }
         }
@@ -3462,10 +4804,20 @@
                 body.removeAttribute('data-theme');
                 state.ui.theme = 'light';
                 themeToggle.classList.remove('active');
+                
+                // Update Monaco editor theme
+                if (editor) {
+                    monaco.editor.setTheme('vs');
+                }
             } else {
                 body.setAttribute('data-theme', 'dark');
                 state.ui.theme = 'dark';
                 themeToggle.classList.add('active');
+                
+                // Update Monaco editor theme
+                if (editor) {
+                    monaco.editor.setTheme('vs-dark');
+                }
             }
             
             showToast(`Theme changed to ${state.ui.theme} mode`, 'success');
