@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJ STUDIOZ - AI Assistant</title>
+    <title>AJ STUDIOZ - Agentic AI for Developers</title>
     
     <!-- Professional Favicon -->
     <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0" type="image/png">
@@ -78,6 +78,13 @@
             /* Professional embedded logo as data URL - replaced with favicon.png */
             --logo-url: url("https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0");
             --logo-glow: 0 0 10px rgba(0, 0, 0, 0.2);
+            
+            /* Agent colors */
+            --agent-code-color: #3b82f6;
+            --agent-design-color: #8b5cf6;
+            --agent-deploy-color: #10b981;
+            --agent-debug-color: #ef4444;
+            --agent-docs-color: #f59e0b;
         }
 
         [data-theme="dark"] {
@@ -828,12 +835,48 @@
             display: flex;
         }
 
+        /* Tabs for sidebar-right */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--secondary-bg);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Preview Container */
         .preview-container {
             flex: 1;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
-            margin: 16px;
             display: flex;
             flex-direction: column;
         }
@@ -857,6 +900,240 @@
             height: 100%;
             border: none;
             background-color: white;
+        }
+
+        /* File Explorer */
+        .file-explorer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-explorer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .file-explorer-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .file-explorer-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .file-tree {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .file-item.active {
+            background-color: var(--secondary-bg);
+        }
+
+        .file-icon {
+            margin-right: 8px;
+            color: var(--text-tertiary);
+        }
+
+        .file-name {
+            flex: 1;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .file-item:hover .file-actions {
+            opacity: 1;
+        }
+
+        .file-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .file-action-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        /* Terminal */
+        .terminal-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background-color: var(--hover-bg);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-content {
+            flex: 1;
+            background-color: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 12px;
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            display: flex;
+            margin-bottom: 4px;
+        }
+
+        .terminal-prompt {
+            color: #34D399;
+            margin-right: 8px;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            flex: 1;
+        }
+
+        .terminal-output {
+            margin-bottom: 4px;
+            white-space: pre-wrap;
+        }
+
+        /* Deployment */
+        .deployment-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .deployment-header {
+            margin-bottom: 16px;
+        }
+
+        .deployment-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .deployment-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .deployment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .deployment-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .deployment-btn:hover {
+            background-color: var(--hover-bg);
+            border-color: var(--accent-color);
+        }
+
+        .deployment-icon {
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .deployment-info {
+            flex: 1;
+        }
+
+        .deployment-name {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .deployment-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .deployment-status {
+            padding: 16px;
+            background-color: var(--secondary-bg);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .deployment-loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .deployment-success {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--aj-green);
+        }
+
+        .deployment-error {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ef4444;
         }
 
         /* Messages - Copilot Style - IMPROVED */
@@ -971,6 +1248,43 @@
         .message-action:hover {
             background-color: var(--hover-bg);
             color: var(--text-primary);
+        }
+
+        /* Agent Badge */
+        .agent-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .agent-code {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--agent-code-color);
+        }
+
+        .agent-design {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: var(--agent-design-color);
+        }
+
+        .agent-deploy {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--agent-deploy-color);
+        }
+
+        .agent-debug {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--agent-debug-color);
+        }
+
+        .agent-docs {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--agent-docs-color);
         }
 
         /* Copilot Style Formatted Content - IMPROVED */
@@ -1917,8 +2231,8 @@
             
             <div class="login-form-container">
                 <h1 class="login-title">AJ STUDIOZ</h1>
-                <h2>SECURE ACCESS</h2>
-                <p>Enter credentials to proceed.</p>
+                <h2>AGENTIC AI FOR DEVELOPERS</h2>
+                <p>Enter credentials to access your development workspace.</p>
                 <form id="loginForm">
                     <div class="input-group">
                         <input type="email" id="emailInput" placeholder="Email Address" required>
@@ -1993,8 +2307,8 @@
                 <div class="header-title">
                     <div class="ai-avatar"></div>
                     <div>
-                        <h1>AJ STUDIOZ AI Assistant</h1>
-                        <div class="header-subtitle">Powered by Claude Sonnet-4</div>
+                        <h1>AJ STUDIOZ Agentic AI</h1>
+                        <div class="header-subtitle">Powered by Multi-Agent System</div>
                     </div>
                     <div class="status-indicator">
                         <span class="status-dot online" id="statusDot"></span>
@@ -2049,45 +2363,141 @@
                     <!-- Empty state -->
                     <div class="empty-state" id="emptyState">
                         <div class="empty-state-icon"></div>
-                        <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
-                        <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
+                        <h2>Welcome to AJ STUDIOZ Agentic AI</h2>
+                        <p>Your intelligent development assistant with specialized agents for coding, debugging, deployment, and more. How can I assist you today?</p>
                         
                         <div class="suggestion-cards">
-                            <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
-                                <h3>🎨 Web Development</h3>
-                                <p>Create a modern landing page with animations</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Create a React component with TypeScript')">
+                                <h3>🚀 Web Development</h3>
+                                <p>Build modern web applications</p>
                             </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
+                            <div class="suggestion-card" onclick="sendSuggestion('Debug this Python code that is not working correctly')">
                                 <h3>🐛 Code Debugging</h3>
-                                <p>Debug and fix code issues</p>
+                                <p>Find and fix code issues</p>
                             </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
-                                <h3>✍️ Creative Writing</h3>
-                                <p>Generate stories and creative content</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Deploy this application to Vercel')">
+                                <h3>🚀 Deployment</h3>
+                                <p>Deploy your applications</p>
                             </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
-                                <h3>🧠 Explanations</h3>
-                                <p>Explain complex topics simply</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Optimize this database query for performance')">
+                                <h3>⚡ Performance</h3>
+                                <p>Optimize your applications</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Sidebar - Preview Only -->
+                <!-- Right Sidebar - Multi-functional -->
                 <div class="sidebar-right" id="sidebarRight">
-                    <div class="preview-container">
-                        <div class="preview-header">
-                            <span>Preview</span>
-                            <div class="preview-actions">
-                                <button class="code-btn" onclick="refreshPreview()">
-                                    <i class="fas fa-sync-alt"></i> Refresh
-                                </button>
-                                <button class="code-btn" onclick="openInNewTab()">
-                                    <i class="fas fa-external-link-alt"></i> Open
-                                </button>
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('preview')">Preview</button>
+                        <button class="tab" onclick="switchTab('files')">Files</button>
+                        <button class="tab" onclick="switchTab('terminal')">Terminal</button>
+                        <button class="tab" onclick="switchTab('deployment')">Deploy</button>
+                    </div>
+                    
+                    <!-- Preview Tab -->
+                    <div class="tab-content active" id="preview-tab">
+                        <div class="preview-container">
+                            <div class="preview-header">
+                                <span>Preview</span>
+                                <div class="preview-actions">
+                                    <button class="code-btn" onclick="refreshPreview()">
+                                        <i class="fas fa-sync-alt"></i> Refresh
+                                    </button>
+                                    <button class="code-btn" onclick="openInNewTab()">
+                                        <i class="fas fa-external-link-alt"></i> Open
+                                    </button>
+                                </div>
+                            </div>
+                            <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
+                        </div>
+                    </div>
+                    
+                    <!-- Files Tab -->
+                    <div class="tab-content" id="files-tab">
+                        <div class="file-explorer">
+                            <div class="file-explorer-header">
+                                <div class="file-explorer-title">Project Files</div>
+                                <div class="file-explorer-actions">
+                                    <button class="code-btn" onclick="createNewFile()">
+                                        <i class="fas fa-file"></i> New File
+                                    </button>
+                                    <button class="code-btn" onclick="createNewFolder()">
+                                        <i class="fas fa-folder"></i> New Folder
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="file-tree" id="fileTree">
+                                <!-- File tree will be rendered here -->
                             </div>
                         </div>
-                        <iframe id="previewFrame" class="preview-content" sandbox="allow-scripts"></iframe>
+                    </div>
+                    
+                    <!-- Terminal Tab -->
+                    <div class="tab-content" id="terminal-tab">
+                        <div class="terminal-container">
+                            <div class="terminal-header">
+                                <span>Terminal</span>
+                                <div class="terminal-actions">
+                                    <button class="code-btn" onclick="clearTerminal()">
+                                        <i class="fas fa-trash"></i> Clear
+                                    </button>
+                                    <button class="code-btn" onclick="runCommand('git status')">
+                                        <i class="fab fa-git-alt"></i> Git Status
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="terminal-content" id="terminalContent">
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">$</span>
+                                    <input type="text" class="terminal-input" onkeydown="handleTerminalCommand(event)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Deployment Tab -->
+                    <div class="tab-content" id="deployment-tab">
+                        <div class="deployment-container">
+                            <div class="deployment-header">
+                                <div class="deployment-title">Deployment</div>
+                                <div class="deployment-subtitle">Deploy your project to various platforms</div>
+                            </div>
+                            <div class="deployment-options">
+                                <div class="deployment-btn" onclick="deployToVercel()">
+                                    <div class="deployment-icon">
+                                        <i class="fab fa-vercel"></i>
+                                    </div>
+                                    <div class="deployment-info">
+                                        <div class="deployment-name">Vercel</div>
+                                        <div class="deployment-desc">Deploy to Vercel platform</div>
+                                    </div>
+                                </div>
+                                <div class="deployment-btn" onclick="deployToNetlify()">
+                                    <div class="deployment-icon">
+                                        <i class="fab fa-netlify"></i>
+                                    </div>
+                                    <div class="deployment-info">
+                                        <div class="deployment-name">Netlify</div>
+                                        <div class="deployment-desc">Deploy to Netlify platform</div>
+                                    </div>
+                                </div>
+                                <div class="deployment-btn" onclick="deployToGitHub()">
+                                    <div class="deployment-icon">
+                                        <i class="fab fa-github"></i>
+                                    </div>
+                                    <div class="deployment-info">
+                                        <div class="deployment-name">GitHub Pages</div>
+                                        <div class="deployment-desc">Deploy to GitHub Pages</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="deployment-status" id="deploymentStatus">
+                                <!-- Deployment status will be shown here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2181,6 +2591,52 @@
                             <option value="analytical">Analytical</option>
                         </select>
                     </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Auto-run Code</div>
+                            <div class="setting-description">Automatically run code in preview</div>
+                        </div>
+                        <div class="toggle-switch" id="autoRunToggle" onclick="toggleAutoRun()"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Agents</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Code Agent</div>
+                            <div class="setting-description">Specialized in code generation and optimization</div>
+                        </div>
+                        <div class="toggle-switch active" id="codeAgentToggle" onclick="toggleAgent('code')"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Debug Agent</div>
+                            <div class="setting-description">Specialized in debugging and error fixing</div>
+                        </div>
+                        <div class="toggle-switch active" id="debugAgentToggle" onclick="toggleAgent('debug')"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Design Agent</div>
+                            <div class="setting-description">Specialized in UI/UX design</div>
+                        </div>
+                        <div class="toggle-switch active" id="designAgentToggle" onclick="toggleAgent('design')"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Deployment Agent</div>
+                            <div class="setting-description">Specialized in deployment and DevOps</div>
+                        </div>
+                        <div class="toggle-switch active" id="deployAgentToggle" onclick="toggleAgent('deploy')"></div>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Documentation Agent</div>
+                            <div class="setting-description">Specialized in generating documentation</div>
+                        </div>
+                        <div class="toggle-switch active" id="docsAgentToggle" onclick="toggleAgent('docs')"></div>
+                    </div>
                 </div>
                 
                 <div class="settings-section">
@@ -2269,7 +2725,8 @@
                 persona: 'default',
                 memoryEnabled: true,
                 historyEnabled: true,
-                dataUsageEnabled: false
+                dataUsageEnabled: false,
+                autoRun: false
             },
             quota: {
                 used: 65,
@@ -2284,6 +2741,59 @@
                 current: '',
                 language: 'html',
                 preview: ''
+            },
+            // Project Management
+            projects: [],
+            currentProject: null,
+            files: [],
+            // Multi-Agent System
+            agents: {
+                code: {
+                    enabled: true,
+                    name: 'Code Agent',
+                    description: 'Specialized in code generation and optimization',
+                    icon: 'fa-code',
+                    color: 'var(--agent-code-color)'
+                },
+                debug: {
+                    enabled: true,
+                    name: 'Debug Agent',
+                    description: 'Specialized in debugging and error fixing',
+                    icon: 'fa-bug',
+                    color: 'var(--agent-debug-color)'
+                },
+                design: {
+                    enabled: true,
+                    name: 'Design Agent',
+                    description: 'Specialized in UI/UX design',
+                    icon: 'fa-palette',
+                    color: 'var(--agent-design-color)'
+                },
+                deploy: {
+                    enabled: true,
+                    name: 'Deployment Agent',
+                    description: 'Specialized in deployment and DevOps',
+                    icon: 'fa-rocket',
+                    color: 'var(--agent-deploy-color)'
+                },
+                docs: {
+                    enabled: true,
+                    name: 'Documentation Agent',
+                    description: 'Specialized in generating documentation',
+                    icon: 'fa-file-alt',
+                    color: 'var(--agent-docs-color)'
+                }
+            },
+            // Terminal
+            terminal: {
+                history: [],
+                currentDirectory: '/'
+            },
+            // Deployment
+            deployment: {
+                status: 'idle',
+                platform: null,
+                url: null
             }
         };
         
@@ -2304,6 +2814,9 @@
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
         const previewFrame = document.getElementById('previewFrame');
+        const fileTree = document.getElementById('fileTree');
+        const terminalContent = document.getElementById('terminalContent');
+        const deploymentStatus = document.getElementById('deploymentStatus');
         
         // Login form elements
         const loginForm = document.getElementById('loginForm');
@@ -2338,6 +2851,7 @@
                 showMainApp();
                 updateUserProfile(user);
                 loadUserConversations();
+                loadUserProjects();
             } else {
                 // User is signed out
                 state.auth.user = null;
@@ -2462,6 +2976,9 @@
             } else {
                 upgradeBanner.style.display = 'none';
             }
+            
+            // Initialize file tree
+            updateFileTree();
         }
         
         function setupEventListeners() {
@@ -2536,6 +3053,385 @@
             }
         }
         
+        // Load user projects from Firestore
+        async function loadUserProjects() {
+            if (!state.auth.user) return;
+            
+            try {
+                const projectsRef = db.collection('users').doc(state.auth.user.uid).collection('projects');
+                const snapshot = await projectsRef.orderBy('updatedAt', 'desc').get();
+                
+                const projectList = document.getElementById('projectList');
+                projectList.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    // No projects found, create a default project
+                    createDefaultProject();
+                    return;
+                }
+                
+                state.projects = [];
+                
+                snapshot.forEach(doc => {
+                    const project = doc.data();
+                    project.id = doc.id;
+                    state.projects.push(project);
+                    
+                    const projectItem = document.createElement('div');
+                    projectItem.className = 'project-item';
+                    if (state.currentProject && state.currentProject.id === project.id) {
+                        projectItem.classList.add('active');
+                    }
+                    projectItem.innerHTML = `
+                        <i class="fas fa-folder"></i>
+                        <span>${project.name}</span>
+                    `;
+                    projectItem.onclick = () => loadProject(project);
+                    projectList.appendChild(projectItem);
+                });
+                
+                // Set the first project as current if none is selected
+                if (!state.currentProject && state.projects.length > 0) {
+                    loadProject(state.projects[0]);
+                }
+                
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                showToast('Failed to load projects', 'error');
+            }
+        }
+        
+        // Create a default project
+        async function createDefaultProject() {
+            if (!state.auth.user) return;
+            
+            try {
+                const defaultProject = {
+                    name: 'My First Project',
+                    description: 'Default project for getting started',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    files: [
+                        {
+                            id: 'index-html',
+                            name: 'index.html',
+                            type: 'file',
+                            content: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hello World!</h1>
+        <p>Welcome to your new project.</p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>`,
+                            language: 'html'
+                        },
+                        {
+                            id: 'style-css',
+                            name: 'style.css',
+                            type: 'file',
+                            content: `body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}`,
+                            language: 'css'
+                        },
+                        {
+                            id: 'script-js',
+                            name: 'script.js',
+                            type: 'file',
+                            content: `document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded successfully!');
+});`,
+                            language: 'javascript'
+                        }
+                    ]
+                };
+                
+                const projectsRef = db.collection('users').doc(state.auth.user.uid).collection('projects');
+                const docRef = await projectsRef.add(defaultProject);
+                defaultProject.id = docRef.id;
+                
+                state.projects.push(defaultProject);
+                state.currentProject = defaultProject;
+                
+                // Update UI
+                updateProjectList();
+                updateFileTree();
+                
+                showToast('Default project created!', 'success');
+                
+            } catch (error) {
+                console.error('Error creating default project:', error);
+                showToast('Failed to create default project', 'error');
+            }
+        }
+        
+        // Update project list in UI
+        function updateProjectList() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = '';
+            
+            state.projects.forEach(project => {
+                const projectItem = document.createElement('div');
+                projectItem.className = 'project-item';
+                if (state.currentProject && state.currentProject.id === project.id) {
+                    projectItem.classList.add('active');
+                }
+                projectItem.innerHTML = `
+                    <i class="fas fa-folder"></i>
+                    <span>${project.name}</span>
+                `;
+                projectItem.onclick = () => loadProject(project);
+                projectList.appendChild(projectItem);
+            });
+        }
+        
+        // Load a project
+        function loadProject(project) {
+            state.currentProject = project;
+            state.files = project.files || [];
+            
+            // Update UI
+            updateProjectList();
+            updateFileTree();
+            
+            // Load HTML file to preview if available
+            const htmlFile = state.files.find(file => file.language === 'html');
+            if (htmlFile) {
+                updatePreview(htmlFile.content);
+            }
+            
+            showToast(`Loaded project: ${project.name}`, 'success');
+        }
+        
+        // Create a new project
+        async function createNewProject() {
+            const projectName = prompt('Enter project name:');
+            if (!projectName) return;
+            
+            try {
+                const newProject = {
+                    name: projectName,
+                    description: '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    files: []
+                };
+                
+                const projectsRef = db.collection('users').doc(state.auth.user.uid).collection('projects');
+                const docRef = await projectsRef.add(newProject);
+                newProject.id = docRef.id;
+                
+                state.projects.unshift(newProject);
+                state.currentProject = newProject;
+                state.files = [];
+                
+                // Update UI
+                updateProjectList();
+                updateFileTree();
+                
+                showToast(`Project "${projectName}" created successfully!`, 'success');
+                
+            } catch (error) {
+                console.error('Error creating project:', error);
+                showToast('Failed to create project', 'error');
+            }
+        }
+        
+        // Update file tree in UI
+        function updateFileTree() {
+            fileTree.innerHTML = '';
+            
+            if (!state.currentProject || !state.files.length) {
+                fileTree.innerHTML = '<div class="empty-file-tree">No files in this project</div>';
+                return;
+            }
+            
+            state.files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <i class="file-icon ${getFileIcon(file.language)}"></i>
+                    <span class="file-name">${file.name}</span>
+                    <div class="file-actions">
+                        <button class="file-action-btn" onclick="editFile('${file.id}')" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="file-action-btn" onclick="deleteFile('${file.id}')" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                fileTree.appendChild(fileItem);
+            });
+        }
+        
+        // Get file icon based on language
+        function getFileIcon(language) {
+            const iconMap = {
+                'html': 'fab fa-html5',
+                'css': 'fab fa-css3-alt',
+                'javascript': 'fab fa-js-square',
+                'typescript': 'fas fa-code',
+                'python': 'fab fa-python',
+                'java': 'fab fa-java',
+                'json': 'fas fa-file-code',
+                'markdown': 'fab fa-markdown',
+                'text': 'fas fa-file-alt'
+            };
+            
+            return iconMap[language] || 'fas fa-file';
+        }
+        
+        // Create a new file
+        function createNewFile() {
+            if (!state.currentProject) {
+                showToast('Please select a project first', 'error');
+                return;
+            }
+            
+            const fileName = prompt('Enter file name:');
+            if (!fileName) return;
+            
+            // Determine language from file extension
+            const extension = fileName.split('.').pop().toLowerCase();
+            const languageMap = {
+                'html': 'html',
+                'css': 'css',
+                'js': 'javascript',
+                'ts': 'typescript',
+                'py': 'python',
+                'java': 'java',
+                'json': 'json',
+                'md': 'markdown',
+                'txt': 'text'
+            };
+            
+            const language = languageMap[extension] || 'text';
+            
+            const newFile = {
+                id: Date.now().toString(),
+                name: fileName,
+                type: 'file',
+                content: '',
+                language: language
+            };
+            
+            state.files.push(newFile);
+            state.currentProject.files = state.files;
+            
+            // Update UI
+            updateFileTree();
+            
+            // Open the file for editing
+            editFile(newFile.id);
+            
+            showToast(`File "${fileName}" created successfully!`, 'success');
+        }
+        
+        // Create a new folder
+        function createNewFolder() {
+            if (!state.currentProject) {
+                showToast('Please select a project first', 'error');
+                return;
+            }
+            
+            const folderName = prompt('Enter folder name:');
+            if (!folderName) return;
+            
+            const newFolder = {
+                id: Date.now().toString(),
+                name: folderName,
+                type: 'folder',
+                content: '',
+                language: 'text'
+            };
+            
+            state.files.push(newFolder);
+            state.currentProject.files = state.files;
+            
+            // Update UI
+            updateFileTree();
+            
+            showToast(`Folder "${folderName}" created successfully!`, 'success');
+        }
+        
+        // Edit a file
+        function editFile(fileId) {
+            const file = state.files.find(f => f.id === fileId);
+            if (!file) return;
+            
+            const newContent = prompt(`Edit ${file.name}:`, file.content);
+            if (newContent === null) return; // User cancelled
+            
+            file.content = newContent;
+            state.currentProject.files = state.files;
+            
+            // Update preview if it's an HTML file
+            if (file.language === 'html') {
+                updatePreview(file.content);
+            }
+            
+            showToast(`File "${file.name}" updated successfully!`, 'success');
+        }
+        
+        // Delete a file
+        function deleteFile(fileId) {
+            const file = state.files.find(f => f.id === fileId);
+            if (!file) return;
+            
+            if (!confirm(`Are you sure you want to delete "${file.name}"?`)) return;
+            
+            state.files = state.files.filter(f => f.id !== fileId);
+            state.currentProject.files = state.files;
+            
+            // Update UI
+            updateFileTree();
+            
+            showToast(`File "${file.name}" deleted successfully!`, 'success');
+        }
+        
+        // Save project to Firestore
+        async function saveProject() {
+            if (!state.auth.user || !state.currentProject) return;
+            
+            try {
+                const projectRef = db.collection('users').doc(state.auth.user.uid).collection('projects').doc(state.currentProject.id);
+                await projectRef.update({
+                    files: state.files,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showToast('Project saved successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error saving project:', error);
+                showToast('Failed to save project', 'error');
+            }
+        }
+        
         // Save conversation to Firestore
         async function saveConversation() {
             if (!state.auth.user || state.chat.messages.length === 0) return;
@@ -2551,6 +3447,7 @@
                     title: title,
                     messages: state.chat.messages,
                     messagesCount: state.chat.messages.length,
+                    projectId: state.currentProject ? state.currentProject.id : null,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
@@ -2603,6 +3500,14 @@
                 });
                 event.currentTarget.classList.add('active');
                 
+                // Load project if associated
+                if (conversationData.projectId) {
+                    const project = state.projects.find(p => p.id === conversationData.projectId);
+                    if (project) {
+                        loadProject(project);
+                    }
+                }
+                
                 showToast('Conversation loaded', 'success');
                 
             } catch (error) {
@@ -2651,6 +3556,39 @@
             }
         }
         
+        // Determine which agent to use based on user message
+        function determineAgent(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('debug') || lowerMessage.includes('fix') || lowerMessage.includes('error') || lowerMessage.includes('bug')) {
+                return 'debug';
+            } else if (lowerMessage.includes('design') || lowerMessage.includes('ui') || lowerMessage.includes('ux') || lowerMessage.includes('layout')) {
+                return 'design';
+            } else if (lowerMessage.includes('deploy') || lowerMessage.includes('publish') || lowerMessage.includes('host')) {
+                return 'deploy';
+            } else if (lowerMessage.includes('document') || lowerMessage.includes('readme') || lowerMessage.includes('explain')) {
+                return 'docs';
+            } else if (lowerMessage.includes('code') || lowerMessage.includes('function') || lowerMessage.includes('class') || lowerMessage.includes('algorithm')) {
+                return 'code';
+            }
+            
+            return 'general';
+        }
+        
+        // Get agent-specific system prompt
+        function getAgentPrompt(agentType) {
+            const prompts = {
+                code: "You are an expert software developer specializing in writing clean, efficient, and well-documented code. Provide code solutions with explanations, best practices, and optimization tips.",
+                debug: "You are a debugging expert. Analyze code to identify and fix errors, explain the root causes, and suggest improvements to prevent similar issues.",
+                design: "You are a UI/UX design expert. Provide design recommendations, create user-friendly interfaces, and suggest best practices for accessibility and responsiveness.",
+                deploy: "You are a DevOps and deployment specialist. Provide guidance on deploying applications, configuring CI/CD pipelines, and managing cloud infrastructure.",
+                docs: "You are a technical documentation expert. Create clear, comprehensive documentation with examples, tutorials, and best practices.",
+                general: "You are a helpful AI assistant for developers. Provide accurate, concise, and helpful responses to development-related questions."
+            };
+            
+            return prompts[agentType] || prompts.general;
+        }
+        
         // Send message
         async function sendMessage() {
             const message = messageInput.value.trim();
@@ -2693,6 +3631,9 @@
             // Add to pending messages
             state.chat.pendingMessages.push(message);
             
+            // Determine which agent to use
+            const agentType = determineAgent(message);
+            
             // Prepare API request
             const messages = [
                 ...state.chat.messages.map(msg => ({
@@ -2705,7 +3646,7 @@
             const options = {
                 length: 1024,
                 creativity: 70,
-                system: "You are a helpful AI assistant. Be concise and helpful."
+                system: getAgentPrompt(agentType)
             };
             
             try {
@@ -2729,8 +3670,8 @@
                 // Remove typing indicator
                 removeTypingIndicator();
                 
-                // Add AI response to chat with typing effect
-                addMessageWithTypingEffect('ai', aiResponse);
+                // Add AI response to chat with typing effect and agent badge
+                addMessageWithAgent('ai', aiResponse, agentType);
                 
                 // Extract code from response if available
                 extractCodeFromResponse(aiResponse);
@@ -2763,8 +3704,8 @@
             }
         }
         
-        // Add message with typing effect - NEW
-        function addMessageWithTypingEffect(type, content) {
+        // Add message with agent badge
+        function addMessageWithAgent(type, content, agentType = null) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
             messageDiv.style.opacity = '0';
@@ -2775,6 +3716,14 @@
                 hour: 'numeric', 
                 minute: '2-digit' 
             });
+            
+            let agentBadge = '';
+            if (type === 'ai' && agentType && state.agents[agentType]) {
+                const agent = state.agents[agentType];
+                agentBadge = `<div class="agent-badge agent-${agentType}">
+                    <i class="fas ${agent.icon}"></i> ${agent.name}
+                </div>`;
+            }
             
             const messageActions = type === 'ai' ? `
                 <div class="message-actions">
@@ -2796,6 +3745,7 @@
                 </div>
                 <div class="message-content">
                     <div class="message-bubble">
+                        ${agentBadge}
                         <div class="formatted-content" id="typing-content-${Date.now()}"></div>
                         ${messageActions}
                     </div>
@@ -2814,10 +3764,10 @@
             typeWriter(content, contentElement, 0);
             
             // Add to message history
-            state.chat.messages.push({ type, content, timestamp });
+            state.chat.messages.push({ type, content, timestamp, agentType });
         }
         
-        // Typewriter effect - NEW
+        // Typewriter effect
         function typeWriter(text, element, index) {
             if (index < text.length) {
                 // Check if we're at a code block start
@@ -2869,7 +3819,7 @@
             }
         }
         
-        // Extract code from AI response - IMPROVED
+        // Extract code from AI response
         function extractCodeFromResponse(response) {
             // Regular expression to match code blocks
             const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -2893,7 +3843,7 @@
             }
         }
         
-        // Update preview in the sidebar - IMPROVED
+        // Update preview in the sidebar
         function updatePreview(html) {
             previewFrame.srcdoc = html;
             state.code.preview = html;
@@ -2946,7 +3896,7 @@
             }
         }
         
-        // Copy code to clipboard - IMPROVED
+        // Copy code to clipboard
         function copyCode() {
             if (!state.code.current) {
                 showToast('No code to copy', 'error');
@@ -2960,7 +3910,7 @@
             });
         }
         
-        // Download code - IMPROVED
+        // Download code
         function downloadCode() {
             if (!state.code.current) {
                 showToast('No code to download', 'error');
@@ -2984,7 +3934,7 @@
             showToast('Code downloaded!', 'success');
         }
         
-        // Refresh preview - IMPROVED
+        // Refresh preview
         function refreshPreview() {
             if (state.code.language === 'html' && state.code.current) {
                 updatePreview(state.code.current);
@@ -2994,7 +3944,7 @@
             }
         }
         
-        // Open preview in new tab - IMPROVED
+        // Open preview in new tab
         function openInNewTab() {
             if (state.code.language === 'html' && state.code.current) {
                 const newWindow = window.open();
@@ -3005,7 +3955,7 @@
             }
         }
         
-        // Add message to chat - IMPROVED
+        // Add message to chat
         function addMessage(type, content, shouldSave = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -3075,7 +4025,7 @@
             }
         }
         
-        // Format message content - Copilot Style - IMPROVED
+        // Format message content - Copilot Style
         function formatContent(content) {
             // Create a temporary div to hold the formatted content
             const tempDiv = document.createElement('div');
@@ -3094,7 +4044,7 @@
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Handle code blocks with Copilot style - IMPROVED
+            // Handle code blocks with Copilot style
             formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
@@ -3204,7 +4154,7 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
         
-        // Copy code from a specific code block - IMPROVED
+        // Copy code from a specific code block
         function copyCodeFromBlock(codeId) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -3216,7 +4166,7 @@
             });
         }
         
-        // Run code from a specific code block - NEW
+        // Run code from a specific code block
         function runCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -3241,7 +4191,7 @@
             }
         }
         
-        // Download code from a specific code block - NEW
+        // Download code from a specific code block
         function downloadCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -3343,25 +4293,25 @@
             chatContainer.innerHTML = `
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon"></div>
-                    <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
-                    <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
+                    <h2>Welcome to AJ STUDIOZ Agentic AI</h2>
+                    <p>Your intelligent development assistant with specialized agents for coding, debugging, deployment, and more. How can I assist you today?</p>
                     
                     <div class="suggestion-cards">
-                        <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
-                            <h3>🎨 Web Development</h3>
-                            <p>Create a modern landing page with animations</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Create a React component with TypeScript')">
+                            <h3>🚀 Web Development</h3>
+                            <p>Build modern web applications</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
+                        <div class="suggestion-card" onclick="sendSuggestion('Debug this Python code that is not working correctly')">
                             <h3>🐛 Code Debugging</h3>
-                            <p>Debug and fix code issues</p>
+                            <p>Find and fix code issues</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
-                            <h3>✍️ Creative Writing</h3>
-                            <p>Generate stories and creative content</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Deploy this application to Vercel')">
+                            <h3>🚀 Deployment</h3>
+                            <p>Deploy your applications</p>
                         </div>
-                        <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
-                            <h3>🧠 Explanations</h3>
-                            <p>Explain complex topics simply</p>
+                        <div class="suggestion-card" onclick="sendSuggestion('Optimize this database query for performance')">
+                            <h3>⚡ Performance</h3>
+                            <p>Optimize your applications</p>
                         </div>
                     </div>
                 </div>
@@ -3392,6 +4342,20 @@
             state.ui.sidebarOpen = !state.ui.sidebarOpen;
         }
         
+        // Switch tabs in right sidebar
+        function switchTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to the selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Update state
+            state.ui.activeTab = tabName;
+        }
+        
         // Search conversations
         function searchConversations(query) {
             const items = document.querySelectorAll('.chat-history-item');
@@ -3403,34 +4367,6 @@
                     item.style.display = 'none';
                 }
             });
-        }
-        
-        // Create new project
-        function createNewProject() {
-            const projectName = prompt('Enter project name:');
-            if (projectName) {
-                const projectList = document.getElementById('projectList');
-                const projectItem = document.createElement('div');
-                projectItem.className = 'project-item';
-                projectItem.innerHTML = `
-                    <i class="fas fa-folder"></i>
-                    <span>${projectName}</span>
-                `;
-                projectList.appendChild(projectItem);
-                showToast('Project created successfully!', 'success');
-            }
-        }
-        
-        // Load chat
-        function loadChat(chatId) {
-            console.log('Loading chat:', chatId);
-            // Implement chat loading logic
-        }
-        
-        // Load project
-        function loadProject(projectId) {
-            console.log('Loading project:', projectId);
-            // Implement project loading logic
         }
         
         // Change model
@@ -3495,6 +4431,22 @@
             showToast(`Data usage ${state.preferences.dataUsageEnabled ? 'enabled' : 'disabled'}`, 'success');
         }
         
+        // Toggle auto-run
+        function toggleAutoRun() {
+            const autoRunToggle = document.getElementById('autoRunToggle');
+            state.preferences.autoRun = !state.preferences.autoRun;
+            autoRunToggle.classList.toggle('active');
+            showToast(`Auto-run ${state.preferences.autoRun ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
+        // Toggle agent
+        function toggleAgent(agentType) {
+            const agentToggle = document.getElementById(`${agentType}AgentToggle`);
+            state.agents[agentType].enabled = !state.agents[agentType].enabled;
+            agentToggle.classList.toggle('active');
+            showToast(`${state.agents[agentType].name} ${state.agents[agentType].enabled ? 'enabled' : 'disabled'}`, 'success');
+        }
+        
         // Update quota bar
         function updateQuotaBar() {
             const quotaBar = document.getElementById('quotaBar');
@@ -3514,7 +4466,7 @@
             showToast('Redirecting to upgrade page...', 'success');
         }
         
-        // Settings modal - IMPROVED
+        // Settings modal
         function openSettings() {
             settingsModal.classList.add('active');
             state.ui.modals.settings = true;
@@ -3652,6 +4604,192 @@
             } else {
                 showToast('Voice input not supported in this browser', 'error');
             }
+        }
+        
+        // Terminal functions
+        function handleTerminalCommand(event) {
+            if (event.key === 'Enter') {
+                const input = event.target;
+                const command = input.value.trim();
+                
+                if (!command) return;
+                
+                // Add command to terminal
+                const terminalLine = document.createElement('div');
+                terminalLine.className = 'terminal-line';
+                terminalLine.innerHTML = `<span class="terminal-prompt">$</span> ${command}`;
+                document.getElementById('terminalContent').insertBefore(terminalLine, input.parentElement);
+                
+                // Add to history
+                state.terminal.history.push(command);
+                
+                // Process command
+                processTerminalCommand(command);
+                
+                // Clear input
+                input.value = '';
+                
+                // Scroll to bottom
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+            }
+        }
+        
+        function processTerminalCommand(command) {
+            const output = document.createElement('div');
+            output.className = 'terminal-output';
+            
+            // Simulate command processing
+            if (command === 'help') {
+                output.textContent = 'Available commands: help, clear, ls, pwd, echo, git status, git add, git commit, git push';
+            } else if (command === 'clear') {
+                clearTerminal();
+                return;
+            } else if (command === 'ls') {
+                if (state.currentProject && state.files.length > 0) {
+                    const files = state.files.map(f => f.name).join('\n');
+                    output.textContent = files;
+                } else {
+                    output.textContent = 'No files found';
+                }
+            } else if (command === 'pwd') {
+                output.textContent = state.terminal.currentDirectory;
+            } else if (command.startsWith('echo ')) {
+                output.textContent = command.substring(5);
+            } else if (command.startsWith('git ')) {
+                processGitCommand(command.substring(4));
+                return;
+            } else {
+                output.textContent = `Command not found: ${command}`;
+            }
+            
+            document.getElementById('terminalContent').insertBefore(output, document.querySelector('.terminal-line'));
+        }
+        
+        function processGitCommand(gitCommand) {
+            const output = document.createElement('div');
+            output.className = 'terminal-output';
+            
+            if (gitCommand === 'status') {
+                output.textContent = 'On branch main\n\nNo commits yet\n\nnothing to commit (create/copy files and use "git add" to track)';
+            } else if (gitCommand === 'add .') {
+                output.textContent = 'Added all files to staging area';
+            } else if (gitCommand.startsWith('commit -m ')) {
+                const message = gitCommand.substring(11).replace(/"/g, '');
+                output.textContent = `[main (root-commit) ${generateCommitHash()}] ${message}\n 1 file changed, 1 insertion(+)\n create mode 100644 index.html`;
+            } else if (gitCommand === 'push') {
+                output.textContent = 'Enumerating objects: 3, done.\nCounting objects: 100% (3/3), done.\nWriting objects: 100% (3/3), 221 bytes | 221.00 KiB/s, done.\nTotal 3 (delta 0), reused 0 (delta 0), pack-reused 0\nTo https://github.com/username/repository.git\n * [new branch]      main -> main';
+            } else {
+                output.textContent = `git: '${gitCommand}' is not a git command. See 'git --help'.`;
+            }
+            
+            document.getElementById('terminalContent').insertBefore(output, document.querySelector('.terminal-line'));
+        }
+        
+        function generateCommitHash() {
+            return Math.random().toString(36).substring(2, 10);
+        }
+        
+        function runCommand(command) {
+            const terminalInput = document.querySelector('.terminal-input');
+            terminalInput.value = command;
+            terminalInput.focus();
+            
+            // Trigger the command
+            const event = new KeyboardEvent('keydown', {
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13,
+                which: 13,
+                bubbles: true
+            });
+            terminalInput.dispatchEvent(event);
+        }
+        
+        function clearTerminal() {
+            const terminalContent = document.getElementById('terminalContent');
+            // Keep only the last input line
+            const inputLine = terminalContent.querySelector('.terminal-line');
+            terminalContent.innerHTML = '';
+            terminalContent.appendChild(inputLine);
+        }
+        
+        // Deployment functions
+        function deployToVercel() {
+            if (!state.currentProject) {
+                showToast('Please select a project first', 'error');
+                return;
+            }
+            
+            const status = document.getElementById('deploymentStatus');
+            status.innerHTML = '<div class="deployment-loading"><i class="fas fa-spinner fa-spin"></i> Deploying to Vercel...</div>';
+            
+            // Simulate deployment
+            setTimeout(() => {
+                const deployUrl = `https://aj-studioz-${state.currentProject.name.toLowerCase().replace(/\s+/g, '-')}.vercel.app`;
+                status.innerHTML = `
+                    <div class="deployment-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Deployed successfully to Vercel!</span>
+                        <a href="${deployUrl}" target="_blank">View Site</a>
+                    </div>
+                `;
+                state.deployment.status = 'success';
+                state.deployment.platform = 'vercel';
+                state.deployment.url = deployUrl;
+                showToast('Deployment to Vercel completed!', 'success');
+            }, 3000);
+        }
+        
+        function deployToNetlify() {
+            if (!state.currentProject) {
+                showToast('Please select a project first', 'error');
+                return;
+            }
+            
+            const status = document.getElementById('deploymentStatus');
+            status.innerHTML = '<div class="deployment-loading"><i class="fas fa-spinner fa-spin"></i> Deploying to Netlify...</div>';
+            
+            // Simulate deployment
+            setTimeout(() => {
+                const deployUrl = `https://aj-studioz-${state.currentProject.name.toLowerCase().replace(/\s+/g, '-')}.netlify.app`;
+                status.innerHTML = `
+                    <div class="deployment-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Deployed successfully to Netlify!</span>
+                        <a href="${deployUrl}" target="_blank">View Site</a>
+                    </div>
+                `;
+                state.deployment.status = 'success';
+                state.deployment.platform = 'netlify';
+                state.deployment.url = deployUrl;
+                showToast('Deployment to Netlify completed!', 'success');
+            }, 3000);
+        }
+        
+        function deployToGitHub() {
+            if (!state.currentProject) {
+                showToast('Please select a project first', 'error');
+                return;
+            }
+            
+            const status = document.getElementById('deploymentStatus');
+            status.innerHTML = '<div class="deployment-loading"><i class="fas fa-spinner fa-spin"></i> Deploying to GitHub Pages...</div>';
+            
+            // Simulate deployment
+            setTimeout(() => {
+                const deployUrl = `https://${state.auth.user.displayName || 'user'}.github.io/${state.currentProject.name.toLowerCase().replace(/\s+/g, '-')}`;
+                status.innerHTML = `
+                    <div class="deployment-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Deployed successfully to GitHub Pages!</span>
+                        <a href="${deployUrl}" target="_blank">View Site</a>
+                    </div>
+                `;
+                state.deployment.status = 'success';
+                state.deployment.platform = 'github';
+                state.deployment.url = deployUrl;
+                showToast('Deployment to GitHub Pages completed!', 'success');
+            }, 3000);
         }
         
         // Show toast notification
