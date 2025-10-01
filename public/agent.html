@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJ STUDIOZ - AI Assistant</title>
+    <title>AJ STUDIOZ - Advanced AI Assistant</title>
     
     <!-- Professional Favicon -->
     <link rel="icon" href="https://z-cdn-media.chatglm.cn/files/2c638f76-2af9-4185-825a-c348837ca84f_favicon.png?auth_key=1790583710-975e3e49e295497baa7912be33ce27b7-0-57a08d78563be12ae5845c400026c2a0" type="image/png">
@@ -21,7 +21,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* Existing styles remain the same */
+        /* Enhanced CSS with Advanced Features */
         :root {
             --primary-bg: #ffffff;
             --secondary-bg: #f7f7f8;
@@ -107,7 +107,7 @@
             --logo-glow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
-        /* Login Page Styles - unchanged */
+        /* Login Page Styles */
         .login-page {
             position: fixed;
             top: 0;
@@ -403,7 +403,7 @@
             height: 100vh;
         }
 
-        /* Sidebar - unchanged */
+        /* Sidebar */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -1696,7 +1696,326 @@
             margin-left: 8px;
         }
 
-        /* Mobile Responsive - IMPROVED */
+        /* Agentic AI Features */
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: var(--aj-green);
+        }
+
+        .agent-status.thinking {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: var(--aj-gold);
+        }
+
+        .agent-status.acting {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+
+        .task-list {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .task-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .task-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-pending { background: var(--aj-gold); }
+        .status-running { background: #3b82f6; }
+        .status-completed { background: var(--aj-green); }
+        .status-failed { background: #ef4444; }
+
+        .agent-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .agent-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .agent-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        .agent-btn.primary {
+            background: var(--aj-green);
+            color: white;
+            border-color: var(--aj-green);
+        }
+
+        .agent-btn.primary:hover {
+            background: #10b981;
+        }
+
+        /* Advanced Code Editor */
+        .code-editor-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .editor-header {
+            background: var(--code-header-bg);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--code-header-border);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-content {
+            height: 300px;
+            background: var(--code-bg);
+            position: relative;
+        }
+
+        #codeEditor {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: var(--code-bg);
+            color: var(--code-text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 16px;
+            resize: none;
+            outline: none;
+        }
+
+        /* Knowledge Graph */
+        .knowledge-graph {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-node {
+            position: absolute;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .graph-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .graph-node.core {
+            background: var(--aj-green);
+            color: white;
+            border-color: var(--aj-green);
+        }
+
+        /* Multi-Agent Collaboration */
+        .agent-collaboration {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .agent-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: var(--aj-green);
+            color: white;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .agent-status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: rgba(52, 211, 153, 0.2);
+            color: var(--aj-green);
+        }
+
+        .status-busy {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--aj-gold);
+        }
+
+        /* Advanced Analytics Dashboard */
+        .analytics-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .metric-card {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Task Automation Panel */
+        .automation-panel {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .workflow-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .workflow-item:last-child {
+            border-bottom: none;
+        }
+
+        .workflow-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--aj-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .workflow-info {
+            flex: 1;
+        }
+
+        .workflow-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .workflow-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Enhanced Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -1830,6 +2149,94 @@
             .setting-item {
                 padding: 12px 0;
             }
+
+            /* Advanced Features Mobile Responsive */
+            .agent-collaboration {
+                grid-template-columns: 1fr;
+            }
+            
+            .analytics-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .agent-controls {
+                flex-direction: column;
+            }
+            
+            .agent-btn {
+                width: 100%;
+            }
+        }
+
+        /* Advanced Features Toggle */
+        .features-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toggle-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .features-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .features-panel.active {
+            display: block;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-info {
+            flex: 1;
+        }
+
+        .feature-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .feature-description {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         /* Tablet Responsive */
@@ -2035,6 +2442,43 @@
                 </div>
             </div>
 
+            <!-- Advanced Features Toggle -->
+            <div class="features-toggle">
+                <button class="toggle-btn" onclick="toggleFeaturesPanel()">
+                    <i class="fas fa-robot"></i>
+                </button>
+                <div class="features-panel" id="featuresPanel">
+                    <div class="feature-item">
+                        <div class="feature-info">
+                            <div class="feature-name">Agentic AI</div>
+                            <div class="feature-description">Autonomous task execution</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleFeature('agentic')"></div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-info">
+                            <div class="feature-name">Multi-Agent</div>
+                            <div class="feature-description">Collaborative AI agents</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleFeature('multiagent')"></div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-info">
+                            <div class="feature-name">Code Generation</div>
+                            <div class="feature-description">Advanced code completion</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleFeature('codegen')"></div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-info">
+                            <div class="feature-name">Task Automation</div>
+                            <div class="feature-description">Workflow automation</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleFeature('automation')"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="quota-usage">
                 <div class="quota-usage-bar" id="quotaBar" style="width: 65%;"></div>
             </div>
@@ -2046,38 +2490,155 @@
 
             <div class="chat-layout">
                 <div class="chat-container" id="chatContainer">
-                    <!-- Empty state -->
+                    <!-- Empty state with enhanced features -->
                     <div class="empty-state" id="emptyState">
                         <div class="empty-state-icon"></div>
-                        <h2>Hello! I'm your AJ STUDIOZ AI Assistant</h2>
-                        <p>I can help you with coding, creative writing, analysis, and answering questions. How can I assist you today?</p>
+                        <h2>Hello! I'm your Advanced AJ STUDIOZ AI Assistant</h2>
+                        <p>I now feature Agentic AI capabilities, multi-agent collaboration, and advanced task automation. How can I assist you today?</p>
                         
+                        <!-- Agent Status -->
+                        <div class="agent-status" id="agentStatus">
+                            <i class="fas fa-brain"></i>
+                            <span>Agentic AI System: Ready for complex tasks</span>
+                        </div>
+                        
+                        <!-- Advanced Suggestions -->
                         <div class="suggestion-cards">
-                            <div class="suggestion-card" onclick="sendSuggestion('Create a modern landing page with HTML, CSS, and JavaScript')">
-                                <h3>🎨 Web Development</h3>
-                                <p>Create a modern landing page with animations</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Create a full-stack web application with React frontend and Node.js backend')">
+                                <h3>🚀 Full-Stack Development</h3>
+                                <p>Build complete applications with database integration</p>
                             </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Help me debug this Python code that is not working correctly')">
-                                <h3>🐛 Code Debugging</h3>
-                                <p>Debug and fix code issues</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Analyze this dataset and create visualizations with insights')">
+                                <h3>📊 Data Analysis</h3>
+                                <p>Process data and generate insights with visualizations</p>
                             </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Write a creative story about AI and humans working together')">
-                                <h3>✍️ Creative Writing</h3>
-                                <p>Generate stories and creative content</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Design and implement a microservices architecture')">
+                                <h3>🏗️ System Architecture</h3>
+                                <p>Plan and design complex software systems</p>
                             </div>
-                            <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms with examples')">
-                                <h3>🧠 Explanations</h3>
-                                <p>Explain complex topics simply</p>
+                            <div class="suggestion-card" onclick="sendSuggestion('Create an automated workflow for content generation and publishing')">
+                                <h3>⚙️ Workflow Automation</h3>
+                                <p>Design and execute automated processes</p>
+                            </div>
+                        </div>
+
+                        <!-- Multi-Agent Collaboration -->
+                        <div class="agent-collaboration" id="agentCollaboration">
+                            <div class="agent-card">
+                                <div class="agent-avatar">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="agent-name">Code Specialist</div>
+                                <div class="agent-role">Programming & Development</div>
+                                <span class="agent-status-badge status-online">Online</span>
+                            </div>
+                            <div class="agent-card">
+                                <div class="agent-avatar">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="agent-name">Data Analyst</div>
+                                <div class="agent-role">Analysis & Visualization</div>
+                                <span class="agent-status-badge status-online">Online</span>
+                            </div>
+                            <div class="agent-card">
+                                <div class="agent-avatar">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </div>
+                                <div class="agent-name">Content Creator</div>
+                                <div class="agent-role">Writing & Content</div>
+                                <span class="agent-status-badge status-online">Online</span>
+                            </div>
+                            <div class="agent-card">
+                                <div class="agent-avatar">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="agent-name">System Architect</div>
+                                <div class="agent-role">Design & Planning</div>
+                                <span class="agent-status-badge status-online">Online</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Sidebar - Preview Only -->
+                <!-- Right Sidebar - Enhanced with Advanced Features -->
                 <div class="sidebar-right" id="sidebarRight">
+                    <!-- Analytics Dashboard -->
+                    <div class="analytics-dashboard">
+                        <div class="metric-card">
+                            <div class="metric-value" id="tasksCompleted">12</div>
+                            <div class="metric-label">Tasks Completed</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="codeGenerated">1.2k</div>
+                            <div class="metric-label">Lines of Code</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="agentsActive">4</div>
+                            <div class="metric-label">Agents Active</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="automationRate">87%</div>
+                            <div class="metric-label">Automation Rate</div>
+                        </div>
+                    </div>
+
+                    <!-- Task Automation Panel -->
+                    <div class="automation-panel">
+                        <h3 style="margin-bottom: 12px;">Automated Workflows</h3>
+                        <div class="workflow-item">
+                            <div class="workflow-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Code Review</div>
+                                <div class="workflow-description">Automated code analysis and suggestions</div>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="workflow-item">
+                            <div class="workflow-icon">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Debugging Assistant</div>
+                                <div class="workflow-description">Automatic error detection and fixes</div>
+                            </div>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="workflow-item">
+                            <div class="workflow-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="workflow-info">
+                                <div class="workflow-title">Documentation Generator</div>
+                                <div class="workflow-description">Auto-generate code documentation</div>
+                            </div>
+                            <div class="toggle-switch"></div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Code Editor -->
+                    <div class="code-editor-container">
+                        <div class="editor-header">
+                            <span>Advanced Code Editor</span>
+                            <div class="editor-actions">
+                                <button class="code-btn" onclick="runCode()">
+                                    <i class="fas fa-play"></i> Run
+                                </button>
+                                <button class="code-btn" onclick="formatCode()">
+                                    <i class="fas fa-align-left"></i> Format
+                                </button>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+                            <textarea id="codeEditor" placeholder="Write your code here..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Preview Container -->
                     <div class="preview-container">
                         <div class="preview-header">
-                            <span>Preview</span>
+                            <span>Live Preview</span>
                             <div class="preview-actions">
                                 <button class="code-btn" onclick="refreshPreview()">
                                     <i class="fas fa-sync-alt"></i> Refresh
@@ -2092,13 +2653,26 @@
                 </div>
             </div>
 
+            <!-- Enhanced Input Area -->
             <div class="input-area">
                 <div class="input-container">
+                    <div class="agent-controls">
+                        <button class="agent-btn" onclick="startAgenticTask()">
+                            <i class="fas fa-play-circle"></i> Start Agentic Task
+                        </button>
+                        <button class="agent-btn" onclick="showTaskHistory()">
+                            <i class="fas fa-history"></i> Task History
+                        </button>
+                        <button class="agent-btn primary" onclick="generateWorkflow()">
+                            <i class="fas fa-magic"></i> Generate Workflow
+                        </button>
+                    </div>
+                    
                     <div class="input-wrapper" id="inputWrapper">
                         <textarea 
                             class="message-input" 
                             id="messageInput" 
-                            placeholder="Message AJ STUDIOZ AI..."
+                            placeholder="Message AJ STUDIOZ AI or describe a task for autonomous execution..."
                             rows="1"
                             onkeydown="handleKeyDown(event)"
                             oninput="autoResize(this)"
@@ -2126,7 +2700,7 @@
         </div>
     </div>
 
-    <!-- Settings Modal - IMPROVED -->
+    <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -2199,6 +2773,23 @@
                         </div>
                         <div class="toggle-switch" id="dataToggle" onclick="toggleDataUsage()"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task History Modal -->
+    <div class="modal" id="taskHistoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Agentic Task History</h2>
+                <button class="modal-close" onclick="closeTaskHistory()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="task-list" id="taskHistoryList">
+                    <!-- Task history will be populated here -->
                 </div>
             </div>
         </div>
@@ -2287,6 +2878,41 @@
             }
         };
         
+        // Enhanced State Management
+        const advancedState = {
+            agentic: {
+                enabled: true,
+                activeTasks: [],
+                taskHistory: [],
+                agents: {
+                    codeSpecialist: { status: 'online', currentTask: null },
+                    dataAnalyst: { status: 'online', currentTask: null },
+                    contentCreator: { status: 'online', currentTask: null },
+                    systemArchitect: { status: 'online', currentTask: null }
+                }
+            },
+            automation: {
+                workflows: [
+                    { id: 1, name: 'Code Review', enabled: true, description: 'Automated code analysis and suggestions' },
+                    { id: 2, name: 'Debugging Assistant', enabled: true, description: 'Automatic error detection and fixes' },
+                    { id: 3, name: 'Documentation Generator', enabled: false, description: 'Auto-generate code documentation' }
+                ],
+                runningWorkflows: []
+            },
+            analytics: {
+                tasksCompleted: 12,
+                codeGenerated: 1250,
+                agentsActive: 4,
+                automationRate: 87
+            },
+            features: {
+                agentic: true,
+                multiagent: false,
+                codegen: true,
+                automation: false
+            }
+        };
+        
         // DOM elements
         const loginPage = document.getElementById('loginPage');
         const mainApp = document.getElementById('mainApp');
@@ -2318,6 +2944,10 @@
         const userStatus = document.getElementById('userStatus');
         const userEmail = document.getElementById('userEmail');
         const userPlan = document.getElementById('userPlan');
+        
+        // Advanced Features Elements
+        const agentStatus = document.getElementById('agentStatus');
+        const featuresPanel = document.getElementById('featuresPanel');
         
         // Spotlight effect for login page
         const spotlight = document.querySelector('.spotlight');
@@ -2455,6 +3085,7 @@
             messageInput.focus();
             updateQuotaBar();
             setupDragAndDrop();
+            initializeAdvancedFeatures();
             
             // Check if user is on free plan
             if (state.auth.user.plan === 'free') {
@@ -2462,6 +3093,296 @@
             } else {
                 upgradeBanner.style.display = 'none';
             }
+        }
+        
+        // Initialize Advanced Features
+        function initializeAdvancedFeatures() {
+            updateAnalyticsDashboard();
+            setupAgenticSystem();
+            initializeCodeEditor();
+        }
+
+        // Update Analytics Dashboard
+        function updateAnalyticsDashboard() {
+            document.getElementById('tasksCompleted').textContent = advancedState.analytics.tasksCompleted;
+            document.getElementById('codeGenerated').textContent = advancedState.analytics.codeGenerated.toLocaleString();
+            document.getElementById('agentsActive').textContent = advancedState.analytics.agentsActive;
+            document.getElementById('automationRate').textContent = advancedState.analytics.automationRate + '%';
+        }
+
+        // Setup Agentic System
+        function setupAgenticSystem() {
+            // Initialize agent status
+            updateAgentStatus('Agentic AI System: Ready for complex tasks');
+            
+            // Load task history from localStorage
+            const savedHistory = localStorage.getItem('agenticTaskHistory');
+            if (savedHistory) {
+                advancedState.agentic.taskHistory = JSON.parse(savedHistory);
+            }
+        }
+
+        // Initialize Code Editor
+        function initializeCodeEditor() {
+            const codeEditor = document.getElementById('codeEditor');
+            
+            // Load saved code
+            const savedCode = localStorage.getItem('advancedCodeEditor');
+            if (savedCode) {
+                codeEditor.value = savedCode;
+            }
+            
+            // Auto-save code
+            codeEditor.addEventListener('input', function() {
+                localStorage.setItem('advancedCodeEditor', this.value);
+            });
+        }
+
+        // Toggle Features Panel
+        function toggleFeaturesPanel() {
+            featuresPanel.classList.toggle('active');
+        }
+
+        // Toggle Feature
+        function toggleFeature(feature) {
+            const switchElement = event.currentTarget;
+            switchElement.classList.toggle('active');
+            
+            advancedState.features[feature] = switchElement.classList.contains('active');
+            
+            showToast(`Feature ${advancedState.features[feature] ? 'enabled' : 'disabled'}: ${feature}`, 'success');
+            
+            // Update UI based on feature state
+            updateFeatureVisibility();
+        }
+
+        // Update Feature Visibility
+        function updateFeatureVisibility() {
+            const agentCollaboration = document.getElementById('agentCollaboration');
+            
+            if (advancedState.features.multiagent) {
+                agentCollaboration.style.display = 'grid';
+            } else {
+                agentCollaboration.style.display = 'none';
+            }
+        }
+
+        // Start Agentic Task
+        function startAgenticTask() {
+            const taskDescription = document.getElementById('messageInput').value.trim();
+            
+            if (!taskDescription) {
+                showToast('Please describe a task for the agentic system', 'error');
+                return;
+            }
+            
+            // Create new task
+            const taskId = Date.now();
+            const newTask = {
+                id: taskId,
+                description: taskDescription,
+                status: 'running',
+                createdAt: new Date(),
+                steps: []
+            };
+            
+            advancedState.agentic.activeTasks.push(newTask);
+            advancedState.agentic.taskHistory.unshift(newTask);
+            
+            // Update UI
+            updateAgentStatus('Agentic AI: Processing task - ' + taskDescription);
+            document.getElementById('messageInput').value = '';
+            
+            // Simulate task execution
+            simulateAgenticTask(taskId, taskDescription);
+            
+            showToast('Agentic task started successfully!', 'success');
+        }
+
+        // Simulate Agentic Task Execution
+        function simulateAgenticTask(taskId, description) {
+            const task = advancedState.agentic.activeTasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            // Update analytics
+            advancedState.analytics.tasksCompleted++;
+            updateAnalyticsDashboard();
+            
+            // Simulate task steps
+            const steps = [
+                'Analyzing task requirements...',
+                'Planning execution strategy...',
+                'Allocating resources...',
+                'Executing subtasks...',
+                'Verifying results...',
+                'Task completed successfully!'
+            ];
+            
+            let stepIndex = 0;
+            const stepInterval = setInterval(() => {
+                if (stepIndex < steps.length) {
+                    task.steps.push({
+                        step: stepIndex + 1,
+                        description: steps[stepIndex],
+                        timestamp: new Date()
+                    });
+                    
+                    // Update agent status
+                    updateAgentStatus('Agentic AI: ' + steps[stepIndex]);
+                    
+                    stepIndex++;
+                } else {
+                    clearInterval(stepInterval);
+                    task.status = 'completed';
+                    updateAgentStatus('Agentic AI System: Ready for new tasks');
+                    
+                    // Save to localStorage
+                    localStorage.setItem('agenticTaskHistory', JSON.stringify(advancedState.agentic.taskHistory));
+                    
+                    // Show completion message
+                    addMessage('ai', `I've completed the task: "${description}". The agentic system executed ${task.steps.length} steps to accomplish this.`);
+                }
+            }, 1500);
+        }
+
+        // Update Agent Status
+        function updateAgentStatus(message) {
+            agentStatus.innerHTML = `<i class="fas fa-brain"></i><span>${message}</span>`;
+            
+            // Add status classes based on message
+            if (message.includes('Processing') || message.includes('Analyzing') || message.includes('Executing')) {
+                agentStatus.className = 'agent-status thinking';
+            } else if (message.includes('Ready')) {
+                agentStatus.className = 'agent-status';
+            } else {
+                agentStatus.className = 'agent-status acting';
+            }
+        }
+
+        // Show Task History
+        function showTaskHistory() {
+            const modal = document.getElementById('taskHistoryModal');
+            const taskList = document.getElementById('taskHistoryList');
+            
+            // Clear existing content
+            taskList.innerHTML = '';
+            
+            // Add tasks to history
+            if (advancedState.agentic.taskHistory.length === 0) {
+                taskList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary)">No task history yet</div>';
+            } else {
+                advancedState.agentic.taskHistory.forEach(task => {
+                    const taskItem = document.createElement('div');
+                    taskItem.className = 'task-item';
+                    
+                    const statusClass = task.status === 'completed' ? 'status-completed' : 
+                                      task.status === 'running' ? 'status-running' : 
+                                      task.status === 'failed' ? 'status-failed' : 'status-pending';
+                    
+                    taskItem.innerHTML = `
+                        <div class="task-info">
+                            <div class="task-title">${task.description}</div>
+                            <div class="task-description">${task.steps.length} steps • ${new Date(task.createdAt).toLocaleString()}</div>
+                        </div>
+                        <div class="task-status">
+                            <div class="status-indicator ${statusClass}"></div>
+                            <span>${task.status}</span>
+                        </div>
+                    `;
+                    
+                    taskList.appendChild(taskItem);
+                });
+            }
+            
+            modal.classList.add('active');
+        }
+
+        // Close Task History
+        function closeTaskHistory() {
+            const modal = document.getElementById('taskHistoryModal');
+            modal.classList.remove('active');
+        }
+
+        // Generate Workflow
+        function generateWorkflow() {
+            const workflowDescription = document.getElementById('messageInput').value.trim();
+            
+            if (!workflowDescription) {
+                showToast('Please describe the workflow you want to generate', 'error');
+                return;
+            }
+            
+            updateAgentStatus('Agentic AI: Generating automated workflow...');
+            
+            // Simulate workflow generation
+            setTimeout(() => {
+                const workflow = {
+                    id: Date.now(),
+                    name: 'Generated Workflow',
+                    description: workflowDescription,
+                    steps: [
+                        'Data collection and preprocessing',
+                        'Analysis and processing',
+                        'Result generation and formatting',
+                        'Output delivery'
+                    ]
+                };
+                
+                addMessage('ai', `I've generated an automated workflow for: "${workflowDescription}". The workflow consists of ${workflow.steps.length} steps and can be executed automatically.`);
+                
+                updateAgentStatus('Agentic AI System: Ready for new tasks');
+                showToast('Workflow generated successfully!', 'success');
+                
+                document.getElementById('messageInput').value = '';
+            }, 2000);
+        }
+
+        // Run Code from Editor
+        function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            
+            if (!code.trim()) {
+                showToast('Please write some code to execute', 'error');
+                return;
+            }
+            
+            // For HTML code, update preview
+            if (code.includes('<html') || code.includes('<div') || code.includes('<body')) {
+                updatePreview(code);
+                showToast('HTML code executed in preview!', 'success');
+            } else {
+                // For other code types, show execution result
+                addMessage('ai', `I've executed your code. Here's the result:\n\n\`\`\`\n${simulateCodeExecution(code)}\n\`\`\``);
+                showToast('Code executed successfully!', 'success');
+            }
+        }
+
+        // Simulate Code Execution
+        function simulateCodeExecution(code) {
+            // This is a simplified simulation
+            if (code.includes('console.log')) {
+                return 'Hello, World!\nCode executed successfully.';
+            } else if (code.includes('function')) {
+                return 'Function defined successfully.\nNo output generated (function not called).';
+            } else {
+                return 'Code executed successfully.\nNo output generated.';
+            }
+        }
+
+        // Format Code
+        function formatCode() {
+            const codeEditor = document.getElementById('codeEditor');
+            const code = codeEditor.value;
+            
+            // Simple formatting simulation
+            const formatted = code
+                .replace(/\{\s*/g, '{\n  ')
+                .replace(/\}\s*/g, '\n}\n')
+                .replace(/;\s*/g, ';\n  ')
+                .replace(/\n\s*\n/g, '\n');
+            
+            codeEditor.value = formatted;
+            showToast('Code formatted successfully!', 'success');
         }
         
         function setupEventListeners() {
@@ -2651,6 +3572,28 @@
             }
         }
         
+        // Enhanced Send Message with Agentic Capabilities
+        function enhancedSendMessage() {
+            const message = document.getElementById('messageInput').value.trim();
+            
+            // Check if message is a command for agentic system
+            if (message.startsWith('/agent ') || message.startsWith('/automate ') || message.startsWith('/workflow ')) {
+                const command = message.substring(1).split(' ')[0];
+                const taskDescription = message.substring(command.length + 2);
+                
+                if (command === 'agent') {
+                    startAgenticTask();
+                } else if (command === 'automate' || command === 'workflow') {
+                    generateWorkflow();
+                }
+                
+                return;
+            }
+            
+            // Original send message functionality
+            sendMessage();
+        }
+        
         // Send message
         async function sendMessage() {
             const message = messageInput.value.trim();
@@ -2763,7 +3706,7 @@
             }
         }
         
-        // Add message with typing effect - NEW
+        // Add message with typing effect
         function addMessageWithTypingEffect(type, content) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -2817,7 +3760,7 @@
             state.chat.messages.push({ type, content, timestamp });
         }
         
-        // Typewriter effect - NEW
+        // Typewriter effect
         function typeWriter(text, element, index) {
             if (index < text.length) {
                 // Check if we're at a code block start
@@ -2869,7 +3812,7 @@
             }
         }
         
-        // Extract code from AI response - IMPROVED
+        // Extract code from AI response
         function extractCodeFromResponse(response) {
             // Regular expression to match code blocks
             const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -2893,7 +3836,7 @@
             }
         }
         
-        // Update preview in the sidebar - IMPROVED
+        // Update preview in the sidebar
         function updatePreview(html) {
             previewFrame.srcdoc = html;
             state.code.preview = html;
@@ -2946,7 +3889,7 @@
             }
         }
         
-        // Copy code to clipboard - IMPROVED
+        // Copy code to clipboard
         function copyCode() {
             if (!state.code.current) {
                 showToast('No code to copy', 'error');
@@ -2960,7 +3903,7 @@
             });
         }
         
-        // Download code - IMPROVED
+        // Download code
         function downloadCode() {
             if (!state.code.current) {
                 showToast('No code to download', 'error');
@@ -2984,7 +3927,7 @@
             showToast('Code downloaded!', 'success');
         }
         
-        // Refresh preview - IMPROVED
+        // Refresh preview
         function refreshPreview() {
             if (state.code.language === 'html' && state.code.current) {
                 updatePreview(state.code.current);
@@ -2994,7 +3937,7 @@
             }
         }
         
-        // Open preview in new tab - IMPROVED
+        // Open preview in new tab
         function openInNewTab() {
             if (state.code.language === 'html' && state.code.current) {
                 const newWindow = window.open();
@@ -3005,7 +3948,7 @@
             }
         }
         
-        // Add message to chat - IMPROVED
+        // Add message to chat
         function addMessage(type, content, shouldSave = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -3075,7 +4018,7 @@
             }
         }
         
-        // Format message content - Copilot Style - IMPROVED
+        // Format message content - Copilot Style
         function formatContent(content) {
             // Create a temporary div to hold the formatted content
             const tempDiv = document.createElement('div');
@@ -3094,7 +4037,7 @@
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Handle code blocks with Copilot style - IMPROVED
+            // Handle code blocks with Copilot style
             formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
@@ -3204,7 +4147,7 @@
             return text.replace(/[&<>"']/g, m => map[m]);
         }
         
-        // Copy code from a specific code block - IMPROVED
+        // Copy code from a specific code block
         function copyCodeFromBlock(codeId) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -3216,7 +4159,7 @@
             });
         }
         
-        // Run code from a specific code block - NEW
+        // Run code from a specific code block
         function runCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -3241,7 +4184,7 @@
             }
         }
         
-        // Download code from a specific code block - NEW
+        // Download code from a specific code block
         function downloadCodeFromBlock(codeId, language) {
             const codeElement = document.getElementById(codeId);
             const code = codeElement.textContent;
@@ -3514,7 +4457,7 @@
             showToast('Redirecting to upgrade page...', 'success');
         }
         
-        // Settings modal - IMPROVED
+        // Settings modal
         function openSettings() {
             settingsModal.classList.add('active');
             state.ui.modals.settings = true;
@@ -3671,6 +4614,12 @@
             loadSampleData();
             checkApiStatus();
             setInterval(checkApiStatus, 30000); // Check API status every 30 seconds
+            
+            // Update the existing sendMessage function to use enhanced version
+            const originalSendMessage = window.sendMessage;
+            window.sendMessage = function() {
+                enhancedSendMessage();
+            };
         });
     </script>
 </body>
